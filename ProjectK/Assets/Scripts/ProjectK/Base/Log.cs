@@ -78,6 +78,10 @@ namespace ProjectK.Base
             }
 
             String msg = msgBuilder.ToString();
+#if EDITOR_K
+            msg = "[" + level + "]" + msg;
+            Console.WriteLine(msg);
+#else
             switch (level)
             {
                 case LogLevel.Debug:
@@ -93,6 +97,7 @@ namespace ProjectK.Base
                     UnityEngine.Debug.LogError(msg);
                     break;
             }
+#endif
         }
     }
 }

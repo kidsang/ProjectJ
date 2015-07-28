@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EDITOR_K</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -65,6 +65,35 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="LinkSrc\EditorK\Shared\EditorClient.cs" />
+    <Compile Include="LinkSrc\EditorK\Shared\EditorServer.cs" />
+    <Compile Include="LinkSrc\EditorK\Shared\EditorSocket.cs" />
+    <Compile Include="LinkSrc\EditorK\Shared\FunctionPacker.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\Disposable.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\EventManager.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\IniFile.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\JsonFile.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\Log.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\MaterialResource.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\PrefabResource.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\PriorityQueue.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\Resource.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\ResourceLoader.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\ResourceManager.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\SimpleJson.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\TabFile.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\TextResource.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\WWWResources\PackedResource.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\WWWResources\PackedResourceManager.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\WWWResources\PreloadResource.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\WWWResources\Resource.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\WWWResources\ResourceLoader.cs" />
+    <Compile Include="LinkSrc\ProjectK\Base\WWWResources\ResourceManager.cs" />
+    <Compile Include="LinkSrc\ProjectK\Settings\EntitySetting.cs" />
+    <Compile Include="LinkSrc\ProjectK\Settings\MapSetting.cs" />
+    <Compile Include="LinkSrc\ProjectK\Settings\MonsterEntitySetting.cs" />
+    <Compile Include="LinkSrc\ProjectK\Settings\SceneSetting.cs" />
+    <Compile Include="LinkSrc\ProjectK\Settings\SettingManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -88,6 +117,36 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="LinkSrc\EditorK\Shared\EditorClient.cs.meta" />
+    <None Include="LinkSrc\EditorK\Shared\EditorServer.cs.meta" />
+    <None Include="LinkSrc\EditorK\Shared\EditorSocket.cs.meta" />
+    <None Include="LinkSrc\EditorK\Shared\FunctionPacker.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\Disposable.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\EventManager.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\IniFile.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\JsonFile.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\Log.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\MaterialResource.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\PrefabResource.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\PriorityQueue.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\Resource.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\ResourceLoader.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\ResourceManager.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\SimpleJson.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\TabFile.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\TextResource.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\WWWResources.meta" />
+    <None Include="LinkSrc\ProjectK\Base\WWWResources\PackedResource.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\WWWResources\PackedResourceManager.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\WWWResources\PreloadResource.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\WWWResources\Resource.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\WWWResources\ResourceLoader.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Base\WWWResources\ResourceManager.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Settings\EntitySetting.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Settings\MapSetting.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Settings\MonsterEntitySetting.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Settings\SceneSetting.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Settings\SettingManager.cs.meta" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

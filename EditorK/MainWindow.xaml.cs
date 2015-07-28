@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ProjectK;
+using ProjectK.Base;
 
 namespace EditorK
 {
@@ -23,6 +25,13 @@ namespace EditorK
         public MainWindow()
         {
             InitializeComponent();
+
+            var obj = SimpleJson.DeserializeObject("{\"a\": 1}");
+            Log.Info(obj);
+
+            var setting = new EntitySetting();
+            var data = SimpleJson.SerializeObject(setting);
+            Log.Info(data);
         }
     }
 }
