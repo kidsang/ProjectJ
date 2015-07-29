@@ -27,23 +27,39 @@ namespace EditorK
         public void Undo()
         {
             repo.Undo();
+            UpdateRemoteData();
         }
 
         public void Redo()
         {
             repo.Redo();
+            UpdateRemoteData();
         }
 
         public void Load(SceneSetting data, string path = null)
         {
             DataPath = path;
             repo.New(data, EditorEvent.MAP_LOAD, null);
+            GameEditor.Instance.FileModified = false;
+            UpdateRemoteData();
         }
 
         private void Modify(string evt, InfoMap infos)
         {
             repo.Modify(evt, infos);
             GameEditor.Instance.FileModified = true;
+            UpdateRemoteData();
+        }
+
+        private void UpdateRemoteData()
+        {
+            string sceneDataJson = SimpleJson.SerializeObject(Data);
+            string evt = repo.CurrentEvt;
+            RemoteTable infos = new RemoteTable();
+            foreach (var pair in repo.CurrentInfos)
+                infos[pair.Key] = pair.Value;
+
+            GameEditor.Instance.Net.RemoteCall("OnSceneDataUpdate", sceneDataJson, evt, infos);
         }
 
         public void AddPath(int startX, int startY, int endX, int endY)

@@ -13,6 +13,9 @@ namespace EditorK
         public T Data { get; private set; }
         public bool Recording { get; set; }
 
+        public string CurrentEvt { get { return history[nextIndex - 1].Event; } }
+        public Dictionary<string, object> CurrentInfos { get { return history[nextIndex - 1].Infos; } }
+
         public void New(T data, string evt, Dictionary<string, object> infos)
         {
             Clear(0);

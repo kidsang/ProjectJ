@@ -82,7 +82,7 @@ namespace EditorK
 
         private void RecvMessage()
         {
-            if (socket == null)
+            if (state != SocketState.Connected)
                 return;
 
             try
@@ -128,7 +128,7 @@ namespace EditorK
 
         public void RemoteCall(string funcName, params object[] args)
         {
-            if (socket == null)
+            if (state != SocketState.Connected)
                 return;
 
             try
