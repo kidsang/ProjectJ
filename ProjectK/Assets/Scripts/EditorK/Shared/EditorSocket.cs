@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Timers;
 using System.IO;
 using System.Reflection;
+using ProjectK.Base;
 
 
 namespace EditorK
@@ -81,6 +82,9 @@ namespace EditorK
 
         private void RecvMessage()
         {
+            if (socket == null)
+                return;
+
             try
             {
                 if (socket.Available <= 0)
@@ -93,14 +97,14 @@ namespace EditorK
                     string funcName;
                     object[] args;
                     FunctionPacker.UnpackAll(recvReader, out funcName, out args);
-                    //Console.WriteLine(funcName + "(" + string.Join(",", args) + ")");
+                    Log.Debug("CallFunction:", funcName);
 
                     if (remoteCallObject != null)
                     {
                         MethodInfo methodInfo = remoteCallType.GetMethod(funcName);
                         if (methodInfo == null)
                         {
-                            Console.WriteLine("找不到RemoteCall函数:" + funcName);
+                            Log.Error("找不到RemoteCall函数:", funcName);
                         }
                         else
                         {
@@ -110,8 +114,7 @@ namespace EditorK
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine("RemoteCall失败！ 函数名：" + funcName);
-                                Console.WriteLine(e.ToString());
+                                Log.Error("RemoteCall失败！ 函数名：", funcName, "\n", e);
                             }
                         }
                     }
@@ -125,6 +128,9 @@ namespace EditorK
 
         public void RemoteCall(string funcName, params object[] args)
         {
+            if (socket == null)
+                return;
+
             try
             {
                 int len = FunctionPacker.PackAll(sendWriter, funcName, args);
@@ -139,8 +145,7 @@ namespace EditorK
 
         private void ProcessSocketError(string errorTitle, string error)
         {
-            Console.WriteLine(errorTitle);
-            Console.WriteLine(error);
+            Log.Error(errorTitle, "\n", error);
 
             try
             {
@@ -150,8 +155,7 @@ namespace EditorK
             }
             catch (Exception e)
             {
-                Console.WriteLine("Shutdown client failed:");
-                Console.WriteLine(e.ToString());
+                Log.Error("Shutdown client failed:\n", e);
             }
             finally
             {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using ProjectK.Base;
 
 namespace EditorK
 {
@@ -26,12 +27,12 @@ namespace EditorK
             try
             {
                 state = SocketState.Connecting;
-                Console.WriteLine("Server begin accept.");
+                Log.Info("Server begin accept.");
                 server.BeginAccept(new AsyncCallback(OnAcceptResult), server);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Log.Error(e);
             }
         }
 
@@ -39,7 +40,7 @@ namespace EditorK
         {
             socket = server.EndAccept(result);
             state = SocketState.Connected;
-            Console.WriteLine("Server accepted.");
+            Log.Info("Server accepted.");
 
             onConnectedCallback();
         }

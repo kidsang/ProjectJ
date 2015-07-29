@@ -18,6 +18,7 @@ namespace EditorK
         private GameObject sceneRoot;
         public EditorMap Map;
         public Canvas UICanvas;
+        public EditorClient Net { get; private set; }
 
         [DllImport("user32.dll", EntryPoint = "SetWindowText")]
         public static extern bool SetWindowText(IntPtr hwnd, String lpString);
@@ -40,16 +41,25 @@ namespace EditorK
             EditorConfig.Init();
 
             ResourceManager.Init();
-            SettingManager.Init(StartEditor);
+            SettingManager.Init(OnSettingLoadComplete);
+
+            Net = new EditorClient();
+            Net.Init(OnConnectedCallback, SceneDataProxy.Instance);
         }
 
-        void Start()
-        {
-        }
-
-        private void StartEditor()
+        private void OnSettingLoadComplete()
         {
             NewMap();
+        }
+
+        private void OnConnectedCallback()
+        {
+
+        }
+
+        private void Update()
+        {
+            Net.Activate();
         }
 
         public void NewMap()
