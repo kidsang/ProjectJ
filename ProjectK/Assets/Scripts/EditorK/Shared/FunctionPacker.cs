@@ -18,14 +18,15 @@ namespace EditorK
             Table,
         }
 
-        public static int PackAll(BinaryWriter writer, string funcName, object[] args)
+        public static int PackAll(BinaryWriter writer, string funcName, object[] args = null)
         {
             int begin = (int)writer.Seek(sizeof(int), SeekOrigin.Begin);
             writer.Write(funcName);
 
-            foreach (var arg in args)
+            if (args != null)
             {
-                PackOne(writer, arg);
+                foreach (var arg in args)
+                    PackOne(writer, arg);
             }
 
             int len = (int)writer.Seek(0, SeekOrigin.Current) - begin;

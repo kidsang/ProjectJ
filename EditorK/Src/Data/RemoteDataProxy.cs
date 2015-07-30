@@ -19,6 +19,32 @@ namespace EditorK
         //--------------------
         // send
 
+        public void Undo()
+        {
+            RemoteCall("Undo");
+        }
+
+        public void Redo()
+        {
+            RemoteCall("Redo");
+        }
+
+        public void Load(SceneSetting data, string path = null)
+        {
+            string jsonData = SimpleJson.SerializeObject(data);
+            RemoteCallParams("Load", jsonData, data, path);
+        }
+
+        private void RemoteCall(string funcName, object[] args = null)
+        {
+            App.Instance.Net.RemoteCall(funcName, args);
+        }
+
+        private void RemoteCallParams(string funcName, params object[] args)
+        {
+            App.Instance.Net.RemoteCall(funcName, args);
+        }
+
         //--------------------
         // recv
         public void OnSceneDataUpdate(string sceneDataJson, string evt, RemoteTable infos)

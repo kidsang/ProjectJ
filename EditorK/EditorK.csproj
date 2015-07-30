@@ -58,6 +58,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Src\Data\RemoteDataProxy.cs" />
+    <Compile Include="Src\View\EditorMenuBar.xaml.cs">
+      <DependentUpon>EditorMenuBar.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -99,6 +102,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Src\View\EditorMenuBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -159,7 +166,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Src\Logic\" />
-    <Folder Include="Src\View\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\UnityEngine.dll" />

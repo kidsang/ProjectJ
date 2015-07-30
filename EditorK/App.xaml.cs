@@ -17,15 +17,15 @@ namespace EditorK
     {
         public static App Instance { get; private set; }
 
-        private EditorServer net;
+        public EditorServer Net { get; private set; }
         private DispatcherTimer timer;
 
         private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
             Instance = this;
 
-            net = new EditorServer();
-            net.Init(OnConnectedCallback, this);
+            Net = new EditorServer();
+            Net.Init(OnConnectedCallback, this);
 
             timer = new DispatcherTimer();
             timer.Tick += OnTimerTick;
@@ -38,7 +38,7 @@ namespace EditorK
 
         private void OnTimerTick(object sender, EventArgs args)
         {
-            net.Activate();
+            Net.Activate();
         }
 
 

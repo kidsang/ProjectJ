@@ -1,8 +1,19 @@
 ﻿<Window x:Class="EditorK.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:k="clr-namespace:EditorK"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="New" Executed="CmdNewFile"/>
+        <CommandBinding Command="Open" Executed="CmdOpenFile"/>
+        <CommandBinding Command="Save" Executed="CmdSaveFile"/>
+        <CommandBinding Command="SaveAs" Executed="CmdSaveAsFile"/>
+        <CommandBinding Command="Undo" Executed="CmdUndo"/>
+        <CommandBinding Command="Redo" Executed="CmdRedo"/>
+    </Window.CommandBindings>
+
+    <StackPanel Orientation="Vertical">
+        <k:EditorMenuBar x:Name="MenuBar"/>
+    </StackPanel>
 </Window>

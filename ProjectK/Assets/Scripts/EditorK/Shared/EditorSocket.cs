@@ -97,7 +97,7 @@ namespace EditorK
                     string funcName;
                     object[] args;
                     FunctionPacker.UnpackAll(recvReader, out funcName, out args);
-                    Log.Debug("CallFunction:", funcName);
+                    Log.Debug("RecvRemoteCall:", funcName);
 
                     if (remoteCallObject != null)
                     {
@@ -126,10 +126,15 @@ namespace EditorK
             }
         }
 
-        public void RemoteCall(string funcName, params object[] args)
+        public void RemoteCall(string funcName, object[] args = null)
         {
             if (state != SocketState.Connected)
+            {
+                Log.Info("RemoteCall failed, not connected. Func:", funcName);
                 return;
+            }
+
+            Log.Debug("RemoteCall:", funcName);
 
             try
             {
@@ -141,6 +146,11 @@ namespace EditorK
             {
                 ProcessSocketError("send message failed:", e.ToString());
             }
+        }
+
+        public void RemoteCallParams(string funcName, params object[] args)
+        {
+            RemoteCall(funcName, args);
         }
 
         private void ProcessSocketError(string errorTitle, string error)
