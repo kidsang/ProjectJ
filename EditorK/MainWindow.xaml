@@ -13,7 +13,29 @@
         <CommandBinding Command="Redo" Executed="CmdRedo"/>
     </Window.CommandBindings>
 
-    <StackPanel Orientation="Vertical">
-        <k:EditorMenuBar x:Name="MenuBar"/>
-    </StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <k:EditorMenuBar x:Name="MenuBar" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
+        <TabControl Grid.Column="0" Grid.Row="1">
+            <TabItem Header="地形" >
+            </TabItem>
+            <TabItem Header="路径">
+            </TabItem>
+        </TabControl>
+        <TabControl Grid.Column="1" Grid.Row="1">
+            <TabItem Header="General">
+            </TabItem>
+            <TabItem Header="General2">
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>

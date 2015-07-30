@@ -61,6 +61,12 @@
     <Compile Include="Src\View\EditorMenuBar.xaml.cs">
       <DependentUpon>EditorMenuBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Src\View\TerrainPanel.xaml.cs">
+      <DependentUpon>TerrainPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Src\View\TerrainPanelEntry.xaml.cs">
+      <DependentUpon>TerrainPanelEntry.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -103,6 +109,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Src\View\EditorMenuBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Src\View\TerrainPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Src\View\TerrainPanelEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
