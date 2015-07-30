@@ -12,9 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 using Microsoft.Win32;
 using ProjectK;
 using ProjectK.Base;
+using EditorK.Properties;
 
 namespace EditorK
 {
@@ -35,9 +37,16 @@ namespace EditorK
             Log.Info(data);
         }
 
-        private void LoadFile(SceneSetting data, string path = null)
+        private void DoLoadFile(SceneSetting data, string path = null)
         {
 
+        }
+
+        private void DoSaveFile(string path)
+        {
+            SceneSetting data = RemoteDataProxy.Instance.SceneData;
+            string jsonData = SimpleJson.SerializeObject(data);
+            File.WriteAllText(path, jsonData);
         }
 
         private void CmdNewFile(object sender, ExecutedRoutedEventArgs e)
@@ -45,7 +54,7 @@ namespace EditorK
             SceneSetting data = new SceneSetting(true);
             data.Map.CellCountX = 10;
             data.Map.CellCountY = 10;
-            LoadFile(data);
+            DoLoadFile(data);
         }
 
         private void CmdOpenFile(object sender, ExecutedRoutedEventArgs e)
@@ -53,9 +62,15 @@ namespace EditorK
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "打开文件";
             dialog.Filter = "地图文件(*.map)|*.map";
+            dialog.InitialDirectory = Settings.Default.LastOpenFilePath;
             if (dialog.ShowDialog(App.Instance.MainWindow) == true)
             {
-                Log.Info(dialog.FileName);
+                Settings.Default.LastOpenFilePath = dialog.FileName;
+                Settings.Default.Save();
+
+                string jsonData = File.ReadAllText(dialog.FileName);
+                SceneSetting data = SimpleJson.DeserializeObject<SceneSetting>(jsonData);
+                DoLoadFile(data, dialog.FileName);
             }
         }
 
@@ -69,9 +84,13 @@ namespace EditorK
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Title = "保存文件";
             dialog.Filter = "地图文件(*.map)|*.map";
+            dialog.InitialDirectory = Settings.Default.LastSaveFilePath;
             if (dialog.ShowDialog(App.Instance.MainWindow) == true)
             {
-                Log.Info(dialog.FileName);
+                Settings.Default.LastSaveFilePath = dialog.FileName;
+                Settings.Default.Save();
+
+                DoSaveFile(dialog.FileName);
             }
         }
 
