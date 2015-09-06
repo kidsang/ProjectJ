@@ -6,13 +6,6 @@ using ProjectK.Base;
 
 namespace ProjectK
 {
-    public enum MapCellFlag
-    {
-        None = 0,
-        CanWalk = 1,
-        CanBuild = 2,
-    }
-
     /**
      * MapCell使用Axial坐标系，其中x + y + z = 0，因此只需要x和y的就可以确定一个MapCell。
      * 参见 http://www.redblobgames.com/grids/hexagons

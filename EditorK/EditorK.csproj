@@ -57,25 +57,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Src\Data\RemoteDataProxy.cs" />
-    <Compile Include="Src\View\EditorMenuBar.xaml.cs">
-      <DependentUpon>EditorMenuBar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Src\View\TerrainPanel.xaml.cs">
-      <DependentUpon>TerrainPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Src\View\TerrainPanelEntry.xaml.cs">
-      <DependentUpon>TerrainPanelEntry.xaml</DependentUpon>
-    </Compile>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="LinkSrc\EditorK\Shared\EditorClient.cs" />
+    <Compile Include="LinkSrc\EditorK\Shared\EditorEvent.cs" />
     <Compile Include="LinkSrc\EditorK\Shared\EditorServer.cs" />
     <Compile Include="LinkSrc\EditorK\Shared\EditorSocket.cs" />
     <Compile Include="LinkSrc\EditorK\Shared\FunctionPacker.cs" />
@@ -104,6 +87,26 @@
     <Compile Include="LinkSrc\ProjectK\Settings\MonsterEntitySetting.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\SceneSetting.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\SettingManager.cs" />
+    <Compile Include="LinkSrc\ProjectK\Settings\TerrainFlagInfo.cs" />
+    <Compile Include="Src\Data\RemoteDataProxy.cs" />
+    <Compile Include="Src\Logic\EditorUtils.cs" />
+    <Compile Include="Src\View\EditorMenuBar.xaml.cs">
+      <DependentUpon>EditorMenuBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Src\View\TerrainPanel.xaml.cs">
+      <DependentUpon>TerrainPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Src\View\TerrainPanelEntry.xaml.cs">
+      <DependentUpon>TerrainPanelEntry.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -140,6 +143,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="LinkSrc\EditorK\Shared\EditorClient.cs.meta" />
+    <None Include="LinkSrc\EditorK\Shared\EditorEvent.cs.meta" />
     <None Include="LinkSrc\EditorK\Shared\EditorServer.cs.meta" />
     <None Include="LinkSrc\EditorK\Shared\EditorSocket.cs.meta" />
     <None Include="LinkSrc\EditorK\Shared\FunctionPacker.cs.meta" />
@@ -169,6 +173,7 @@
     <None Include="LinkSrc\ProjectK\Settings\MonsterEntitySetting.cs.meta" />
     <None Include="LinkSrc\ProjectK\Settings\SceneSetting.cs.meta" />
     <None Include="LinkSrc\ProjectK\Settings\SettingManager.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Settings\TerrainFlagInfo.cs.meta" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -178,9 +183,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Src\Logic\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Lib\UnityEngine.dll" />
   </ItemGroup>

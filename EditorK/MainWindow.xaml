@@ -27,6 +27,7 @@
         <k:EditorMenuBar x:Name="MenuBar" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
         <TabControl Grid.Column="0" Grid.Row="1">
             <TabItem Header="地形" >
+                <k:TerrainPanel/>
             </TabItem>
             <TabItem Header="路径">
             </TabItem>
