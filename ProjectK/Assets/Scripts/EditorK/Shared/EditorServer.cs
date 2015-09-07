@@ -12,6 +12,7 @@ namespace EditorK
     public class EditorServer : EditorSocket
     {
         private Socket server;
+        private long lastPingTime;
 
         public override void Init(OnConnectedCallback onConnectedCallback, object remoteCallObject)
         {
@@ -40,9 +41,28 @@ namespace EditorK
         {
             socket = server.EndAccept(result);
             state = SocketState.Connected;
+            lastPingTime = GetElapsedTime();
             Log.Info("Server accepted.");
 
             onConnectedCallback();
+        }
+
+        override protected void OnReceivePing()
+        {
+            lastPingTime = GetElapsedTime();
+            Log.Info("Receive Ping!");
+        }
+
+        override public void Activate()
+        {
+            base.Activate();
+
+            if (state == SocketState.Connected)
+            {
+                long timeMs = GetElapsedTime();
+                if (timeMs - lastPingTime >= EditorSocket.PingTimeout)
+                    ProcessSocketError("ConnectionLost", "ConnectionLost!");
+            }
         }
     }
 }

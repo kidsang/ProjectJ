@@ -11,6 +11,8 @@ namespace EditorK
 {
     public class EditorClient : EditorSocket
     {
+        private long lastPingTime;
+
         protected override void Connect()
         {
             try
@@ -34,6 +36,21 @@ namespace EditorK
             Log.Info("Cient connected.");
 
             onConnectedCallback();
+        }
+
+        override public void Activate()
+        {
+            base.Activate();
+
+            if (state == SocketState.Connected)
+            {
+                long timeMs = GetElapsedTime();
+                if (timeMs - lastPingTime >= EditorSocket.PingInterval)
+                {
+                    lastPingTime = timeMs;
+                    RemoteCall(__PING);
+                }
+            }
         }
     }
 }

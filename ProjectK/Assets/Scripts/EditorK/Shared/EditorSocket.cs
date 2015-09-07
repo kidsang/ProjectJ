@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Timers;
 using System.IO;
 using System.Reflection;
+using System.Diagnostics;
 using ProjectK.Base;
 
 
@@ -40,12 +41,18 @@ namespace EditorK
         protected object remoteCallObject;
         protected Type remoteCallType;
 
+        public static readonly string __PING = "__PING";
+        public static readonly long PingInterval = 1000;
+        public static readonly long PingTimeout = 2000;
+        protected Stopwatch stopwatch;
+
         public EditorSocket()
         {
             sendStream = new MemoryStream(sendBuffer);
             sendWriter = new BinaryWriter(sendStream, Encoding.UTF8);
             recvStream = new MemoryStream(recvBuffer);
             recvReader = new BinaryReader(recvStream, Encoding.UTF8);
+            stopwatch = Stopwatch.StartNew();
         }
 
         public virtual void Init(OnConnectedCallback onConnectedCallback, object remoteCallObject)
@@ -58,7 +65,7 @@ namespace EditorK
             }
         }
 
-        public void Activate()
+        virtual public void Activate()
         {
             switch (state)
             {
@@ -97,24 +104,31 @@ namespace EditorK
                     string funcName;
                     object[] args;
                     FunctionPacker.UnpackAll(recvReader, out funcName, out args);
-                    Log.Debug("RecvRemoteCall:", funcName);
 
-                    if (remoteCallObject != null)
+                    if (funcName == __PING)
                     {
-                        MethodInfo methodInfo = remoteCallType.GetMethod(funcName);
-                        if (methodInfo == null)
+                        OnReceivePing();
+                    }
+                    else
+                    {
+                        Log.Debug("RecvRemoteCall:", funcName);
+                        if (remoteCallObject != null)
                         {
-                            Log.Error("找不到RemoteCall函数:", funcName);
-                        }
-                        else
-                        {
-                            try
+                            MethodInfo methodInfo = remoteCallType.GetMethod(funcName);
+                            if (methodInfo == null)
                             {
-                                methodInfo.Invoke(remoteCallObject, args);
+                                Log.Error("找不到RemoteCall函数:", funcName);
                             }
-                            catch (Exception e)
+                            else
                             {
-                                Log.Error("RemoteCall失败！ 函数名：", funcName, "\n", e);
+                                try
+                                {
+                                    methodInfo.Invoke(remoteCallObject, args);
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.Error("RemoteCall失败！ 函数名：", funcName, "\n", e);
+                                }
                             }
                         }
                     }
@@ -134,7 +148,8 @@ namespace EditorK
                 return;
             }
 
-            Log.Debug("RemoteCall:", funcName);
+            if (funcName != __PING)
+                Log.Debug("RemoteCall:", funcName);
 
             try
             {
@@ -153,7 +168,7 @@ namespace EditorK
             RemoteCall(funcName, args);
         }
 
-        private void ProcessSocketError(string errorTitle, string error)
+        protected void ProcessSocketError(string errorTitle, string error)
         {
             Log.Error(errorTitle, "\n", error);
 
@@ -170,8 +185,18 @@ namespace EditorK
             finally
             {
                 socket = null;
-                state = SocketState.Closed;
+                state = SocketState.Init; // Reconnect
             }
+        }
+
+        protected long GetElapsedTime()
+        {
+            return stopwatch.ElapsedMilliseconds;
+        }
+
+        virtual protected void OnReceivePing()
+        {
+
         }
 
     }
