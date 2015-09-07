@@ -50,7 +50,7 @@ namespace EditorK
         override protected void OnReceivePing()
         {
             lastPingTime = GetElapsedTime();
-            Log.Info("Receive Ping!");
+            //Log.Info("Receive Ping!");
         }
 
         override public void Activate()

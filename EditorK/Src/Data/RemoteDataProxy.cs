@@ -19,6 +19,12 @@ namespace EditorK
         //--------------------
         // send
 
+        public void Load(SceneSetting data, string path = null)
+        {
+            string jsonData = SimpleJson.SerializeObject(data);
+            RemoteCallParams("Load", jsonData, path);
+        }
+
         public void Undo()
         {
             RemoteCall("Undo");
@@ -27,12 +33,6 @@ namespace EditorK
         public void Redo()
         {
             RemoteCall("Redo");
-        }
-
-        public void Load(SceneSetting data, string path = null)
-        {
-            string jsonData = SimpleJson.SerializeObject(data);
-            RemoteCallParams("Load", jsonData, data, path);
         }
 
         private void RemoteCall(string funcName, object[] args = null)

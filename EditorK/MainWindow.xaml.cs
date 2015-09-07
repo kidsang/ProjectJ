@@ -28,18 +28,11 @@ namespace EditorK
         public MainWindow()
         {
             InitializeComponent();
-
-            // TODO: test
-            var obj = SimpleJson.DeserializeObject("{\"a\": 1}");
-            Log.Info(obj);
-            var setting = new EntitySetting();
-            var data = SimpleJson.SerializeObject(setting);
-            Log.Info(data);
         }
 
         private void DoLoadFile(SceneSetting data, string path = null)
         {
-
+            RemoteDataProxy.Instance.Load(data, path);
         }
 
         private void DoSaveFile(string path)

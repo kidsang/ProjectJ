@@ -16,6 +16,7 @@ namespace EditorK
             Double,
             String,
             Table,
+            Null,
         }
 
         public static int PackAll(BinaryWriter writer, string funcName, object[] args = null)
@@ -38,7 +39,11 @@ namespace EditorK
 
         private static void PackOne(BinaryWriter writer, object arg)
         {
-            if (arg is bool)
+            if (arg == null)
+            {
+                writer.Write((byte)PackType.Null);
+            }
+            else if (arg is bool)
             {
                 writer.Write((byte)PackType.Boolean);
                 writer.Write((bool)arg);
@@ -103,6 +108,9 @@ namespace EditorK
             PackType type = (PackType)reader.ReadByte();
             switch (type)
             {
+                case PackType.Null:
+                    break;
+
                 case PackType.Boolean:
                     arg = reader.ReadBoolean();
                     break;

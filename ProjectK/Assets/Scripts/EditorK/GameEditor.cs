@@ -42,14 +42,12 @@ namespace EditorK
 
             ResourceManager.Init();
             SettingManager.Init(OnSettingLoadComplete);
-
-            Net = new EditorClient();
-            Net.Init(OnConnectedCallback, SceneDataProxy.Instance);
         }
 
         private void OnSettingLoadComplete()
         {
-            NewMap();
+            Net = new EditorClient();
+            Net.Init(OnConnectedCallback, SceneDataProxy.Instance);
         }
 
         private void OnConnectedCallback()
@@ -59,15 +57,8 @@ namespace EditorK
 
         private void Update()
         {
-            Net.Activate();
-        }
-
-        public void NewMap()
-        {
-            SceneSetting data = new SceneSetting(true);
-            data.Map.CellCountX = 10;
-            data.Map.CellCountY = 10;
-            LoadMap(data);
+            if (Net != null)
+                Net.Activate();
         }
 
         public void LoadMap(SceneSetting data, string path = null)
@@ -81,8 +72,6 @@ namespace EditorK
 
             Map = mapRoot.AddComponent<EditorMap>();
             Map.New(data.Map);
-
-            SceneDataProxy.Instance.Load(data, path);
 
             fileModified = false;
             filePath = path;

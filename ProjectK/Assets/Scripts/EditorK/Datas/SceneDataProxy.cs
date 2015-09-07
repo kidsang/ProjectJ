@@ -38,17 +38,11 @@ namespace EditorK
 
         public void Load(string jsonData, string path = null)
         {
-            Log.Info("ShitLoad!");
-            //SceneSetting data = SimpleJson.DeserializeObject<SceneSetting>(jsonData);
-            //Load(data, path);
-        }
+            SceneSetting data = SimpleJson.DeserializeObject<SceneSetting>(jsonData);
+            GameEditor.Instance.LoadMap(data, path);
 
-        public void Load(SceneSetting data, string path = null)
-        {
             DataPath = path;
             repo.New(data, EditorEvent.MAP_LOAD, null);
-            GameEditor.Instance.FileModified = false;
-            UpdateRemoteData();
         }
 
         private void Modify(string evt, InfoMap infos)
