@@ -8,23 +8,6 @@ using ProjectK.Base;
 
 namespace EditorK
 {
-    public enum EditorMouseDataType
-    {
-        None,
-
-        // int? index
-        MapPathStart,
-
-        // int? index
-        MapPathEnd,
-
-        // InfoMap
-        //   MapCellFlag flag
-        //   int size
-        //   bool erase
-        TerrainFill,
-    }
-
     public class EditorMouse : DisposableBehaviour
     {
         private static EditorMouse instance;
@@ -57,6 +40,8 @@ namespace EditorK
         private bool mouseIn = false;
         private Vector3 lastMousePosition;
         private MapCell lastOverMapcell;
+
+        private static readonly string RemoteOnSceneMouseEvent = "OnSceneMouseEvent";
 
         public override void Awake()
         {
@@ -159,14 +144,21 @@ namespace EditorK
         public void OnSceneMouseDown()
         {
             if (Input.GetMouseButtonDown(0))
+            {
                 EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_DOWN);
+                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_DOWN);
+            }
             else if (Input.GetMouseButtonDown(1))
+            {
                 EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_RIGHT_DOWN);
+                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_RIGHT_DOWN);
+            }
         }
 
         public void OnSceneMouseUp()
         {
             EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_UP);
+            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_UP);
         }
 
         public void OnSceneMouseClick()
@@ -175,11 +167,13 @@ namespace EditorK
             {
                 SelectMapCell();
                 EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_CLICK);
+                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_CLICK);
             }
             else if (Input.GetMouseButtonUp(1))
             {
                 Clear();
                 EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_RIGHT_CLICK);
+                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_RIGHT_CLICK);
             }
         }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using ProjectK;
 using ProjectK.Base;
 
 namespace EditorK
@@ -41,6 +42,12 @@ namespace EditorK
             Net.Activate();
         }
 
+        //---------------------------------
+        // Remote calls
 
+        public void OnSceneMouseEvent(string evt)
+        {
+            ProjectK.Base.EventManager.Instance.FireEvent(evt);
+        }
     }
 }

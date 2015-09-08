@@ -7,7 +7,7 @@ namespace ProjectK.Base
 {
     public delegate void EventListener(params object[] args);
 
-    class EventManager
+    public class EventManager
     {
         private Dictionary<string, EventListener> listeners = new Dictionary<string, EventListener>();
         private Dictionary<IDisposable, List<ListenerInfo>> owners = new Dictionary<IDisposable, List<ListenerInfo>>();

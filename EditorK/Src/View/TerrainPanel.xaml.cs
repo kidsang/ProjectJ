@@ -28,10 +28,12 @@ namespace EditorK
         {
             InitializeComponent();
 
-            foreach (TerrainFlagInfo info in TerrainFlagInfo.Infos)
+            for (int i = 0; i < TerrainFlagInfo.Infos.Length; ++i)
             {
+                TerrainFlagInfo info = TerrainFlagInfo.Infos[i];
                 TerrainPanelEntry entry = new TerrainPanelEntry();
                 entry.Load(info);
+                entry.Index = i;
                 EntryGroup.Children.Add(entry);
 
                 entry.MouseDown += OnEntryMouseDown;
@@ -44,11 +46,19 @@ namespace EditorK
             if (entry == null)
                 return;
 
+            SelectEntry(entry.Index);
+        }
+
+        private void SelectEntry(int index)
+        {
+            TerrainPanelEntry entry = EntryGroup.Children[index] as TerrainPanelEntry;
+
             if (selectedEntry != null)
                 selectedEntry.Deselect();
 
             selectedEntry = entry;
-            selectedEntry.Select();
+            entry.Select();
+            DetailPanels.Instance.ShowPanel(DetailPanelType.Terrain, index);
         }
 
         private void OnToggleAllVisibleClick(object sender, RoutedEventArgs e)
@@ -71,6 +81,14 @@ namespace EditorK
 
             Properties.Settings.Default.TerrainVisibleFlags = visibleFlags;
             Properties.Settings.Default.Save();
+        }
+
+        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (IsVisible)
+                SelectEntry(0);
+            else
+                DetailPanels.Instance.HidePanel(DetailPanelType.Terrain);
         }
     }
 }

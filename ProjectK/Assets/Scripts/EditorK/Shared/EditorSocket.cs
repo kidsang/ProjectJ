@@ -17,6 +17,7 @@ namespace EditorK
     {
         protected enum SocketState
         {
+            Invalide,
             Init,
             Connecting,
             Connected,
@@ -32,7 +33,7 @@ namespace EditorK
         protected BinaryReader recvReader;
 
         protected Socket socket;
-        protected SocketState state = SocketState.Init;
+        protected SocketState state = SocketState.Invalide;
         protected IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 19158);
 
         public delegate void OnConnectedCallback();
@@ -57,6 +58,7 @@ namespace EditorK
 
         public virtual void Init(OnConnectedCallback onConnectedCallback, object remoteCallObject)
         {
+            state = SocketState.Init;
             this.onConnectedCallback = onConnectedCallback;
             if (remoteCallObject != null)
             {
@@ -87,6 +89,29 @@ namespace EditorK
 
         protected abstract void Connect();
 
+        private string FormatFuncName(string funcName, object[] args)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(funcName);
+            builder.Append("(");
+            if (args != null)
+            {
+                bool first = true;
+                foreach (var arg in args)
+                {
+                    if (!first)
+                        builder.Append(", ");
+                    if (arg == null)
+                        builder.Append("null");
+                    else
+                        builder.Append(arg);
+                    first = false;
+                }
+            }
+            builder.Append(")");
+            return builder.ToString();
+        }
+
         private void RecvMessage()
         {
             if (state != SocketState.Connected)
@@ -111,7 +136,7 @@ namespace EditorK
                     }
                     else
                     {
-                        Log.Debug("RecvRemoteCall:", funcName);
+                        Log.Debug("RecvRemoteCall:", FormatFuncName(funcName, args));
                         if (remoteCallObject != null)
                         {
                             MethodInfo methodInfo = remoteCallType.GetMethod(funcName);
@@ -149,7 +174,7 @@ namespace EditorK
             }
 
             if (funcName != __PING)
-                Log.Debug("RemoteCall:", funcName);
+                Log.Debug("RemoteCall:", FormatFuncName(funcName, args));
 
             try
             {

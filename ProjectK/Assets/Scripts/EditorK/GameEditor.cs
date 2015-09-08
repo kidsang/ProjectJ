@@ -40,13 +40,13 @@ namespace EditorK
             sceneRoot = gameObject;
             EditorConfig.Init();
 
+            Net = new EditorClient();
             ResourceManager.Init();
             SettingManager.Init(OnSettingLoadComplete);
         }
 
         private void OnSettingLoadComplete()
         {
-            Net = new EditorClient();
             Net.Init(OnConnectedCallback, SceneDataProxy.Instance);
         }
 
@@ -57,8 +57,7 @@ namespace EditorK
 
         private void Update()
         {
-            if (Net != null)
-                Net.Activate();
+            Net.Activate();
         }
 
         public void LoadMap(SceneSetting data, string path = null)

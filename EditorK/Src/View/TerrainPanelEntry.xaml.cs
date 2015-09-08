@@ -21,6 +21,7 @@ namespace EditorK
     /// </summary>
     public partial class TerrainPanelEntry : UserControl
     {
+        public int Index;
         public MapCellFlag Flag;
         public Color Color;
 

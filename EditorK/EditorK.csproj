@@ -59,8 +59,10 @@
     </ApplicationDefinition>
     <Compile Include="LinkSrc\EditorK\Shared\EditorClient.cs" />
     <Compile Include="LinkSrc\EditorK\Shared\EditorEvent.cs" />
+    <Compile Include="LinkSrc\EditorK\Shared\EditorMouseDataType.cs" />
     <Compile Include="LinkSrc\EditorK\Shared\EditorServer.cs" />
     <Compile Include="LinkSrc\EditorK\Shared\EditorSocket.cs" />
+    <Compile Include="LinkSrc\EditorK\Shared\EditorUtils.cs" />
     <Compile Include="LinkSrc\EditorK\Shared\FunctionPacker.cs" />
     <Compile Include="LinkSrc\ProjectK\Base\Disposable.cs" />
     <Compile Include="LinkSrc\ProjectK\Base\EventManager.cs" />
@@ -89,9 +91,15 @@
     <Compile Include="LinkSrc\ProjectK\Settings\SettingManager.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\TerrainFlagInfo.cs" />
     <Compile Include="Src\Data\RemoteDataProxy.cs" />
-    <Compile Include="Src\Logic\EditorUtils.cs" />
+    <Compile Include="Src\View\DetailPanels.xaml.cs">
+      <DependentUpon>DetailPanels.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Src\View\EditorMenuBar.xaml.cs">
       <DependentUpon>EditorMenuBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Src\View\IDetailPanel.cs" />
+    <Compile Include="Src\View\TerrainDetailPanel.xaml.cs">
+      <DependentUpon>TerrainDetailPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Src\View\TerrainPanel.xaml.cs">
       <DependentUpon>TerrainPanel.xaml</DependentUpon>
@@ -111,7 +119,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Src\View\DetailPanels.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Src\View\EditorMenuBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Src\View\TerrainDetailPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -144,8 +160,10 @@
     </EmbeddedResource>
     <None Include="LinkSrc\EditorK\Shared\EditorClient.cs.meta" />
     <None Include="LinkSrc\EditorK\Shared\EditorEvent.cs.meta" />
+    <None Include="LinkSrc\EditorK\Shared\EditorMouseDataType.cs.meta" />
     <None Include="LinkSrc\EditorK\Shared\EditorServer.cs.meta" />
     <None Include="LinkSrc\EditorK\Shared\EditorSocket.cs.meta" />
+    <None Include="LinkSrc\EditorK\Shared\EditorUtils.cs.meta" />
     <None Include="LinkSrc\EditorK\Shared\FunctionPacker.cs.meta" />
     <None Include="LinkSrc\ProjectK\Base\Disposable.cs.meta" />
     <None Include="LinkSrc\ProjectK\Base\EventManager.cs.meta" />
@@ -183,7 +201,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Src\Logic\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\UnityEngine.dll" />
   </ItemGroup>

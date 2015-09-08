@@ -70,5 +70,17 @@ namespace EditorK.Properties {
                 this["TerrainVisibleFlags"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TerrainBrushSize {
+            get {
+                return ((int)(this["TerrainBrushSize"]));
+            }
+            set {
+                this["TerrainBrushSize"] = value;
+            }
+        }
     }
 }

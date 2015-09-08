@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:k="clr-namespace:EditorK"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             IsVisibleChanged="OnIsVisibleChanged"
+             >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
