@@ -32,12 +32,12 @@ namespace EditorK
 
         private void DoLoadFile(SceneSetting data, string path = null)
         {
-            RemoteDataProxy.Instance.Load(data, path);
+            SceneDataProxy.Instance.Load(data, path);
         }
 
         private void DoSaveFile(string path)
         {
-            SceneSetting data = RemoteDataProxy.Instance.SceneData;
+            SceneSetting data = SceneDataProxy.Instance.Data;
             string jsonData = SimpleJson.SerializeObject(data);
             File.WriteAllText(path, jsonData);
         }
@@ -89,12 +89,12 @@ namespace EditorK
 
         private void CmdUndo(object sender, ExecutedRoutedEventArgs e)
         {
-            RemoteDataProxy.Instance.Undo();
+            SceneDataProxy.Instance.Undo();
         }
 
         private void CmdRedo(object sender, ExecutedRoutedEventArgs e)
         {
-            RemoteDataProxy.Instance.Redo();
+            SceneDataProxy.Instance.Redo();
         }
     }
 }

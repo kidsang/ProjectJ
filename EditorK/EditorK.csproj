@@ -90,7 +90,8 @@
     <Compile Include="LinkSrc\ProjectK\Settings\SceneSetting.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\SettingManager.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\TerrainFlagInfo.cs" />
-    <Compile Include="Src\Data\RemoteDataProxy.cs" />
+    <Compile Include="Src\Data\DataRepository.cs" />
+    <Compile Include="Src\Data\SceneDataProxy.cs" />
     <Compile Include="Src\View\DetailPanels.xaml.cs">
       <DependentUpon>DetailPanels.xaml</DependentUpon>
     </Compile>

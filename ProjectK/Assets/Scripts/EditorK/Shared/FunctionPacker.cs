@@ -68,9 +68,9 @@ namespace EditorK
                 writer.Write((byte)PackType.Double);
                 writer.Write((double)arg);
             }
-            else if (arg is RemoteTable)
+            else if (arg is InfoMap)
             {
-                RemoteTable table = arg as RemoteTable;
+                InfoMap table = arg as InfoMap;
                 writer.Write((byte)PackType.Table);
                 writer.Write(table.Count);
                 foreach (var pair in table)
@@ -132,7 +132,7 @@ namespace EditorK
                     break;
 
                 case PackType.Table:
-                    RemoteTable table = new RemoteTable();
+                    InfoMap table = new InfoMap();
                     int count = reader.ReadInt32();
                     for (int i = 0; i < count; ++i)
                     {
@@ -145,10 +145,5 @@ namespace EditorK
             }
             return arg;
         }
-    }
-
-    public class RemoteTable : Dictionary<string, object>
-    {
-
     }
 }

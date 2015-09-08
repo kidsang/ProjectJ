@@ -84,7 +84,7 @@ namespace EditorK
 
         private void OnUpdatePaths(object[] args)
         {
-            MapSetting data = SceneDataProxy.Instance.MapData;
+            MapSetting data = RemoteCall.Instance.MapData;
             int numPathDatas = data.Paths.Length;
             int numPathObjs = PathRoot.childCount;
 
@@ -115,7 +115,7 @@ namespace EditorK
         {
             InfoMap infos = EditorUtils.GetEventInfos(args);
             int index = (int)infos["index"];
-            MapSetting data = SceneDataProxy.Instance.MapData;
+            MapSetting data = RemoteCall.Instance.MapData;
             MapPathSetting pathData = data.Paths[index];
 
             List<Vector2> locations = new List<Vector2>(pathData.Waypoints.Length);
@@ -212,7 +212,7 @@ namespace EditorK
 
         private void OnUpdateTerrain(object[] args, bool showTerrain)
         {
-            MapSetting setting = SceneDataProxy.Instance.MapData;
+            MapSetting setting = RemoteCall.Instance.MapData;
             Dictionary<int, MapCellSetting> cellSettings = MapUtils.ArrayToDict(setting.Cells);
             for (short j = 0; j < CellCountY; ++j)
             {

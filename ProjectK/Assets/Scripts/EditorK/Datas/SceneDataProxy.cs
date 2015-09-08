@@ -56,7 +56,7 @@ namespace EditorK
         {
             string sceneDataJson = SimpleJson.SerializeObject(Data);
             string evt = repo.CurrentEvt;
-            RemoteTable infos = new RemoteTable();
+            InfoMap infos = new InfoMap();
             if (repo.CurrentInfos != null)
             {
                 foreach (var pair in repo.CurrentInfos)

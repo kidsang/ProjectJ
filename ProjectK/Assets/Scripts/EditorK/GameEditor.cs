@@ -47,7 +47,7 @@ namespace EditorK
 
         private void OnSettingLoadComplete()
         {
-            Net.Init(OnConnectedCallback, SceneDataProxy.Instance);
+            Net.Init(OnConnectedCallback, RemoteCall.Instance);
         }
 
         private void OnConnectedCallback()
