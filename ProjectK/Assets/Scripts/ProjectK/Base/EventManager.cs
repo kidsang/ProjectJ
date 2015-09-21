@@ -10,14 +10,14 @@ namespace ProjectK.Base
     public class EventManager
     {
         private Dictionary<string, EventListener> listeners = new Dictionary<string, EventListener>();
-        private Dictionary<IDisposable, List<ListenerInfo>> owners = new Dictionary<IDisposable, List<ListenerInfo>>();
+        private Dictionary<object, List<ListenerInfo>> owners = new Dictionary<object, List<ListenerInfo>>();
 
         private EventManager()
         {
             Log.Debug("EventManager Init.");
         }
 
-        public void Register(IDisposable owner, string type, EventListener listener)
+        public void Register(object owner, string type, EventListener listener)
         {
             Log.Assert(owner != null);
             Log.Assert(type != null);
@@ -34,7 +34,7 @@ namespace ProjectK.Base
                 owners[owner] = new List<ListenerInfo>() { new ListenerInfo(type, listener) };
         }
 
-        public void Unregister(IDisposable owner, string type, EventListener listener)
+        public void Unregister(object owner, string type, EventListener listener)
         {
             Log.Assert(owner != null);
             Log.Assert(type != null);
@@ -62,7 +62,7 @@ namespace ProjectK.Base
             }
         }
 
-        public void UnregisterAll(IDisposable owner)
+        public void UnregisterAll(object owner)
         {
             if (owners.ContainsKey(owner))
             {

@@ -70,25 +70,7 @@ namespace EditorK
 
         private void SetMouseData()
         {
-
-            //if (!ready)
-            //    return;
-
-            //InfoMap infos = new InfoMap();
-            //infos["flag"] = info.Flag;
-            //infos["size"] = (int)BrushSizeSlider.value;
-            //infos["erase"] = erasing;
-
-            //GameObject preview = Instantiate(FillMarkPrefab) as GameObject;
-            //preview.GetComponent<SpriteRenderer>().color = info.Color;
-            //float scale = (BrushSizeSlider.value - 0.5f) * Mathf.Sqrt(3);
-            //preview.transform.localScale = new Vector3(scale, scale);
-
-            //EditorMouse.Instance.Clear();
-            //EditorMouse.Instance.SetData(EditorMouseDataType.TerrainFill, infos, preview);
-
-            App.Instance.Net.RemoteCallParams("EditorMouseSetData", (int)EditorMouseDataType.TerrainFill,
-                info.Flag, (int)BrushSizeSlider.Value, erasing);
+            App.Instance.Net.RemoteCallParams("OnSetTerrainMouseData", (int)info.Flag, (int)BrushSizeSlider.Value, erasing);
         }
     }
 }

@@ -59,16 +59,18 @@ namespace EditorK
             IDetailPanel panel = panels[panelType];
             if (showingPanels.Contains(panel))
             {
+                panel.OnHide();
                 showingPanels.Remove(panel);
                 panelGroup.Children.Remove(panel as UIElement);
-                panel.OnHide();
             }
         }
 
         public void HidePanels()
         {
-            panelGroup.Children.RemoveRange(0, panelGroup.Children.Count);
+            foreach (var panel in showingPanels)
+                panel.OnHide();
             showingPanels.Clear();
+            panelGroup.Children.RemoveRange(0, panelGroup.Children.Count);
         }
     }
 }

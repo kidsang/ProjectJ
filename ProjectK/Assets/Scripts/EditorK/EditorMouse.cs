@@ -181,12 +181,14 @@ namespace EditorK
         {
             mouseIn = true;
             EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_IN);
+            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_IN);
         }
 
         public void OnSceneMouseOut()
         {
             mouseIn = false;
             EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_OUT);
+            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_OUT);
         }
 
         void Update()
@@ -225,6 +227,7 @@ namespace EditorK
             lastMousePosition = currentMousePosition;
 
             EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE);
+            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE);
         }
     }
 }
