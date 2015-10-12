@@ -15,28 +15,18 @@ namespace EditorK
         // no args
         public static string SCREEN_RESIZE = DefineEvent("SCREEN_RESIZE");
 
-        // no args
+        // 0 EditorMouseDataType dataType
+        // 1 object data
+        // 2 bool isHovered
+        // 3 int hoverLocationX
+        // 4 int hoverLocationY
         public static string SCENE_MOUSE_DOWN = DefineEvent("SCENE_MOUSE_DOWN");
-
-        // no args
         public static string SCENE_MOUSE_RIGHT_DOWN = DefineEvent("SCENE_MOUSE_RIGHT_DOWN");
-
-        // no args
         public static string SCENE_MOUSE_UP = DefineEvent("SCENE_MOUSE_UP");
-
-        // no args
         public static string SCENE_MOUSE_CLICK = DefineEvent("SCENE_MOUSE_CLICK");
-
-        // no args
         public static string SCENE_MOUSE_RIGHT_CLICK = DefineEvent("SCENE_MOUSE_RIGHT_CLICK");
-
-        // no args
         public static string SCENE_MOUSE_IN = DefineEvent("SCENE_MOUSE_IN");
-
-        // no args
         public static string SCENE_MOUSE_OUT = DefineEvent("SCENE_MOUSE_OUT");
-
-        // no args
         public static string SCENE_MOUSE_OVER_CELL_CHANGE = DefineEvent("SCENE_MOUSE_OVER_CELL_CHANGE");
 
         // no args

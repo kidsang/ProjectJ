@@ -53,16 +53,11 @@ namespace EditorK
 
         private void UpdateRemoteData()
         {
-            string sceneDataJson = SimpleJson.SerializeObject(Data);
             string evt = repo.CurrentEvt;
-            InfoMap infos = new InfoMap();
-            if (repo.CurrentInfos != null)
-            {
-                foreach (var pair in repo.CurrentInfos)
-                    infos[pair.Key] = pair.Value;
-            }
+            InfoMap infos = repo.CurrentInfos;
+            string sceneDataJson = SimpleJson.SerializeObject(Data);
 
-            App.Instance.Net.RemoteCallParams("OnSceneDataUpdate", sceneDataJson, evt, infos);
+            App.Instance.Net.RemoteCallParams("OnSceneDataUpdate", evt, infos, sceneDataJson);
         }
 
     //    public void AddPath(int startX, int startY, int endX, int endY)
@@ -139,46 +134,47 @@ namespace EditorK
     //        Modify(EditorEvent.MAP_UPDATE_PATH, infos);
     //    }
 
-    //    public void SetTerrainFlag(int x, int y, int radius, MapCellFlag flag, bool apply)
-    //    {
-    //        Dictionary<int, MapCellSetting> cellSettings = MapUtils.ArrayToDict(MapData.Cells);
-    //        EditorMap map = GameEditor.Instance.Map;
-    //        Vector2[] locations = MapUtils.Circle(x, y, radius);
-    //        foreach (Vector2 location in locations)
-    //        {
-    //            MapCell cell = map.GetCell(location);
-    //            if (cell == null)
-    //                continue;
+        public void SetTerrainFlag(int x, int y, int radius, MapCellFlag flag, bool apply)
+        {
+            Dictionary<int, MapCellSetting> cellSettings = MapUtils.ArrayToDict(MapData.Cells);
+            //EditorMap map = GameEditor.Instance.Map;
+            Vector2[] locations = MapUtils.Circle(x, y, radius);
+            foreach (Vector2 location in locations)
+            {
+                //MapCell cell = map.GetCell(location);
+                //if (cell == null)
+                //    continue;
 
-    //            if (apply)
-    //            {
-    //                MapCellSetting cellSetting;
-    //                if (!cellSettings.TryGetValue(cell.Key, out cellSetting))
-    //                {
-    //                    cellSetting = new MapCellSetting();
-    //                    cellSetting.X = cell.X;
-    //                    cellSetting.Y = cell.Y;
-    //                    cellSettings.Add(cell.Key, cellSetting);
-    //                }
-    //                EditorUtils.SetFlag(ref cellSetting.Flags, (int)flag, apply);
-    //            }
-    //            else
-    //            {
-    //                MapCellSetting cellSetting;
-    //                if (cellSettings.TryGetValue(cell.Key, out cellSetting))
-    //                {
-    //                    EditorUtils.SetFlag(ref cellSetting.Flags, (int)flag, apply);
-    //                    if (cellSetting.Flags == 0)
-    //                        cellSettings.Remove(cell.Key);
-    //                }
-    //            }
-    //        }
+                int cellKey = MapUtils.MakeKey((short)x, (short)y);
+                if (apply)
+                {
+                    MapCellSetting cellSetting;
+                    if (!cellSettings.TryGetValue(cellKey, out cellSetting))
+                    {
+                        cellSetting = new MapCellSetting();
+                        cellSetting.X = x;
+                        cellSetting.Y = y;
+                        cellSettings.Add(cellKey, cellSetting);
+                    }
+                    EditorUtils.SetFlag(ref cellSetting.Flags, (int)flag, apply);
+                }
+                else
+                {
+                    MapCellSetting cellSetting;
+                    if (cellSettings.TryGetValue(cellKey, out cellSetting))
+                    {
+                        EditorUtils.SetFlag(ref cellSetting.Flags, (int)flag, apply);
+                        if (cellSetting.Flags == 0)
+                            cellSettings.Remove(cellKey);
+                    }
+                }
+            }
 
-    //        MapData.Cells = MapUtils.DictToArray(cellSettings);
+            MapData.Cells = MapUtils.DictToArray(cellSettings);
 
-    //        InfoMap infos = new InfoMap();
-    //        infos["flag"] = flag;
-    //        Modify(EditorEvent.MAP_TERRAIN_UPDATE, infos);
-    //    }
+            InfoMap infos = new InfoMap();
+            infos["flag"] = flag;
+            Modify(EditorEvent.MAP_TERRAIN_UPDATE, infos);
+        }
     }
 }

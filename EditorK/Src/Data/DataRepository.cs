@@ -13,10 +13,10 @@ namespace EditorK
         public T Data { get; private set; }
         public bool Recording { get; set; }
 
-        public string CurrentEvt { get { return history[nextIndex - 1].Event; } }
-        public Dictionary<string, object> CurrentInfos { get { return history[nextIndex - 1].Infos; } }
+        public string CurrentEvt { get; private set; }
+        public InfoMap CurrentInfos { get; private set; }
 
-        public void New(T data, string evt, Dictionary<string, object> infos)
+        public void New(T data, string evt, InfoMap infos)
         {
             Clear(0);
             nextIndex = 1;
@@ -24,10 +24,12 @@ namespace EditorK
             history.Add(current);
             Data = Clone(current.Data);
 
+            CurrentEvt = evt;
+            CurrentInfos = infos;
             EventManager.Instance.FireEvent(evt, infos);
         }
 
-        public void Modify(string evt, Dictionary<string, object> infos)
+        public void Modify(string evt, InfoMap infos)
         {
             if (Recording)
             {
@@ -38,6 +40,8 @@ namespace EditorK
                 Data = Clone(current.Data);
             }
 
+            CurrentEvt = evt;
+            CurrentInfos = infos;
             EventManager.Instance.FireEvent(evt, infos);
         }
 
@@ -51,6 +55,8 @@ namespace EditorK
             HistoryData current = history[nextIndex - 1];
             Data = Clone(current.Data);
 
+            CurrentEvt = last.Event;
+            CurrentInfos = last.Infos;
             EventManager.Instance.FireEvent(last.Event, last.Infos);
         }
 
@@ -63,6 +69,8 @@ namespace EditorK
             Data = Clone(current.Data);
             nextIndex += 1;
 
+            CurrentEvt = current.Event;
+            CurrentInfos = current.Infos;
             EventManager.Instance.FireEvent(current.Event, current.Infos);
         }
 
@@ -79,7 +87,7 @@ namespace EditorK
 
         class HistoryData
         {
-            public HistoryData(T data, string evt, Dictionary<string, object> infos)
+            public HistoryData(T data, string evt, InfoMap infos)
             {
                 Data = data;
                 Event = evt;
@@ -88,7 +96,7 @@ namespace EditorK
 
             public T Data;
             public string Event;
-            public Dictionary<string, object> Infos;
+            public InfoMap Infos;
         }
     }
 }

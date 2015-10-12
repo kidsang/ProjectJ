@@ -53,7 +53,7 @@ namespace EditorK
                 writer.Write((byte)PackType.String);
                 writer.Write((string)arg);
             }
-            else if (arg is int)
+            else if ((arg is int) || (arg is Enum))
             {
                 writer.Write((byte)PackType.Int);
                 writer.Write((int)arg);

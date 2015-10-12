@@ -44,7 +44,10 @@ namespace EditorK
 
         public void OnHide()
         {
+            if (!IsInitialized)
+                return;
 
+            ClearMouseData();
         }
 
         private void OnFillEraseButtonClick(object sender, RoutedEventArgs e)
@@ -71,6 +74,20 @@ namespace EditorK
         private void SetMouseData()
         {
             App.Instance.Net.RemoteCallParams("OnSetTerrainMouseData", (int)info.Flag, (int)BrushSizeSlider.Value, erasing);
+        }
+
+        private void ClearMouseData()
+        {
+            if (info == null)
+                return;
+
+            MapCellFlag flag = info.Flag;
+            if (flag == MapCellFlag.None)
+                return;
+
+            int visibleFlags = Properties.Settings.Default.TerrainVisibleFlags;
+            bool visible = EditorUtils.HasFlag(visibleFlags, (int)flag);
+            App.Instance.Net.RemoteCallParams("OnClearTerrainMouseData", (int)info.Flag, visible);
         }
     }
 }

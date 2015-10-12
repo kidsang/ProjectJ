@@ -48,6 +48,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="Vectrosity">
+      <HintPath>Lib\Vectrosity.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -84,6 +87,10 @@
     <Compile Include="LinkSrc\ProjectK\Base\WWWResources\Resource.cs" />
     <Compile Include="LinkSrc\ProjectK\Base\WWWResources\ResourceLoader.cs" />
     <Compile Include="LinkSrc\ProjectK\Base\WWWResources\ResourceManager.cs" />
+    <Compile Include="LinkSrc\ProjectK\Maps\Map.cs" />
+    <Compile Include="LinkSrc\ProjectK\Maps\MapCell.cs" />
+    <Compile Include="LinkSrc\ProjectK\Maps\MapPath.cs" />
+    <Compile Include="LinkSrc\ProjectK\Maps\MapUtils.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\EntitySetting.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\MapSetting.cs" />
     <Compile Include="LinkSrc\ProjectK\Settings\MonsterEntitySetting.cs" />
@@ -187,6 +194,10 @@
     <None Include="LinkSrc\ProjectK\Base\WWWResources\Resource.cs.meta" />
     <None Include="LinkSrc\ProjectK\Base\WWWResources\ResourceLoader.cs.meta" />
     <None Include="LinkSrc\ProjectK\Base\WWWResources\ResourceManager.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Maps\Map.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Maps\MapCell.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Maps\MapPath.cs.meta" />
+    <None Include="LinkSrc\ProjectK\Maps\MapUtils.cs.meta" />
     <None Include="LinkSrc\ProjectK\Settings\EntitySetting.cs.meta" />
     <None Include="LinkSrc\ProjectK\Settings\MapSetting.cs.meta" />
     <None Include="LinkSrc\ProjectK\Settings\MonsterEntitySetting.cs.meta" />
@@ -207,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\UnityEngine.dll" />
+    <Content Include="Lib\Vectrosity.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

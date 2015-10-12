@@ -19,13 +19,15 @@ namespace EditorK
 
         private ResourceLoader loader = new ResourceLoader();
 
-        public void OnSceneDataUpdate(string jsonData, string evt, InfoMap infos)
+        public void OnSceneDataUpdate(string evt, InfoMap infos, string jsonData)
         {
             Data = SimpleJson.DeserializeObject<SceneSetting>(jsonData);
-            DataPath = (string)infos["path"];
 
             if (evt == EditorEvent.MAP_LOAD)
+            {
+                DataPath = (string)infos["path"];
                 GameEditor.Instance.LoadMap(Data, DataPath);
+            }
 
             EventManager.Instance.FireEvent(evt, infos);
         }
@@ -49,6 +51,14 @@ namespace EditorK
             infos["erase"] = erase;
             EditorMouse.Instance.Clear();
             EditorMouse.Instance.SetData(EditorMouseDataType.TerrainFill, infos, preview);
+
+            if (GameEditor.Instance.Map != null)
+                GameEditor.Instance.Map.ToggleShowTerrain(flag, true);
+        }
+
+        public void OnClearTerrainMouseData(MapCellFlag flag)
+        {
+
         }
     }
 }

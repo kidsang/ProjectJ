@@ -145,20 +145,17 @@ namespace EditorK
         {
             if (Input.GetMouseButtonDown(0))
             {
-                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_DOWN);
-                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_DOWN);
+                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_DOWN);
             }
             else if (Input.GetMouseButtonDown(1))
             {
-                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_RIGHT_DOWN);
-                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_RIGHT_DOWN);
+                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_RIGHT_DOWN);
             }
         }
 
         public void OnSceneMouseUp()
         {
-            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_UP);
-            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_UP);
+            FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_UP);
         }
 
         public void OnSceneMouseClick()
@@ -166,29 +163,25 @@ namespace EditorK
             if (Input.GetMouseButtonUp(0))
             {
                 SelectMapCell();
-                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_CLICK);
-                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_CLICK);
+                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_CLICK);
             }
             else if (Input.GetMouseButtonUp(1))
             {
                 Clear();
-                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_RIGHT_CLICK);
-                GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_RIGHT_CLICK);
+                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_RIGHT_CLICK);
             }
         }
 
         public void OnSceneMouseIn()
         {
             mouseIn = true;
-            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_IN);
-            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_IN);
+            FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_IN);
         }
 
         public void OnSceneMouseOut()
         {
             mouseIn = false;
-            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_OUT);
-            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_OUT);
+            FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_OUT);
         }
 
         void Update()
@@ -211,6 +204,7 @@ namespace EditorK
             //}
 
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            MapCell oldOverMapCell = lastOverMapcell;
             lastOverMapcell = map.GetCellByWorldXY(worldPoint);
             if (lastOverMapcell != null)
             {
@@ -226,8 +220,15 @@ namespace EditorK
 
             lastMousePosition = currentMousePosition;
 
-            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE);
-            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE);
+            if (oldOverMapCell != lastOverMapcell)
+                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE);
+        }
+
+        private void FireEventAndRemoteCall(string evt)
+        {
+            EventManager.Instance.FireEvent(evt);
+            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, evt, (int)DataType, Data,
+                OverMapCell != null, OverLocationX, OverLocationY);
         }
     }
 }

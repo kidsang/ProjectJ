@@ -14,5 +14,6 @@ if os.path.isdir("LinkSrc"):
 	os.system("rmdir /s /q LinkSrc")
 
 CreateLink("LinkSrc\\ProjectK\\Base", "..\\ProjectK\\Assets\\Scripts\\ProjectK\\Base")
+CreateLink("LinkSrc\\ProjectK\\Maps", "..\\ProjectK\\Assets\\Scripts\\ProjectK\\Maps")
 CreateLink("LinkSrc\\ProjectK\\Settings", "..\\ProjectK\\Assets\\Scripts\\ProjectK\\Settings")
 CreateLink("LinkSrc\\EditorK\\Shared", "..\\ProjectK\\Assets\\Scripts\\EditorK\\Shared")

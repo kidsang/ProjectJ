@@ -26,6 +26,12 @@ namespace EditorK
         private TerrainPanelEntry selectedEntry;
         private bool draging = false;
 
+        private EditorMouseDataType mouseDataType;
+        private InfoMap mouseData;
+        private bool isHovered;
+        private int hoverLocationX;
+        private int hoverLocationY;
+
         public TerrainPanel()
         {
             InitializeComponent();
@@ -93,7 +99,7 @@ namespace EditorK
                 EventManager.Instance.Register(this, EditorEvent.SCENE_MOUSE_DOWN, OnSceneMouseDown);
                 EventManager.Instance.Register(this, EditorEvent.SCENE_MOUSE_UP, OnSceneMouseUp);
                 EventManager.Instance.Register(this, EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE, OnSceneMouseOverCellChange);
-                EventManager.Instance.Register(this, EditorEvent.SCENE_MOUSE_RIGHT_CLICK, OnMouseRightClick);
+                EventManager.Instance.Register(this, EditorEvent.SCENE_MOUSE_RIGHT_CLICK, OnSceneMouseRightClick);
             }
             else
             {
@@ -102,15 +108,16 @@ namespace EditorK
             }
         }
 
-        private void OnMouseRightClick(object[] args)
+        private void OnSceneMouseRightClick(object[] args)
         {
-            DeselectEntry();
+            //DeselectEntry();
         }
 
         private void OnSceneMouseDown(object[] args)
         {
-            EditorMouse mouse = EditorMouse.Instance;
-            if (mouse.DataType != EditorMouseDataType.TerrainFill)
+            extractArgs(args);
+
+            if (mouseDataType != EditorMouseDataType.TerrainFill)
                 return;
 
             draging = true;
@@ -133,17 +140,28 @@ namespace EditorK
             if (!draging)
                 return;
 
-            EditorMouse mouse = EditorMouse.Instance;
-            MapCell cell = mouse.OverMapCell;
-            if (cell == null)
+            extractArgs(args);
+
+            if (!isHovered)
                 return;
 
-            InfoMap infos = mouse.Data as InfoMap;
-            MapCellFlag flag = (MapCellFlag)infos["flag"];
-            int size = (int)infos["size"];
-            bool erase = (bool)infos["erase"];
+            MapCellFlag flag = (MapCellFlag)mouseData["flag"];
+            int size = (int)mouseData["size"];
+            bool erase = (bool)mouseData["erase"];
 
-            SceneDataProxy.Instance.SetTerrainFlag(cell.X, cell.Y, size - 1, flag, !erase);
+            SceneDataProxy.Instance.SetTerrainFlag(hoverLocationX, hoverLocationY, size - 1, flag, !erase);
+        }
+
+        private void extractArgs(object[] args)
+        {
+            if (args == null)
+                return;
+
+            mouseDataType = (EditorMouseDataType)args[0];
+            mouseData = (InfoMap)args[1];
+            isHovered = (bool)args[2];
+            hoverLocationX = (int)args[3];
+            hoverLocationY = (int)args[4];
         }
     }
 }

@@ -45,9 +45,9 @@ namespace EditorK
         //---------------------------------
         // Remote calls
 
-        public void OnSceneMouseEvent(string evt)
+        public void OnSceneMouseEvent(string evt, int dataType, object data, bool isHovered, int hoverLocationX, int hoverLocationY)
         {
-            ProjectK.Base.EventManager.Instance.FireEvent(evt);
+            ProjectK.Base.EventManager.Instance.FireEvent(evt, dataType, data, isHovered, hoverLocationX, hoverLocationY);
         }
     }
 }
