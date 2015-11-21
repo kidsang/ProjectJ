@@ -22,6 +22,9 @@ namespace ProjectK
         public int TemplateID { get; private set; }
         public EntityType Type { get; protected set; }
 
+        public Dictionary<Type, GameComp> CompDict { get; private set; }
+        public List<GameComp> CompList { get; private set; }
+
         public virtual void Init(ResourceLoader loader, EntitySetting template)
         {
             Loader = loader;
@@ -38,7 +41,50 @@ namespace ProjectK
 
         public virtual void Activate(Scene scene)
         {
+        }
 
+        /// <summary>
+        /// 添加一个组件，并自动调用comp.start()
+        /// </summary>
+        public void AddComp<T>() where T: GameComp, new()
+        {
+            Type type = typeof(T);
+            if (CompDict.ContainsKey(type))
+            {
+                Log.Error("重复添加组件！ Entity:", this, "CompType:", type);
+                return;
+            }
+
+            GameComp comp = new T();
+            CompDict[type] = comp;
+            CompList.Add(comp);
+            comp.Start();
+        }
+
+        /// <summary>
+        /// 获取一个组件
+        /// </summary>
+        public T GetComp<T>() where T: GameComp
+        {
+            Type type = typeof(T);
+            GameComp comp;
+            CompDict.TryGetValue(type, out comp);
+            return (T)comp;
+        }
+
+        /// <summary>
+        /// 删除一个组件，并自动调用comp.destroy()
+        /// </summary>
+        public void DelComp<T>() where T : GameComp
+        {
+            Type type = typeof(T);
+            GameComp comp;
+            if (!CompDict.TryGetValue(type, out comp))
+                return;
+
+            comp.Destroy();
+            CompDict.Remove(type);
+            CompList.Remove(comp);
         }
 
         public Vector2 Location
