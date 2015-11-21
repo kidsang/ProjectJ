@@ -148,7 +148,7 @@ namespace ProjectK
 
         public void ColorTransform(float r = 1, float g = 1, float b = 1, float a = 1)
         {
-            (renderer as SpriteRenderer).color = new Color(r, g, b, a);
+            (GetComponent<Renderer>() as SpriteRenderer).color = new Color(r, g, b, a);
         }
 
         public void ToWhite()
