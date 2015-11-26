@@ -10,7 +10,7 @@ namespace ProjectK
     {
         private static SceneManager instance;
 
-        private Scene current;
+        public Scene Scene { get; private set; }
 
         public static void Init()
         {
@@ -27,24 +27,24 @@ namespace ProjectK
 
         public void SwitchTo()
         {
-            if (current != null)
-                current.Dispose();
+            if (Scene != null)
+                Scene.Dispose();
 
             GameObject sceneRoot = new GameObject("SceneRoot");
-            current = sceneRoot.AddComponent<Scene>();
-            current.Init();
+            Scene = sceneRoot.AddComponent<Scene>();
+            Scene.Init();
 
             // TODO:
-            current.Load("Settings/test.map");
-            current.StartScene();
+            Scene.Load("Settings/test.map");
+            Scene.StartScene();
 
             Camera camera = Camera.main;
             float cameraHalfHeight = camera.orthographicSize;
             float cameraHalfWidth = cameraHalfHeight * camera.aspect;
             float left = cameraHalfWidth;
-            float right = current.Map.Width - cameraHalfWidth;
+            float right = Scene.Map.Width - cameraHalfWidth;
             float bottom = cameraHalfHeight;
-            float top = current.Map.Height - cameraHalfHeight;
+            float top = Scene.Map.Height - cameraHalfHeight;
 
             Vector3 cameraPosition = camera.transform.position;
             if (left > right)

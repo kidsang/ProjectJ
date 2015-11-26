@@ -24,6 +24,8 @@ namespace ProjectK
 
         public Dictionary<Type, GameComp> CompDict { get; private set; }
         public List<GameComp> CompList { get; private set; }
+        public AttrComp AttrComp { get; private set; }
+        public NaviComp NaviComp { get; private set; }
 
         public virtual void Init(ResourceLoader loader, EntitySetting template)
         {
@@ -39,14 +41,27 @@ namespace ProjectK
             collider.isTrigger = true;
         }
 
+        public virtual void Start()
+        {
+            AttrComp = GetComp<AttrComp>();
+            NaviComp = GetComp<NaviComp>();
+
+            int numComps = CompList.Count;
+            for (int i = 0; i < numComps; ++i)
+            {
+                GameComp comp = CompList[i];
+                comp.Start();
+            }
+        }
+
         public virtual void Activate(Scene scene)
         {
         }
 
         /// <summary>
-        /// 添加一个组件，并自动调用comp.start()
+        /// 添加一个组件
         /// </summary>
-        public void AddComp<T>() where T: GameComp, new()
+        public void AddComp<T>(bool start = false) where T: GameComp, new()
         {
             Type type = typeof(T);
             if (CompDict.ContainsKey(type))
@@ -58,7 +73,10 @@ namespace ProjectK
             GameComp comp = new T();
             CompDict[type] = comp;
             CompList.Add(comp);
-            comp.Start();
+            comp.Entity = this;
+
+            if (start)
+                comp.Start();
         }
 
         /// <summary>
@@ -82,9 +100,9 @@ namespace ProjectK
             if (!CompDict.TryGetValue(type, out comp))
                 return;
 
-            comp.Destroy();
             CompDict.Remove(type);
             CompList.Remove(comp);
+            comp.Destroy();
         }
 
         public Vector2 Location

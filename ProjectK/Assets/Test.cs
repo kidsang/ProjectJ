@@ -10,8 +10,8 @@ namespace ProjectK
     {
         void Start()
         {
-            Game.Init();
-            Log.Info("Test!");
+            //Game.Init();
+            //Log.Info("Test!");
 
             //Time.timeScale = 0;
         }
@@ -25,6 +25,15 @@ namespace ProjectK
             //    Log.Info("Time:", Time.time);
             //    lastTime = Time.time;
             //}
+
+            Vector3 position = Input.mousePosition;
+
+            Vector2 v1 = Vector2.right;
+            Vector2 v2 = Camera.main.ScreenToViewportPoint(position) - new Vector3(0.5f, 0.5f, 0);
+
+            float angle = MapUtils.Angle(v2);
+            float degree = angle * 180 / Mathf.PI;
+            Log.Info(angle, degree);
         }
 
         //private float lastFixedTime;

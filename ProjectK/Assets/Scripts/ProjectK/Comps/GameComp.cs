@@ -49,7 +49,7 @@ namespace ProjectK
         /// </summary>
         virtual public void Destroy()
         {
-
+            Entity = null;
         }
 
         /// <summary>

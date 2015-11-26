@@ -55,4 +55,26 @@ namespace ProjectK
         /// </summary>
         Total,
     }
+
+    /// <summary>
+    /// 范围找怪形状
+    /// </summary>
+    public enum CollectEntityShape
+    {
+        /// <summary>
+        /// 圆形
+        /// </summary>
+        Circle,
+
+        /// <summary>
+        /// 扇形
+        /// </summary>
+        Fan,
+
+        /// <summary>
+        /// 带旋转的矩形
+        /// </summary>
+        Rectangle,
+
+    }
 }

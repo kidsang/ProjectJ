@@ -9,6 +9,7 @@ namespace ProjectK
     public static class MapUtils
     {
         public static readonly float Radius = 1.0f;
+        public static readonly float PI2 = Mathf.PI * 2;
         public static readonly float Sqrt3 = Mathf.Sqrt(3.0f);
         public static readonly Vector2[] Directions = {
             new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1),
@@ -183,6 +184,63 @@ namespace ProjectK
                 Ring(x, y, i, ret, ref index);
 
             return ret;
+        }
+
+        /// <summary>
+        /// 求v1与v2的夹角，返回角度范围[0, 2PI)
+        /// </summary>
+        public static float AngleBetween(Vector2 v1, Vector2 v2)
+        {
+            return AngleBetween(v1.x, v1.y, v2.x, v2.y);
+        }
+
+        /// <summary>
+        /// 求v1(x1, y1)与v2(x2, y2)的夹角，返回角度范围[0, 2PI)
+        /// </summary>
+        public static float AngleBetween(float x1, float y1, float x2, float y2)
+        {
+            float dot = x1 * x2 + y1 * y2;
+            float det = x1 * y2 + x2 * y1;
+            return Angle(dot, det);
+        }
+
+        /// <summary>
+        /// 求v与x轴正方向的夹角，返回角度范围[0, 2PI)
+        /// </summary>
+        public static float Angle(Vector2 v)
+        {
+            return Angle(v.x, v.y);
+        }
+
+        /// <summary>
+        /// 求v(x, y)与x轴正方向的夹角，返回角度范围[0, 2PI)
+        /// </summary>
+        public static float Angle(float x, float y)
+        {
+            float angle = Mathf.Atan2(y, x);
+            angle = NormalizeAngle(angle);
+            return angle;
+        }
+
+        /// <summary>
+        /// 将angle规范至[0, 2PI)内
+        /// </summary>
+        public static float NormalizeAngle(float angle)
+        {
+            while (angle < 0) angle += PI2;
+            while (angle >= PI2) angle -= PI2;
+            return angle;
+        }
+
+        /// <summary>
+        /// 返回两夹角之间的差值，范围[0, PI)
+        /// </summary>
+        public static float DeltaAngle(float angle1, float angle2)
+        {
+            float diff = angle1 - angle2;
+            while (diff <= -Mathf.PI) diff += PI2;
+            while (diff > Mathf.PI) diff -= PI2;
+            return Mathf.Abs(diff);
         }
 
         public static Dictionary<int, MapCellSetting> ArrayToDict(MapCellSetting[] cellSettings)

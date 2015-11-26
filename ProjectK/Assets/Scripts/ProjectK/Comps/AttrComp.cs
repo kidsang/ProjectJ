@@ -10,24 +10,11 @@ namespace ProjectK
     /// </summary>
     public class AttrComp : GameComp
     {
+        #region 生命值 hp maxHp maxHpBase maxHpAddRate
         private double hp;
         private double maxHp;
         private double maxHpBase;
         private double maxHpAddRate;
-
-        private double atk;
-        private double atkBase;
-        private double atkAddRate;
-
-        private double def;
-        private double defBase;
-        private double defAddRate;
-
-        private List<DamageType> atkTypes = new List<DamageType>();
-        private DamageType defType;
-
-        public delegate void PropChangeCallback(double newValue);
-        private Dictionary<string, List<PropChangeCallback>> propChangeCallbackDict = new Dictionary<string, List<PropChangeCallback>>();
 
         /// <summary>
         /// 当前血量
@@ -93,6 +80,12 @@ namespace ProjectK
                 MaxHp = maxHpBase * (1 + maxHpAddRate);
             }
         }
+        #endregion
+
+        # region 攻击力 atk atkBase atkAddRate
+        private double atk;
+        private double atkBase;
+        private double atkAddRate;
 
         /// <summary>
         /// 攻击力
@@ -138,6 +131,12 @@ namespace ProjectK
                 Atk = atkBase * (1 + atkAddRate);
             }
         }
+        # endregion
+
+        # region 防御力 def defBase defAddRate
+        private double def;
+        private double defBase;
+        private double defAddRate;
 
         /// <summary>
         /// 防御力
@@ -183,6 +182,118 @@ namespace ProjectK
                 Def = defBase * (1 + defAddRate);
             }
         }
+        # endregion
+
+        # region 攻速 atkSpeed atkSpeedBase atkSpeedAddRate
+        private double atkSpeed;
+        private double atkSpeedBase;
+        private double atkSpeedAddRate;
+
+        /// <summary>
+        /// 攻速
+        /// 攻速最低为0
+        /// </summary>
+        public double AtkSpeed
+        {
+            get { return atkSpeed; }
+            set
+            {
+                if (value < 0)
+                    value = 0;
+                if (value == atkSpeed)
+                    return;
+                atkSpeed = value;
+                OnPropChange("AtkSpeed", value);
+            }
+        }
+
+        /// <summary>
+        /// 攻速基础值
+        /// </summary>
+        public double AtkSpeedBase
+        {
+            get { return atkSpeedBase; }
+            set
+            {
+                if (value == atkSpeedBase)
+                    return;
+                atkSpeedBase = value;
+                AtkSpeed = atkSpeedBase * (1 + atkSpeedAddRate);
+            }
+        }
+
+        /// <summary>
+        /// 攻速百分比加成
+        /// </summary>
+        public double AtkSpeedAddRate
+        {
+            get { return atkSpeedAddRate; }
+            set
+            {
+                if (value == atkSpeedAddRate)
+                    return;
+                atkSpeedAddRate = value;
+                AtkSpeed = atkSpeedBase * (1 + atkSpeedAddRate);
+            }
+        }
+        # endregion
+
+        # region 攻击范围 atkRange atkRangeBase atkRangeAddRate
+        private float atkRange;
+        private float atkRangeBase;
+        private float atkRangeAddRate;
+
+        /// <summary>
+        /// 攻击范围
+        /// </summary>
+        public float AtkRange
+        {
+            get { return atkRange; }
+            set
+            {
+                if (value < 0)
+                    value = 0;
+                if (value == atkRange)
+                    return;
+                atkRange = value;
+                OnPropChange("AtkRange", value);
+            }
+        }
+
+        /// <summary>
+        /// 攻击范围基础值
+        /// </summary>
+        public float AtkRangeBase
+        {
+            get { return atkRangeBase; }
+            set
+            {
+                if (value == atkRangeBase)
+                    return;
+                atkRangeBase = value;
+                AtkRange = atkRangeBase * (1 + atkRangeAddRate);
+            }
+        }
+
+        /// <summary>
+        /// 攻击范围百分比加成
+        /// </summary>
+        public float AtkRangeAddRate
+        {
+            get { return atkRangeAddRate; }
+            set
+            {
+                if (value == atkRangeAddRate)
+                    return;
+                atkRangeAddRate = value;
+                AtkRange = atkRangeBase * (1 + atkRangeAddRate);
+            }
+        }
+        # endregion
+
+        # region 伤害类型 atkTypes defType
+        private List<DamageType> atkTypes = new List<DamageType>();
+        private DamageType defType;
 
         /// <summary>
         /// 伤害类型
@@ -202,6 +313,10 @@ namespace ProjectK
             get { return defType; }
             set { defType = value; }
         }
+        # endregion
+
+        public delegate void PropChangeCallback(double newValue);
+        private Dictionary<string, List<PropChangeCallback>> propChangeCallbackDict = new Dictionary<string, List<PropChangeCallback>>();
 
         /// <summary>
         /// 注册属性变化时的回调函数
