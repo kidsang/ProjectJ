@@ -291,6 +291,60 @@ namespace ProjectK
         }
         # endregion
 
+        # region 移动速度 moveSpeed moveSpeedBase moveSpeedAddRate
+        private double moveSpeed;
+        private double moveSpeedBase;
+        private double moveSpeedAddRate;
+
+        /// <summary>
+        /// 移动速度
+        /// 移动速度最低为0
+        /// </summary>
+        public double MoveSpeed
+        {
+            get { return moveSpeed; }
+            set
+            {
+                if (value < 0)
+                    value = 0;
+                if (value == moveSpeed)
+                    return;
+                moveSpeed = value;
+                OnPropChange("MoveSpeed", value);
+            }
+        }
+
+        /// <summary>
+        /// 移动速度基础值
+        /// </summary>
+        public double MoveSpeedBase
+        {
+            get { return moveSpeedBase; }
+            set
+            {
+                if (value == moveSpeedBase)
+                    return;
+                moveSpeedBase = value;
+                MoveSpeed = moveSpeedBase * (1 + moveSpeedAddRate);
+            }
+        }
+
+        /// <summary>
+        /// 移动速度百分比加成
+        /// </summary>
+        public double MoveSpeedAddRate
+        {
+            get { return moveSpeedAddRate; }
+            set
+            {
+                if (value == moveSpeedAddRate)
+                    return;
+                moveSpeedAddRate = value;
+                MoveSpeed = moveSpeedBase * (1 + moveSpeedAddRate);
+            }
+        }
+        # endregion
+
         # region 伤害类型 atkTypes defType
         private List<DamageType> atkTypes = new List<DamageType>();
         private DamageType defType;

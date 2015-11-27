@@ -17,19 +17,12 @@ namespace ProjectK
         public SceneEntity Entity { get; set; }
 
         /// <summary>
-        /// 组件名
-        /// </summary>
-        public string Name { get; private set; }
-
-        /// <summary>
         /// 组件是否已被初始化
         /// </summary>
         public bool Started { get; private set; }
 
         public GameComp()
         {
-            Type type = GetType();
-            Name = type.Name;
         }
 
         /// <summary>
@@ -55,7 +48,7 @@ namespace ProjectK
         /// <summary>
         /// 每帧都会调用
         /// </summary>
-        virtual public void Update()
+        virtual public void Activate()
         {
 
         }

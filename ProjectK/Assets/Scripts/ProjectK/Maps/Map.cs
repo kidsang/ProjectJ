@@ -326,5 +326,50 @@ namespace ProjectK
             for (int i = Paths.Count - 1; i >= 0; --i)
                 ToggleShowPath(i, show, update);
         }
+
+        /// <summary>
+        /// 更新SceneEntity所属的MapCell信息
+        /// </summary>
+        public void UpdateSceneEntityCell(SceneEntity sceneEntity)
+        {
+            if (sceneEntity.Cell != null)
+                sceneEntity.Cell.RemoveEntity(sceneEntity);
+
+            MapCell cell = GetCell(sceneEntity.Location);
+            if (cell != null)
+                cell.AddEntity(sceneEntity);
+            sceneEntity.Cell = cell;
+        }
+
+        public void Update()
+        {
+            UpdateCameraPosition();
+        }
+
+        private void UpdateCameraPosition()
+        {
+            Camera camera = Camera.main;
+            float cameraHalfHeight = camera.orthographicSize;
+            float cameraHalfWidth = cameraHalfHeight * camera.aspect;
+            float left = cameraHalfWidth;
+            float right = Width - cameraHalfWidth;
+            float bottom = cameraHalfHeight;
+            float top = Height - cameraHalfHeight;
+
+            Vector3 cameraPosition = camera.transform.position;
+            if (left > right)
+                cameraPosition.x = (left + right) / 2;
+            else if (cameraPosition.x < left)
+                cameraPosition.x = left;
+            else if (cameraPosition.x > right)
+                cameraPosition.x = right;
+            if (bottom > top)
+                cameraPosition.y = (bottom + top) / 2;
+            else if (cameraPosition.y < bottom)
+                cameraPosition.y = bottom;
+            else if (cameraPosition.y > top)
+                cameraPosition.y = top;
+            camera.transform.position = cameraPosition;
+        }
     }
 }

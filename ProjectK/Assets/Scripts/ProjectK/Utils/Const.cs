@@ -72,9 +72,13 @@ namespace ProjectK
         Fan,
 
         /// <summary>
-        /// 带旋转的矩形
+        /// 以左边中点为圆心，带旋转的矩形
         /// </summary>
         Rectangle,
 
+        /// <summary>
+        /// 圆环
+        /// </summary>
+        Ring,
     }
 }

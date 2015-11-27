@@ -11,6 +11,14 @@ namespace ProjectK
         public static readonly float Radius = 1.0f;
         public static readonly float PI2 = Mathf.PI * 2;
         public static readonly float Sqrt3 = Mathf.Sqrt(3.0f);
+
+        public static readonly Vector2 Vector2X = new Vector2(1, 0);
+        public static readonly Vector2 Vector2Y = new Vector2(0, 1);
+
+        public static readonly Vector3 Vector3X = new Vector3(1, 0, 0);
+        public static readonly Vector3 Vector3Y = new Vector3(0, 1, 0);
+        public static readonly Vector3 Vector3Z = new Vector3(0, 0, 1);
+
         public static readonly Vector2[] Directions = {
             new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1),
             new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 1)

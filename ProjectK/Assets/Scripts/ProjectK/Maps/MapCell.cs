@@ -28,10 +28,17 @@ namespace ProjectK
         public static readonly int NumNeighbours = 6;
         public MapCell[] Neighbours { get; private set; }
 
-        // implements IPriorityQueueNode 
+        /// <summary>
+        /// 该格子上所有的SceneEntity
+        /// </summary>
+        public List<SceneEntity> SceneEntities;
+
+        #region implements IPriorityQueueNode 
         public double Priority { get; set; }
         public long InsertionIndex { get; set; }
         public int QueueIndex { get; set; }
+        #endregion
+
 
         internal void Init(Map map, short x, short y)
         {
@@ -47,6 +54,7 @@ namespace ProjectK
             CellObject.transform.localPosition = new Vector3(CenterX, CenterY);
 
             Neighbours = new MapCell[NumNeighbours];
+            SceneEntities = new List<SceneEntity>();
         }
 
         internal void Load(MapCellSetting setting)
@@ -62,6 +70,7 @@ namespace ProjectK
             Map = null;
             Loader = null;
             Neighbours = null;
+            SceneEntities = null;
 
             base.OnDispose();
         }
@@ -144,6 +153,17 @@ namespace ProjectK
         {
             get { return HasFlag(MapCellFlag.CanBuild); }
             set { SetFlag(MapCellFlag.CanBuild, value); }
+        }
+
+        public void AddEntity(SceneEntity entity)
+        {
+            if (!SceneEntities.Contains(entity))
+                SceneEntities.Add(entity);
+        }
+
+        public void RemoveEntity(SceneEntity entity)
+        {
+            SceneEntities.Remove(entity);
         }
 
         public void ColorTransform(float r = 1, float g = 1, float b = 1, float a = 1)

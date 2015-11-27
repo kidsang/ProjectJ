@@ -50,7 +50,8 @@ namespace ProjectK
         private void UpateEntityPosition()
         {
             Entity.transform.position = position;
-            // TODO: update cell
+            if (Entity.Scene != null)
+                Entity.Scene.Map.UpdateSceneEntityCell(Entity);
         }
     }
 }

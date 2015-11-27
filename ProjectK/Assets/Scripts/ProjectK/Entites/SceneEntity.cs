@@ -20,7 +20,18 @@ namespace ProjectK
         public ResourceLoader Loader { get; private set; }
         public EntitySetting Template { get; private set; }
         public int TemplateID { get; private set; }
+        public uint UID { get; set; }
         public EntityType Type { get; protected set; }
+
+        /// <summary>
+        /// 该Entity所在场景，由Scene.AddEntityToScene()设置
+        /// </summary>
+        public Scene Scene { get; set; }
+
+        /// <summary>
+        /// 该Entity所在的格子，由Map.UpdateSceneEntityCell()设置
+        /// </summary>
+        public MapCell Cell { get; set; }
 
         public Dictionary<Type, GameComp> CompDict { get; private set; }
         public List<GameComp> CompList { get; private set; }
@@ -39,13 +50,29 @@ namespace ProjectK
             BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
             collider.size = new Vector2(Template.Width, Template.Height);
             collider.isTrigger = true;
+
+            CompDict = new Dictionary<Type, GameComp>();
+            CompList = new List<GameComp>();
+            // 所有人都有AttrComp
+            AttrComp = AddComp<AttrComp>();
+            // 所有人都有NaviComp
+            NaviComp = AddComp<NaviComp>();
+        }
+
+        override protected void OnDispose()
+        {
+            if (CompList != null)
+            {
+                for (int i = CompList.Count - 1; i >= 0; --i)
+                    CompList[i].Destroy();
+                CompList = null;
+            }
+
+            base.OnDispose();
         }
 
         public virtual void Start()
         {
-            AttrComp = GetComp<AttrComp>();
-            NaviComp = GetComp<NaviComp>();
-
             int numComps = CompList.Count;
             for (int i = 0; i < numComps; ++i)
             {
@@ -54,20 +81,26 @@ namespace ProjectK
             }
         }
 
-        public virtual void Activate(Scene scene)
+        public virtual void Activate()
         {
+            int numComps = CompList.Count;
+            for (int i = 0; i < numComps; ++i)
+            {
+                GameComp comp = CompList[i];
+                comp.Activate();
+            }
         }
 
         /// <summary>
         /// 添加一个组件
         /// </summary>
-        public void AddComp<T>(bool start = false) where T: GameComp, new()
+        public T AddComp<T>(bool start = false) where T: GameComp, new()
         {
             Type type = typeof(T);
             if (CompDict.ContainsKey(type))
             {
                 Log.Error("重复添加组件！ Entity:", this, "CompType:", type);
-                return;
+                return null;
             }
 
             GameComp comp = new T();
@@ -77,6 +110,7 @@ namespace ProjectK
 
             if (start)
                 comp.Start();
+            return (T)comp;
         }
 
         /// <summary>
@@ -105,9 +139,16 @@ namespace ProjectK
             comp.Destroy();
         }
 
+        public Vector3 Position
+        {
+            get { return NaviComp.Position; }
+            set { NaviComp.Position = value; }
+        }
+
         public Vector2 Location
         {
-            get { return MapUtils.PositionToLocation(gameObject.transform.position); }
+            get { return NaviComp.Location; }
+            set { NaviComp.Location = value; }
         }
     }
 }

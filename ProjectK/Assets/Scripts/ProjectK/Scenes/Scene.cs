@@ -20,10 +20,9 @@ namespace ProjectK
         public float Time { get; private set; }
         public float DeltaTime { get; private set; }
 
-        private List<MonsterEntity> monsters = new List<MonsterEntity>();
-
         private uint nextEntityUid = 1;
-        private Dictionary<uint, SceneEntity> entities = new Dictionary<uint, SceneEntity>();
+        public Dictionary<uint, SceneEntity> EntityDict { get; private set; }
+        public List<SceneEntity> EntityList { get; private set; }
 
         public void Init()
         {
@@ -36,16 +35,19 @@ namespace ProjectK
             Map = mapRoot.AddComponent<Map>();
             Map.Init(loader);
 
+            EntityDict = new Dictionary<uint, SceneEntity>();
+            EntityList = new List<SceneEntity>();
             SpawnManager = new SpawnManager();
         }
 
         protected override void OnDispose()
         {
-            if (monsters != null)
+            if (EntityDict != null)
             {
-                foreach (var monster in monsters)
-                    monster.Dispose();
-                monsters = null;
+                foreach (var sceneEntity in EntityDict.Values)
+                    sceneEntity.Dispose();
+                EntityDict = null;
+                EntityList = null;
             }
 
             if (Map != null)
@@ -99,22 +101,74 @@ namespace ProjectK
 
             SpawnManager.Activate(this, Time);
 
-            foreach (var monster in monsters)
-                monster.Activate(this);
+            for (int i = EntityList.Count - 1; i >= 0; --i)
+            {
+                SceneEntity entity = EntityList[i];
+                entity.Activate();
+            }
         }
+
+        #region 创建SceneEntity接口
 
         public void CreateMonster(int pathIndex, int templateID, int count)
         {
-            MapPath path = Map.Paths[pathIndex];
-            for (int i = 0; i < count; ++i)
+            //MapPath path = Map.Paths[pathIndex];
+            //for (int i = 0; i < count; ++i)
+            //{
+            //    MonsterEntity monster = SceneEntityManager.Create<MonsterEntity>(loader, templateID);
+            //    monster.gameObject.transform.SetParent(sceneRoot.transform);
+            //    monster.gameObject.transform.position = path.StartPosition;
+            //    monster.SetPath(path);
+            //    monsters.Add(monster);
+            //}
+        }
+
+        public MonsterEntity CreateMonsterEntity(int templateID)
+        {
+            return CreateSceneEntity<MonsterEntity>(templateID);
+        }
+
+        public T CreateSceneEntity<T>(int templateID) where T : SceneEntity
+        {
+            T sceneEntity = SceneEntityManager.Create<T>(loader, templateID);
+            sceneEntity.UID = nextEntityUid++;
+            EntityDict[sceneEntity.UID] = sceneEntity;
+            EntityList.Add(sceneEntity);
+            return sceneEntity;
+        }
+
+        public void AddEntityToScene(SceneEntity sceneEntity, Vector3? position = null)
+        {
+            if (position != null)
+                sceneEntity.NaviComp.Position = position.Value;
+
+            sceneEntity.gameObject.transform.SetParent(sceneRoot.transform);
+            Map.UpdateSceneEntityCell(sceneEntity);
+            sceneEntity.Scene = this;
+        }
+
+        public void DestroyEntity(SceneEntity sceneEntity)
+        {
+            if (EntityDict.ContainsKey(sceneEntity.UID))
             {
-                MonsterEntity monster = SceneEntityManager.Create<MonsterEntity>(loader, templateID);
-                monster.gameObject.transform.SetParent(sceneRoot.transform);
-                monster.gameObject.transform.position = path.StartPosition;
-                monster.SetPath(path);
-                monsters.Add(monster);
+                EntityDict.Remove(sceneEntity.UID);
+                EntityList.Remove(sceneEntity);
+            }
+            sceneEntity.Dispose();
+        }
+
+        public void DestroyEntity(uint entityUID)
+        {
+            SceneEntity sceneEntity;
+            if (EntityDict.TryGetValue(entityUID, out sceneEntity))
+            {
+                EntityDict.Remove(entityUID);
+                EntityList.Remove(sceneEntity);
+                sceneEntity.Dispose();
             }
         }
+
+        #endregion
 
         #region 范围找怪接口
 
@@ -145,6 +199,15 @@ namespace ProjectK
             return CollectEntities(origin, width, height, rotateAngle, CollectEntityRectangleFunc, resultEntities, sortByDistance);
         }
 
+        /// <summary>
+        /// 收集环形范围内的目标
+        /// </summary>
+        public List<SceneEntity> CollectEntitiesRing(Vector2 origin, float radius, float innerRadius,
+            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+        {
+            return CollectEntities(origin, radius, innerRadius, 0, CollectEntityRingFunc, resultEntities, sortByDistance);
+        }
+
         private List<SceneEntity> CollectEntities(Vector2 origin, float param1, float param2, float param3, CollectEntityFunc collectFunc,
             List<SceneEntity> resultEntities = null, bool sortByDistance = false)
         {
@@ -164,50 +227,64 @@ namespace ProjectK
 
         delegate void CollectEntityFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities);
 
-        public void CollectEntityCircleFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
+        private void CollectEntityCircleFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
         {
             float radius2 = param1 * param1;
-            foreach (SceneEntity entity in entities.Values)
+            foreach (SceneEntity entity in EntityDict.Values)
             {
-                Vector2 position = entity.NaviComp.Position;
+                Vector2 position = entity.Position;
                 Vector2 direction = position - origin;
                 if (direction.sqrMagnitude <= radius2)
                     resultEntities.Add(entity);
             }
         }
 
-        public void CollectEntityFanFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
+        private void CollectEntityFanFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
         {
             float radius2 = param1 * param1;
-            float rangeAngle = param2;
+            float rangeAngleDiv2 = param2 / 2;
             float rotateAngle = param3;
-            foreach (SceneEntity entity in entities.Values)
+            foreach (SceneEntity entity in EntityDict.Values)
             {
-                Vector2 position = entity.NaviComp.Position;
+                Vector2 position = entity.Position;
                 Vector2 direction = position - origin;
                 if (direction.sqrMagnitude <= radius2)
                 {
                     float angle = MapUtils.Angle(direction);
                     float deltaAngle = MapUtils.DeltaAngle(angle, rotateAngle);
-                    if (deltaAngle <= rangeAngle)
+                    if (deltaAngle <= rangeAngleDiv2)
                         resultEntities.Add(entity);
                 }
             }
         }
 
-        public void CollectEntityRectangleFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
+        private void CollectEntityRectangleFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
         {
             float halfWidth = param1 * 0.5f;
             float halfHeight = param2 * 0.5f;
             float rotateAngle = param3;
-            Vector2 center = new Vector2(origin.x + Mathf.Cos(rotateAngle) * halfWidth, origin.y + Mathf.Sin(rotateAngle) * halfHeight);
-            Quaternion rotate = Quaternion.Euler(0, 0, -rotateAngle);
+            Vector2 center = new Vector2(origin.x + Mathf.Cos(rotateAngle) * halfWidth, origin.y + Mathf.Sin(rotateAngle) * halfWidth);
+            Quaternion rotate = Quaternion.AngleAxis(-rotateAngle * Mathf.Rad2Deg, MapUtils.Vector3Z);
 
-            foreach (SceneEntity entity in entities.Values)
+            foreach (SceneEntity entity in EntityDict.Values)
             {
-                Vector2 position = entity.NaviComp.Position;
-                Vector2 direction = rotate * (position - center);
-                if (direction.x <= halfWidth && direction.y <= halfHeight)
+                Vector2 position = entity.Position;
+                Vector2 delta = rotate * (position - center);
+                if (Mathf.Abs(delta.x) <= halfWidth && Mathf.Abs(delta.y) <= halfHeight)
+                    resultEntities.Add(entity);
+            }
+        }
+
+        private void CollectEntityRingFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
+        {
+            float radius2 = param1 * param1;
+            float innerRadius2 = param2 * param2;
+            foreach (SceneEntity entity in EntityDict.Values)
+            {
+                Vector2 position = entity.Position;
+                Vector2 direction = position - origin;
+                float sqrtLength = direction.sqrMagnitude;
+                if (sqrtLength <= radius2 && sqrtLength >= innerRadius2)
                     resultEntities.Add(entity);
             }
         }
@@ -223,8 +300,8 @@ namespace ProjectK
 
             public int Compare(SceneEntity x, SceneEntity y)
             {
-                Vector2 p1 = x.NaviComp.Position;
-                Vector2 p2 = y.NaviComp.Position;
+                Vector2 p1 = x.Position;
+                Vector2 p2 = y.Position;
                 return (int)((p1 - origin).sqrMagnitude - (p2 - origin).sqrMagnitude);
             }
         }
