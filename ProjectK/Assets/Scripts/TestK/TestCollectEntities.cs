@@ -81,6 +81,10 @@ namespace TestK
                     debugDraw.DrawRing(radius, innerRadius);
                     scene.CollectEntitiesRing(position, radius, innerRadius, entities);
                     break;
+                case CollectEntityShape.CenterRect:
+                    debugDraw.DrawCenterRect(width, height, rotateAngle);
+                    scene.CollectEntitiesCenterRect(position, width, height, rotateAngle, entities);
+                    break;
             }
 
             foreach (var entity in entities)
@@ -110,6 +114,10 @@ namespace TestK
                 shape = CollectEntityShape.Rectangle;
             if (GUILayout.Toggle(shape == CollectEntityShape.Ring, "Ring"))
                 shape = CollectEntityShape.Ring;
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Toggle(shape == CollectEntityShape.CenterRect, "CenterRect"))
+                shape = CollectEntityShape.CenterRect;
             GUILayout.EndHorizontal();
 
             GUILayout.Label("参数：");
@@ -149,6 +157,17 @@ namespace TestK
                 innerRadius = Mathf.Min(innerRadius, maxInnerRadius);
                 GUILayout.Label("内半径：" + innerRadius.ToString("0.00"));
                 innerRadius = GUILayout.HorizontalSlider(innerRadius, 0.5f, maxInnerRadius);
+            }
+            else if (shape == CollectEntityShape.CenterRect)
+            {
+                GUILayout.Label("长：" + width.ToString("0.00"));
+                width = GUILayout.HorizontalSlider(width, 3, 8);
+
+                GUILayout.Label("宽：" + height.ToString("0.00"));
+                height = GUILayout.HorizontalSlider(height, 1, 4);
+
+                GUILayout.Label("旋转角度：" + ((int)(rotateAngle * 180 / Mathf.PI)).ToString());
+                rotateAngle = GUILayout.HorizontalSlider(rotateAngle, 0, Mathf.PI * 2);
             }
 
             GUILayout.EndVertical();
@@ -203,6 +222,13 @@ namespace TestK
                 int innerSegments = (numPoints - 1) / 2;
                 line.MakeCircle(Vector3.zero, MapUtils.Vector3Z, innerRadius, innerSegments);
                 line.MakeCircle(Vector3.zero, MapUtils.Vector3Z, radius, numPoints - innerSegments - 1, innerSegments);
+            }
+
+            public void DrawCenterRect(float width, float height, float rotateAngle)
+            {
+                ResetPoints();
+                line.MakeRect(new Rect(-width / 2, -height / 2, width, height));
+                transform.rotation = Quaternion.AngleAxis(rotateAngle * Mathf.Rad2Deg, MapUtils.Vector3Z);
             }
 
             private void ResetPoints()

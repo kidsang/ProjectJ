@@ -208,6 +208,15 @@ namespace ProjectK
             return CollectEntities(origin, radius, innerRadius, 0, CollectEntityRingFunc, resultEntities, sortByDistance);
         }
 
+        /// <summary>
+        /// 收集中心矩形范围内的目标
+        /// </summary>
+        public List<SceneEntity> CollectEntitiesCenterRect(Vector2 origin, float width, float height, float rotateAngle,
+            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+        {
+            return CollectEntities(origin, width, height, rotateAngle, CollectEntityCenterRectFunc, resultEntities, sortByDistance);
+        }
+
         private List<SceneEntity> CollectEntities(Vector2 origin, float param1, float param2, float param3, CollectEntityFunc collectFunc,
             List<SceneEntity> resultEntities = null, bool sortByDistance = false)
         {
@@ -285,6 +294,23 @@ namespace ProjectK
                 Vector2 direction = position - origin;
                 float sqrtLength = direction.sqrMagnitude;
                 if (sqrtLength <= radius2 && sqrtLength >= innerRadius2)
+                    resultEntities.Add(entity);
+            }
+        }
+
+        private void CollectEntityCenterRectFunc(Vector2 origin, float param1, float param2, float param3, List<SceneEntity> resultEntities)
+        {
+            float halfWidth = param1 * 0.5f;
+            float halfHeight = param2 * 0.5f;
+            float rotateAngle = param3;
+            Vector2 center = new Vector2(origin.x, origin.y);
+            Quaternion rotate = Quaternion.AngleAxis(-rotateAngle * Mathf.Rad2Deg, MapUtils.Vector3Z);
+
+            foreach (SceneEntity entity in EntityDict.Values)
+            {
+                Vector2 position = entity.Position;
+                Vector2 delta = rotate * (position - center);
+                if (Mathf.Abs(delta.x) <= halfWidth && Mathf.Abs(delta.y) <= halfHeight)
                     resultEntities.Add(entity);
             }
         }

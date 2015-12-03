@@ -80,5 +80,10 @@ namespace ProjectK
         /// 圆环
         /// </summary>
         Ring,
+
+        /// <summary>
+        /// 矩形
+        /// </summary>
+        CenterRect,
     }
 }
