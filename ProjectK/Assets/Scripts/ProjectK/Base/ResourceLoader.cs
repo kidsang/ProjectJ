@@ -31,6 +31,16 @@ namespace ProjectK.Base
             return LoadAsync<TabFile<T>>(url, onLoadComplete);
         }
 
+        public CsvFile<T> LoadCsvFile<T>(string url) where T : CsvFileObject, new()
+        {
+             return Load<CsvFile<T>>(url);
+        }
+
+        public CsvFile<T> LoadCsvFileAsync<T>(string url, ResourceLoadComplete onLoadComplete) where T : CsvFileObject, new()
+        {
+            return LoadAsync<CsvFile<T>>(url, onLoadComplete);
+        }
+
         public JsonFile<T> LoadJsonFile<T>(string url)
         {
              return Load<JsonFile<T>>(url);

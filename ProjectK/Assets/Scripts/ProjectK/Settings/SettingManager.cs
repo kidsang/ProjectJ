@@ -17,7 +17,7 @@ namespace ProjectK
         public delegate void AllCompleteCallback();
         private AllCompleteCallback allComplete;
 
-        public TabFile<MonsterEntitySetting> MonsterEntitySettings;
+        public CsvFile<MonsterEntitySetting> MonsterEntitySettings;
 
         public static void Init(AllCompleteCallback allComplete)
         {
@@ -32,7 +32,7 @@ namespace ProjectK
 
         private void LoadAll()
         {
-            MonsterEntitySettings = LoadTabFile<MonsterEntitySetting>("Settings/MonsterEntities.tab");
+            MonsterEntitySettings = LoadCsvFile<MonsterEntitySetting>("Settings/MonsterEntities.csv");
         }
 
         private IniFile LoadIniFile(string url)
@@ -41,10 +41,10 @@ namespace ProjectK
             return loader.LoadIniFileAsync(url, OnLoadComplete);
         }
 
-        private TabFile<T> LoadTabFile<T>(string url) where T: TabFileObject, new()
+        private CsvFile<T> LoadCsvFile<T>(string url) where T: CsvFileObject, new()
         {
             ++loadingCount;
-            return loader.LoadTabFileAsync<T>(url, OnLoadComplete);
+            return loader.LoadCsvFileAsync<T>(url, OnLoadComplete);
         }
 
         private void OnLoadComplete(Resource res)

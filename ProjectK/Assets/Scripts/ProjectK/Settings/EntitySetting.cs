@@ -6,7 +6,7 @@ using ProjectK.Base;
 
 namespace ProjectK
 {
-    public class EntitySetting : TabFileObject
+    public class EntitySetting : CsvFileObject
     {
         public int ID;
         public string Name;

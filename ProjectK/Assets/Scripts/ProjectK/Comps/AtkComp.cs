@@ -13,6 +13,7 @@ namespace ProjectK
 
         private float lastAttackTime;
         public List<SceneEntity> TargetEntities { get; private set; }
+        public SceneEntity LockTarget { get; set; }
 
         public override bool Start()
         {
@@ -30,6 +31,24 @@ namespace ProjectK
             attrComp = null;
             naviComp = null;
             base.Destroy();
+        }
+
+        public override void Activate()
+        {
+            base.Activate();
+
+            if (InCD())
+                return;
+
+            if (LockTarget == null)
+            {
+                if (!CollectTargets())
+                    return;
+                LockTarget = TargetEntities[0];
+            }
+
+            lastAttackTime = Time.time;
+            Formula.TestCalc(Entity, LockTarget);
         }
 
         public bool Attack()
