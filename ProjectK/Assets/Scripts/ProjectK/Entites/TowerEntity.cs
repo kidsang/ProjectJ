@@ -14,9 +14,14 @@ namespace ProjectK
         {
             base.Init(loader, template);
 
-            // TODO: load attr
-
             AtkComp = AddComp<AtkComp>();
+
+            // TODO: load attr
+            TowerEntitySetting setting = (TowerEntitySetting)template;
+            AttrComp.AtkBase = setting.Atk;
+            AttrComp.AtkSpeed = setting.AtkSpeed;
+            AttrComp.AtkRange = setting.AtkRange;
+            AttrComp.AtkTypes.AddRange(setting.AtkTypeArr);
         }
     }
 }

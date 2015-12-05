@@ -6,29 +6,12 @@ using System.Reflection;
 
 namespace ProjectK.Base
 {
-    public abstract class TabFileObject
+    public abstract class TabFileObject : TextResourceUtils
     {
-        private static StringBuilder keyBuilder = new StringBuilder();
-
         public abstract string GetKey();
 
         public virtual void OnComplete()
         {
-        }
-
-        public static string buildMultiKey(params object[] keys)
-        {
-            keyBuilder.Remove(0, keyBuilder.Length);
-
-            int end = keys.Length - 1;
-            for (int i = 0; i <= end; ++i)
-            {
-                keyBuilder.Append(keys[i]);
-                if (i < end)
-                    keyBuilder.Append("-");
-            }
-
-            return keyBuilder.ToString();
         }
     }
 
@@ -72,7 +55,7 @@ namespace ProjectK.Base
 
         public T GetValue(params object[] keys)
         {
-            string key = TabFileObject.buildMultiKey(keys);
+            string key = TabFileObject.BuildMultiKey(keys);
             return GetValue(key);
         }
 

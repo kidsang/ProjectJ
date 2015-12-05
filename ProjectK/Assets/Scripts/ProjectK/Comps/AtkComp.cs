@@ -15,6 +15,8 @@ namespace ProjectK
         public List<SceneEntity> TargetEntities { get; private set; }
         public SceneEntity LockTarget { get; set; }
 
+        private DebugDraw rangeDebugDraw;
+
         public override bool Start()
         {
             if (!base.Start())
@@ -83,5 +85,14 @@ namespace ProjectK
         {
             lastAttackTime = 0;
         }
+
+        override public void UpdateDebugDraw()
+        {
+            if (rangeDebugDraw == null)
+                rangeDebugDraw = DebugDraw.Create("AtkRangeDebug", Entity.gameObject, Color.yellow);
+
+            rangeDebugDraw.DrawCircle(attrComp.AtkRange);
+        }
+
     }
 }

@@ -61,5 +61,10 @@ namespace ProjectK
                 cameraPosition.y = top;
             camera.transform.position = cameraPosition;
         }
+
+        public void SwitchTo(Scene scene)
+        {
+            this.Scene = scene;
+        }
     }
 }

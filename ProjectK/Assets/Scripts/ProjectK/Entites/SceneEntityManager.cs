@@ -32,6 +32,8 @@ namespace ProjectK
             EntitySetting setting;
             if (type == typeof(MonsterEntity))
                 setting = settings.MonsterEntitySettings.GetValue(templateID);
+            else if (type == typeof(TowerEntity))
+                setting = settings.TowerEntitySettings.GetValue(templateID);
             else
                 setting = null;
 

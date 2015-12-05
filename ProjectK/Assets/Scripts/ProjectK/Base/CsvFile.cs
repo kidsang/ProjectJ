@@ -6,9 +6,8 @@ using System.Reflection;
 
 namespace ProjectK.Base
 {
-    public abstract class CsvFileObject
+    public abstract class CsvFileObject : TextResourceUtils
     {
-        private static StringBuilder keyBuilder = new StringBuilder();
 
         public abstract string GetKey();
 
@@ -16,20 +15,6 @@ namespace ProjectK.Base
         {
         }
 
-        public static string buildMultiKey(params object[] keys)
-        {
-            keyBuilder.Remove(0, keyBuilder.Length);
-
-            int end = keys.Length - 1;
-            for (int i = 0; i <= end; ++i)
-            {
-                keyBuilder.Append(keys[i]);
-                if (i < end)
-                    keyBuilder.Append("-");
-            }
-
-            return keyBuilder.ToString();
-        }
     }
 
     public class CsvFile<T> : TextResource where T : CsvFileObject, new()
@@ -72,7 +57,7 @@ namespace ProjectK.Base
 
         public T GetValue(params object[] keys)
         {
-            string key = CsvFileObject.buildMultiKey(keys);
+            string key = CsvFileObject.BuildMultiKey(keys);
             return GetValue(key);
         }
 

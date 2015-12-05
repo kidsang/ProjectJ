@@ -1,0 +1,3 @@
+ID,Name,Width,Height,Prefab,Atk,AtkSpeed,AtkRange,AtkTypes
+#,名称,碰撞体x轴长,碰撞体y轴高,Prefab路径,攻击力,攻速（次/秒）,攻击范围,攻击类型，可多个（0神圣，1光明，2黑暗，3物理，4自然，5冰霜，6火焰，7大地）
+0,测试炮塔,2,2,Tower/Tower,100,1,3,1;2

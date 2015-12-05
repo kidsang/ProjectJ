@@ -18,6 +18,7 @@ namespace ProjectK
         private AllCompleteCallback allComplete;
 
         public CsvFile<MonsterEntitySetting> MonsterEntitySettings;
+        public CsvFile<TowerEntitySetting> TowerEntitySettings;
 
         public static void Init(AllCompleteCallback allComplete)
         {
@@ -33,6 +34,7 @@ namespace ProjectK
         private void LoadAll()
         {
             MonsterEntitySettings = LoadCsvFile<MonsterEntitySetting>("Settings/MonsterEntities.csv");
+            TowerEntitySettings = LoadCsvFile<TowerEntitySetting>("Settings/TowerEntities.csv");
         }
 
         private IniFile LoadIniFile(string url)

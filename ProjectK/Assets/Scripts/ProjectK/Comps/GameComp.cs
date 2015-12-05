@@ -53,6 +53,14 @@ namespace ProjectK
 
         }
 
+        /// <summary>
+        /// 每帧调用，用来更新DebugDraw
+        /// </summary>
+        virtual public void UpdateDebugDraw()
+        {
+
+        }
+
         //public override string ToString()
         //{
         //    return "<GameComp>" + Name;

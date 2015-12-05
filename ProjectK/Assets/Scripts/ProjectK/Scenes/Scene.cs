@@ -24,6 +24,10 @@ namespace ProjectK
         public Dictionary<uint, SceneEntity> EntityDict { get; private set; }
         public List<SceneEntity> EntityList { get; private set; }
 
+        private uint nextBulletUID = 1;
+        public Dictionary<uint, Bullet> BulletDict { get; private set; }
+        public List<Bullet> BulletList { get; private set; }
+
         public void Init()
         {
             sceneRoot = gameObject;
@@ -37,11 +41,21 @@ namespace ProjectK
 
             EntityDict = new Dictionary<uint, SceneEntity>();
             EntityList = new List<SceneEntity>();
+            BulletDict = new Dictionary<uint, Bullet>();
+            BulletList = new List<Bullet>();
             SpawnManager = new SpawnManager();
         }
 
         protected override void OnDispose()
         {
+            if (BulletDict != null)
+            {
+                foreach (var bullet in BulletDict.Values)
+                    bullet.Dispose();
+                BulletDict = null;
+                BulletList = null;
+            }
+
             if (EntityDict != null)
             {
                 foreach (var sceneEntity in EntityDict.Values)
@@ -88,7 +102,7 @@ namespace ProjectK
             Playing = true;
             startTime = UnityEngine.Time.fixedTime;
 
-            SpawnManager.Start();
+            //SpawnManager.Start();
         }
 
         private void FixedUpdate()
@@ -105,6 +119,12 @@ namespace ProjectK
             {
                 SceneEntity entity = EntityList[i];
                 entity.Activate();
+            }
+
+            for (int i = BulletList.Count - 1; i >= 0; --i)
+            {
+                Bullet bullet = BulletList[i];
+                bullet.Activate();
             }
         }
 
@@ -126,6 +146,11 @@ namespace ProjectK
         public MonsterEntity CreateMonsterEntity(int templateID)
         {
             return CreateSceneEntity<MonsterEntity>(templateID);
+        }
+
+        public TowerEntity CreateTowerEntity(int templateID)
+        {
+            return CreateSceneEntity<TowerEntity>(templateID);
         }
 
         public T CreateSceneEntity<T>(int templateID) where T : SceneEntity
@@ -165,6 +190,54 @@ namespace ProjectK
                 EntityDict.Remove(entityUID);
                 EntityList.Remove(sceneEntity);
                 sceneEntity.Dispose();
+            }
+        }
+
+        public SceneEntity GetEntity(uint entityUID)
+        {
+            SceneEntity sceneEntity;
+            EntityDict.TryGetValue(entityUID, out sceneEntity);
+            return sceneEntity;
+        }
+
+        #endregion
+
+        #region 创建子弹接口
+
+        // TODO: test
+        public Bullet FireBullet(uint fromEntityUID, uint targetEntityUID)
+        {
+            GameObject gameObject = loader.LoadPrefab("Bullet/Bullet").Instantiate();
+            Bullet bullet = gameObject.AddComponent<Bullet>();
+            bullet.UID = nextBulletUID++;
+            bullet.FromEntityUID = fromEntityUID;
+            bullet.TargetEntityUID = targetEntityUID;
+            BulletList.Add(bullet);
+
+            SceneEntity sceneEntity = GetEntity(fromEntityUID);
+            gameObject.transform.position = sceneEntity.Position;
+
+            return bullet;
+        }
+
+        public void DestroyBullet(Bullet bullet)
+        {
+            if (BulletDict.ContainsKey(bullet.UID))
+            {
+                BulletDict.Remove(bullet.UID);
+                BulletList.Remove(bullet);
+            }
+            bullet.Dispose();
+        }
+
+        public void DestroyBullet(uint bulletUID)
+        {
+            Bullet bullet;
+            if (BulletDict.TryGetValue(bulletUID, out bullet))
+            {
+                BulletDict.Remove(bulletUID);
+                BulletList.Remove(bullet);
+                bullet.Dispose();
             }
         }
 

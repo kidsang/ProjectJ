@@ -38,6 +38,11 @@ namespace ProjectK
         public AttrComp AttrComp { get; private set; }
         public NaviComp NaviComp { get; private set; }
 
+        /// <summary>
+        /// 是否显示debugDraw
+        /// </summary>
+        public bool ShowDebugDraw;
+
         public virtual void Init(ResourceLoader loader, EntitySetting template)
         {
             Loader = loader;
@@ -88,6 +93,9 @@ namespace ProjectK
             {
                 GameComp comp = CompList[i];
                 comp.Activate();
+
+                if (ShowDebugDraw)
+                    comp.UpdateDebugDraw();
             }
         }
 
