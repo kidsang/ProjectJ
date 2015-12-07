@@ -50,7 +50,7 @@ namespace ProjectK
             }
 
             lastAttackTime = Time.time;
-            Formula.TestCalc(Entity, LockTarget);
+            Entity.Scene.FireBullet(Entity.UID, LockTarget.UID);
         }
 
         public bool Attack()
@@ -71,7 +71,7 @@ namespace ProjectK
                 return false;
 
             float atkInterval = (float)(1 / atkSpeed);
-            return Time.time - lastAttackTime > atkInterval;
+            return Time.time - lastAttackTime <= atkInterval;
         }
 
         public bool CollectTargets()

@@ -8,20 +8,6 @@ namespace EditorK
 {
     public class InfoMap : Dictionary<string, object>
     {
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("[InfoMap]{");
-            foreach (var pair in this)
-            {
-                builder.Append(pair.Key);
-                builder.Append(":");
-                builder.Append(pair.Value);
-                builder.Append(",");
-            }
-            builder.Append("}");
-            return builder.ToString();
-        }
     }
 
     public static class EditorUtils

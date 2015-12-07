@@ -27,20 +27,15 @@ namespace EditorK
         public void Undo()
         {
             repo.Undo();
-            UpdateRemoteData();
         }
 
         public void Redo()
         {
             repo.Redo();
-            UpdateRemoteData();
         }
 
-        public void Load(string jsonData, string path = null)
+        public void Load(SceneSetting data, string path = null)
         {
-            SceneSetting data = SimpleJson.DeserializeObject<SceneSetting>(jsonData);
-            GameEditor.Instance.LoadMap(data, path);
-
             DataPath = path;
             repo.New(data, EditorEvent.MAP_LOAD, null);
         }
@@ -49,21 +44,6 @@ namespace EditorK
         {
             repo.Modify(evt, infos);
             GameEditor.Instance.FileModified = true;
-            UpdateRemoteData();
-        }
-
-        private void UpdateRemoteData()
-        {
-            string sceneDataJson = SimpleJson.SerializeObject(Data);
-            string evt = repo.CurrentEvt;
-            InfoMap infos = new InfoMap();
-            if (repo.CurrentInfos != null)
-            {
-                foreach (var pair in repo.CurrentInfos)
-                    infos[pair.Key] = pair.Value;
-            }
-
-            GameEditor.Instance.Net.RemoteCallParams("OnSceneDataUpdate", sceneDataJson, evt, infos);
         }
 
         public void AddPath(int startX, int startY, int endX, int endY)

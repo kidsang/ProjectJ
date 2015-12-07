@@ -8,6 +8,23 @@ using ProjectK.Base;
 
 namespace EditorK
 {
+    public enum EditorMouseDataType
+    {
+        None,
+
+        // int? index
+        MapPathStart,
+
+        // int? index
+        MapPathEnd,
+
+        // InfoMap
+        //   MapCellFlag flag
+        //   int size
+        //   bool erase
+        TerrainFill,
+    }
+
     public class EditorMouse : DisposableBehaviour
     {
         private static EditorMouse instance;
@@ -40,8 +57,6 @@ namespace EditorK
         private bool mouseIn = false;
         private Vector3 lastMousePosition;
         private MapCell lastOverMapcell;
-
-        private static readonly string RemoteOnSceneMouseEvent = "OnSceneMouseEvent";
 
         public override void Awake()
         {
@@ -144,18 +159,14 @@ namespace EditorK
         public void OnSceneMouseDown()
         {
             if (Input.GetMouseButtonDown(0))
-            {
-                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_DOWN);
-            }
+                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_DOWN);
             else if (Input.GetMouseButtonDown(1))
-            {
-                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_RIGHT_DOWN);
-            }
+                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_RIGHT_DOWN);
         }
 
         public void OnSceneMouseUp()
         {
-            FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_UP);
+            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_UP);
         }
 
         public void OnSceneMouseClick()
@@ -163,25 +174,25 @@ namespace EditorK
             if (Input.GetMouseButtonUp(0))
             {
                 SelectMapCell();
-                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_CLICK);
+                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_CLICK);
             }
             else if (Input.GetMouseButtonUp(1))
             {
                 Clear();
-                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_RIGHT_CLICK);
+                EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_RIGHT_CLICK);
             }
         }
 
         public void OnSceneMouseIn()
         {
             mouseIn = true;
-            FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_IN);
+            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_IN);
         }
 
         public void OnSceneMouseOut()
         {
             mouseIn = false;
-            FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_OUT);
+            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_OUT);
         }
 
         void Update()
@@ -204,7 +215,6 @@ namespace EditorK
             //}
 
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            MapCell oldOverMapCell = lastOverMapcell;
             lastOverMapcell = map.GetCellByWorldXY(worldPoint);
             if (lastOverMapcell != null)
             {
@@ -220,15 +230,7 @@ namespace EditorK
 
             lastMousePosition = currentMousePosition;
 
-            if (oldOverMapCell != lastOverMapcell)
-                FireEventAndRemoteCall(EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE);
-        }
-
-        private void FireEventAndRemoteCall(string evt)
-        {
-            EventManager.Instance.FireEvent(evt);
-            GameEditor.Instance.Net.RemoteCallParams(RemoteOnSceneMouseEvent, evt, (int)DataType, Data,
-                OverMapCell != null, OverLocationX, OverLocationY);
+            EventManager.Instance.FireEvent(EditorEvent.SCENE_MOUSE_OVER_CELL_CHANGE);
         }
     }
 }

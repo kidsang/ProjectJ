@@ -13,10 +13,7 @@ namespace EditorK
         public T Data { get; private set; }
         public bool Recording { get; set; }
 
-        public string CurrentEvt { get { return history[nextIndex - 1].Event; } }
-        public InfoMap CurrentInfos { get { return history[nextIndex - 1].Infos; } }
-
-        public void New(T data, string evt, InfoMap infos)
+        public void New(T data, string evt, Dictionary<string, object> infos)
         {
             Clear(0);
             nextIndex = 1;
@@ -27,7 +24,7 @@ namespace EditorK
             EventManager.Instance.FireEvent(evt, infos);
         }
 
-        public void Modify(string evt, InfoMap infos)
+        public void Modify(string evt, Dictionary<string, object> infos)
         {
             if (Recording)
             {
@@ -79,7 +76,7 @@ namespace EditorK
 
         class HistoryData
         {
-            public HistoryData(T data, string evt, InfoMap infos)
+            public HistoryData(T data, string evt, Dictionary<string, object> infos)
             {
                 Data = data;
                 Event = evt;
@@ -88,7 +85,7 @@ namespace EditorK
 
             public T Data;
             public string Event;
-            public InfoMap Infos;
+            public Dictionary<string, object> Infos;
         }
     }
 }
