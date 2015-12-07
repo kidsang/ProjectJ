@@ -49,14 +49,14 @@ namespace EditorK
 
         private void StartEditor()
         {
-            NewMap();
+            NewMap(10, 10);
         }
 
-        public void NewMap()
+        public void NewMap(int cellCountX, int cellCountY)
         {
             SceneSetting data = new SceneSetting(true);
-            data.Map.CellCountX = 10;
-            data.Map.CellCountY = 10;
+            data.Map.CellCountX = cellCountX;
+            data.Map.CellCountY = cellCountY;
             LoadMap(data);
         }
 

@@ -45,7 +45,7 @@ namespace TestK
             float mapWidth = scene.Map.Width;
             float mapHeight = scene.Map.Height;
             position = new Vector3(mapWidth / 2, mapHeight / 2, 0);
-            for (int i = 0; i < 500; ++i)
+            for (int i = 0; i < 100; ++i)
             {
                 MonsterEntity monsterEntity = scene.CreateMonsterEntity(0);
                 scene.AddEntityToScene(monsterEntity, new Vector3(Random.value * mapWidth, Random.value * mapHeight, 0));

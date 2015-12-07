@@ -73,7 +73,6 @@ namespace ProjectK
 
         public void Load(MapSetting setting)
         {
-            Name = setting.Name;
             CellCountX = setting.CellCountX;
             CellCountY = setting.CellCountY;
             UpdateMapSize();

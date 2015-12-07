@@ -90,7 +90,7 @@ namespace EditorK.UI
 
         public void NewFile()
         {
-            GameEditor.Instance.NewMap();
+            PopupPanels.Instance.ShowPopup<NewMapPopup>();
         }
 
         public void OpenFile()
@@ -135,7 +135,7 @@ namespace EditorK.UI
 
         private void DoSaveFile(string path)
         {
-            MapSetting data = SceneDataProxy.Instance.MapData;
+            SceneSetting data = SceneDataProxy.Instance.Data;
             string json = SimpleJson.SerializeObject(data);
             File.WriteAllText(path, json, Encoding.UTF8);
 
