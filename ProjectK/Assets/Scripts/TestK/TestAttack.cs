@@ -42,5 +42,10 @@ namespace TestK
             scene.AddEntityToScene(tower, new Vector3(mapWidth / 2, mapHeight / 2, 0));
         }
 
+
+        void OnGUI()
+        {
+        }
+
     }
 }

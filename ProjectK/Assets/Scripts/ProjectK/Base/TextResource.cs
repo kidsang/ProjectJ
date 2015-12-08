@@ -16,9 +16,12 @@ namespace ProjectK.Base
             try
             {
                 string fullUrl = Application.dataPath + "/" + Url;
-                using (StreamReader reader = new StreamReader(fullUrl))
+                using (FileStream stream = new FileStream(fullUrl, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    text = reader.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        text = reader.ReadToEnd();
+                    }
                 }
             }
             catch (Exception e)

@@ -212,6 +212,7 @@ namespace ProjectK
             bullet.UID = nextBulletUID++;
             bullet.FromEntityUID = fromEntityUID;
             bullet.TargetEntityUID = targetEntityUID;
+            BulletDict[bullet.UID] = bullet;
             BulletList.Add(bullet);
 
             SceneEntity sceneEntity = GetEntity(fromEntityUID);

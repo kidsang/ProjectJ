@@ -37,6 +37,21 @@ namespace ProjectK
             TowerEntitySettings = LoadCsvFile<TowerEntitySetting>("Settings/TowerEntities.csv");
         }
 
+        public void ReloadAll(AllCompleteCallback allComplete = null)
+        {
+            if (loader != null)
+            {
+                loader.Dispose();
+                loader = null;
+            }
+
+            loadingCount = 0;
+            completeCount = 0;
+            loader = new ResourceLoader();
+            allComplete = null;
+            LoadAll();
+        }
+
         private IniFile LoadIniFile(string url)
         {
             ++loadingCount;
@@ -55,8 +70,11 @@ namespace ProjectK
 
             if (loadingCount == completeCount)
             {
-                allComplete();
-                allComplete = null;
+                if (allComplete != null)
+                {
+                    allComplete();
+                    allComplete = null;
+                }
             }
         }
 
