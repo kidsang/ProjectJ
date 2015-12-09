@@ -19,7 +19,7 @@ namespace ProjectK
             base.Init(loader, template);
 
             MonsterEntitySetting setting = template as MonsterEntitySetting;
-            AttrComp.MoveSpeed = setting.MoveSpeed;
+            AttrComp.MoveSpeedBase = setting.MoveSpeed;
         }
 
         public void SetPath(MapPath path)

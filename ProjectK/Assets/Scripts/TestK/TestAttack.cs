@@ -63,9 +63,6 @@ namespace TestK
 
         void OnGUI()
         {
-            if (scene == null)
-                return;
-
             GUI.Box(new Rect(10, 10, 200, 300), "攻击测试");
             GUILayout.BeginArea(new Rect(20, 40, 180, 280));
             GUILayout.BeginVertical();
@@ -76,14 +73,14 @@ namespace TestK
                 return;
             }
 
-            GUILayout.Label("炮塔攻击力：" + towerAtk.ToString("0.00"));
-            tower.AttrComp.AtkBase = towerAtk = GUILayout.HorizontalSlider((float)towerAtk, (float)(towerAtk / 2), (float)(towerAtk * 2));
+            GUILayout.Label("炮塔攻击力：" + tower.AttrComp.AtkBase.ToString("0.00"));
+            tower.AttrComp.AtkBase = GUILayout.HorizontalSlider((float)tower.AttrComp.AtkBase, (float)(towerAtk / 2), (float)(towerAtk * 2));
 
-            GUILayout.Label("炮塔攻击速度：" + towerAtkSpeed.ToString("0.00"));
-            tower.AttrComp.AtkSpeedBase = towerAtkSpeed = GUILayout.HorizontalSlider((float)towerAtkSpeed, (float)(towerAtkSpeed / 2), (float)(towerAtkSpeed * 2));
+            GUILayout.Label("炮塔攻击速度：" + tower.AttrComp.AtkSpeedBase.ToString("0.00"));
+            tower.AttrComp.AtkSpeedBase = GUILayout.HorizontalSlider((float)tower.AttrComp.AtkSpeedBase, (float)(towerAtkSpeed / 2), (float)(towerAtkSpeed * 2));
 
-            GUILayout.Label("炮塔攻击范围：" + towerAtkRange.ToString("0.00"));
-            tower.AttrComp.AtkRangeBase = towerAtkRange = GUILayout.HorizontalSlider((float)towerAtkRange, (float)(towerAtkRange / 2), (float)(towerAtkRange * 2));
+            GUILayout.Label("炮塔攻击范围：" + tower.AttrComp.AtkRangeBase.ToString("0.00"));
+            tower.AttrComp.AtkRangeBase = GUILayout.HorizontalSlider((float)tower.AttrComp.AtkRangeBase, (float)(towerAtkRange / 2), (float)(towerAtkRange * 2));
 
             GUILayout.EndVertical();
             GUILayout.EndArea();

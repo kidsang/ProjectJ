@@ -19,8 +19,8 @@ namespace ProjectK
             // TODO: load attr
             TowerEntitySetting setting = (TowerEntitySetting)template;
             AttrComp.AtkBase = setting.Atk;
-            AttrComp.AtkSpeed = setting.AtkSpeed;
-            AttrComp.AtkRange = setting.AtkRange;
+            AttrComp.AtkSpeedBase = setting.AtkSpeed;
+            AttrComp.AtkRangeBase = setting.AtkRange;
             AttrComp.AtkTypes.AddRange(setting.AtkTypeArr);
         }
     }

@@ -93,7 +93,7 @@ namespace ProjectK
         public double Atk
         {
             get { return atk; }
-            set
+            private set
             {
                 if (value == atk)
                     return;
@@ -144,7 +144,7 @@ namespace ProjectK
         public double Def
         {
             get { return def; }
-            set
+            private set
             {
                 if (value == def)
                     return;
@@ -196,7 +196,7 @@ namespace ProjectK
         public double AtkSpeed
         {
             get { return atkSpeed; }
-            set
+            private set
             {
                 if (value < 0)
                     value = 0;
@@ -249,7 +249,7 @@ namespace ProjectK
         public float AtkRange
         {
             get { return atkRange; }
-            set
+            private set
             {
                 if (value < 0)
                     value = 0;
@@ -303,7 +303,7 @@ namespace ProjectK
         public double MoveSpeed
         {
             get { return moveSpeed; }
-            set
+            private set
             {
                 if (value < 0)
                     value = 0;

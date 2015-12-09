@@ -48,7 +48,7 @@ namespace ProjectK
             loadingCount = 0;
             completeCount = 0;
             loader = new ResourceLoader();
-            allComplete = null;
+            this.allComplete = allComplete;
             LoadAll();
         }
 
