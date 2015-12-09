@@ -10,7 +10,11 @@ namespace TestK
     public class TestAttack : MonoBehaviour
     {
         private Scene scene;
+
         private TowerEntity tower;
+        private double towerAtk;
+        private double towerAtkSpeed;
+        private float towerAtkRange;
 
         void Start()
         {
@@ -40,11 +44,49 @@ namespace TestK
             tower = scene.CreateTowerEntity(0);
             tower.ShowDebugDraw = true;
             scene.AddEntityToScene(tower, new Vector3(mapWidth / 2, mapHeight / 2, 0));
+
+            towerAtk = tower.AttrComp.AtkBase;
+            towerAtkSpeed = tower.AttrComp.AtkSpeedBase;
+            towerAtkRange = tower.AttrComp.AtkRangeBase;
+        }
+
+        void RestartTest()
+        {
+            if (scene == null)
+                return;
+
+            scene.Dispose();
+            scene = null;
+            SettingManager.Instance.ReloadAll(StartTest);
         }
 
 
         void OnGUI()
         {
+            if (scene == null)
+                return;
+
+            GUI.Box(new Rect(10, 10, 200, 300), "攻击测试");
+            GUILayout.BeginArea(new Rect(20, 40, 180, 280));
+            GUILayout.BeginVertical();
+
+            if (GUILayout.Button("重载数据表和场景"))
+            {
+                RestartTest();
+                return;
+            }
+
+            GUILayout.Label("炮塔攻击力：" + towerAtk.ToString("0.00"));
+            tower.AttrComp.AtkBase = towerAtk = GUILayout.HorizontalSlider((float)towerAtk, (float)(towerAtk / 2), (float)(towerAtk * 2));
+
+            GUILayout.Label("炮塔攻击速度：" + towerAtkSpeed.ToString("0.00"));
+            tower.AttrComp.AtkSpeedBase = towerAtkSpeed = GUILayout.HorizontalSlider((float)towerAtkSpeed, (float)(towerAtkSpeed / 2), (float)(towerAtkSpeed * 2));
+
+            GUILayout.Label("炮塔攻击范围：" + towerAtkRange.ToString("0.00"));
+            tower.AttrComp.AtkRangeBase = towerAtkRange = GUILayout.HorizontalSlider((float)towerAtkRange, (float)(towerAtkRange / 2), (float)(towerAtkRange * 2));
+
+            GUILayout.EndVertical();
+            GUILayout.EndArea();
         }
 
     }
