@@ -70,7 +70,53 @@ namespace ProjectK
                 }
             }
 
+
             return null;
+        }
+
+        /// <summary>
+        /// 显示窗口
+        /// </summary>
+        public void Show(params object[] args)
+        {
+            gameObject.SetActive(true);
+            OnShow(args);
+        }
+
+        /// <summary>
+        /// 隐藏窗口
+        /// </summary>
+        public void Hide()
+        {
+            if (gameObject.activeSelf)
+            {
+                gameObject.SetActive(false);
+                OnHide();
+            }
+        }
+
+        /// <summary>
+        /// 将窗口移动到本层的最顶端
+        /// </summary>
+        public void MoveTop()
+        {
+            gameObject.transform.SetAsLastSibling();
+        }
+
+        /// <summary>
+        /// 在窗口显示的时候被调用
+        /// </summary>
+        public virtual void OnShow(object[] args)
+        {
+
+        }
+
+        /// <summary>
+        /// 在窗口隐藏的时候被调用
+        /// </summary>
+        public virtual void OnHide()
+        {
+
         }
     }
 }
