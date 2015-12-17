@@ -103,7 +103,7 @@ namespace ProjectK.Editor
             codeBuilder.AppendLine();
             codeBuilder.AppendLine("namespace ProjectK");
             codeBuilder.AppendLine("{");
-            codeBuilder.AppendLine(String.Format("    public class {0} : MonoBehaviour", detailClassName));
+            codeBuilder.AppendLine(String.Format("    public class {0} : UIBase", detailClassName));
             codeBuilder.AppendLine("    {");
             foreach (UIObjectInfo info in uiObjectInfos)
             {
@@ -139,35 +139,6 @@ namespace ProjectK.Editor
             }
 
             EditorUtility.DisplayProgressBar("正在导出UI", "正在等待编辑器编译UI类，请勿随意操作...", 40);
-
-            //// 编译生成的代码
-            //Type detailType = null;
-            //CSharpCodeProvider provider = new CSharpCodeProvider();
-            //CompilerParameters parameters = new CompilerParameters();
-            //parameters.GenerateExecutable = false;
-            //parameters.GenerateInMemory = true;
-            //parameters.ReferencedAssemblies.Add("System.dll");
-            //parameters.ReferencedAssemblies.Add("System.Core.dll");
-            //parameters.ReferencedAssemblies.Add(typeof(MonoBehaviour).Assembly.Location);
-            //parameters.ReferencedAssemblies.Add(typeof(UIBehaviour).Assembly.Location);
-            //try
-            //{
-            //    CompilerResults result = provider.CompileAssemblyFromSource(parameters, code);
-            //    if (result.Errors.Count > 0)
-            //    {
-            //        EditorUtility.DisplayDialog("导出UI失败", result.Errors.ToString(), "确定");
-            //        EditorUtility.ClearProgressBar();
-            //        return;
-            //    }
-            //    Assembly assembly = result.CompiledAssembly;
-            //    detailType = assembly.GetType("ProjectK." + detailClassName);
-            //}
-            //catch (Exception e)
-            //{
-            //    EditorUtility.DisplayDialog("导出UI失败", e.Message, "确定");
-            //    EditorUtility.ClearProgressBar();
-            //    return;
-            //}
     	}
 
         private static void FetchUIObjects(GameObject gameObject, Dictionary<string, UIBehaviour> uiObjectDict)
@@ -176,7 +147,7 @@ namespace ProjectK.Editor
 
             if (!uiObjectDict.ContainsKey(name))
             {
-                if (ValidVaribleNameRegex.IsMatch(name))
+                if (name.StartsWith("_") && ValidVaribleNameRegex.IsMatch(name))
                 {
                     for (int i = 0; i < ExportUIPriority.Count; ++i)
                     {
@@ -257,7 +228,11 @@ namespace ProjectK.Editor
             Type detailType = typeof(UIBase).Assembly.GetType("ProjectK." + GetUIClassName(gameObjectName));
 
             // 绑定变量
-            var detailComp = gameObject.AddComponent(detailType);
+            var detailComp = gameObject.GetComponent(detailType);
+            if (detailComp != null)
+                GameObject.DestroyImmediate(detailComp);
+            detailComp = gameObject.AddComponent(detailType);
+
             foreach (string fieldInfo in fieldInfos)
             {
                 string[] infos = fieldInfo.Split(':');

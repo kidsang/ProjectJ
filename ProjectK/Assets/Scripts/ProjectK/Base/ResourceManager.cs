@@ -69,18 +69,25 @@ namespace ProjectK.Base
         {
             while (loadingResources.Count > 0)
             {
-                Resource res = loadingResources.Dequeue();
+                Resource res = loadingResources.Peek();
                 if (res.Disposed)
+                {
+                    loadingResources.Dequeue();
                     continue;
+                }
 
                 if (res.Complete)
                 {
+                    loadingResources.Dequeue();
                     res.NotifyComplete();
+                }
+                else if (res.Pending)
+                {
+                    res.LoadAsync();
                 }
                 else
                 {
-                    res.Load();
-                    res.NotifyComplete();
+                    res.OnLoadAsync();
                 }
                 break;
             }

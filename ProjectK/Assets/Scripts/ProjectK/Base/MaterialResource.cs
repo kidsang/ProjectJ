@@ -21,6 +21,15 @@ namespace ProjectK.Base
 
             state = ResourceState.Complete;
         }
+        
+        internal override void LoadAsync()
+        {
+            Load();
+        }
+
+        internal override void OnLoadAsync()
+        {
+        }
 
         protected override void OnDispose()
         {

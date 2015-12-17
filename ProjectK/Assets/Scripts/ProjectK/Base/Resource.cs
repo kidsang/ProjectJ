@@ -9,6 +9,7 @@ namespace ProjectK.Base
 {
     public enum ResourceState
     {
+        Pending,
         Loading,
         Complete,
         Disposed
@@ -21,7 +22,7 @@ namespace ProjectK.Base
         private ResourceManager manager = ResourceManager.Instance;
         private string url;
         private int refCount = 1;
-        protected ResourceState state = ResourceState.Loading;
+        protected ResourceState state = ResourceState.Pending;
         protected bool loadFailed = false;
 
         internal event ResourceLoadComplete OnLoadComplete;
@@ -32,6 +33,10 @@ namespace ProjectK.Base
         }
         
         abstract internal void Load();
+
+        abstract internal void LoadAsync();
+
+        abstract internal void OnLoadAsync();
 
         internal void NotifyComplete()
         {
@@ -73,6 +78,11 @@ namespace ProjectK.Base
         public string Url
         {
             get { return url; }
+        }
+
+        public bool Pending
+        {
+            get { return state == ResourceState.Pending; }
         }
 
         public bool Loading

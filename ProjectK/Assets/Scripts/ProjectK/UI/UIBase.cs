@@ -70,7 +70,26 @@ namespace ProjectK
                 }
             }
 
+            return null;
+        }
 
+        /// <summary>
+        /// 从指定GameObject开始查找是否存在指定名字的GameObject
+        /// </summary>
+        public static GameObject FindGameObject(GameObject parent, string name)
+        {
+            Transform transform = parent.transform;
+            int childCount = transform.childCount;
+            for (int i = 0; i < childCount; ++i)
+            {
+                GameObject gameObject = transform.GetChild(i).gameObject;
+                if (gameObject.name == name)
+                    return gameObject;
+
+                gameObject = FindGameObject(gameObject, name);
+                if (gameObject.name != null)
+                    return gameObject;
+            }
             return null;
         }
 

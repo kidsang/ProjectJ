@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using ProjectK.Base;
 
 namespace ProjectK
 {
     public enum UILayer
     {
-        Bottom = 0,
-        Middle,
-        Top,
+        LayerLow = 0,
+        LayerMid,
+        LayerTop,
         Count,
     }
 
@@ -20,7 +22,7 @@ namespace ProjectK
         private static UIManager instance;
         public static UIManager Instance { get { return instance; } }
 
-        private ResourceLoader loader = new ResourceLoader();
+        private ResourceLoader loader;
         private Dictionary<Type, UIBase> createdUIs = new Dictionary<Type, UIBase>();
         private Dictionary<UILayer, GameObject> layers = new Dictionary<UILayer, GameObject>();
 
@@ -29,29 +31,50 @@ namespace ProjectK
             if (instance != null)
                 return;
 
+            // init canvas
             GameObject gameObject = new GameObject("UIManager");
+            DontDestroyOnLoad(gameObject);
+            gameObject.layer = LayerMask.NameToLayer("UI");
+            gameObject.AddComponent<RectTransform>();
+            gameObject.AddComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            gameObject.AddComponent<CanvasScaler>();
+            gameObject.AddComponent<GraphicRaycaster>();
             instance = gameObject.AddComponent<UIManager>();
+            instance.loader = new ResourceLoader();
 
+            // init layers
             for (int i = 0; i < (int)UILayer.Count; ++i)
             {
                 UILayer layer = (UILayer)i;
                 GameObject layerObject = new GameObject(layer.ToString());
-                layerObject.transform.SetParent(gameObject.transform);
+                RectTransform transform = layerObject.AddComponent<RectTransform>();
+                transform.anchorMin = new Vector2(0, 0);
+                transform.anchorMax = new Vector2(1, 1);
+                transform.offsetMin = Vector2.zero;
+                transform.offsetMax = Vector2.zero;
+                layerObject.transform.SetParent(gameObject.transform, false);
                 instance.layers[layer] = layerObject;
             }
+
+            // init event system
+            gameObject = new GameObject("UIEventSystem");
+            DontDestroyOnLoad(gameObject);
+            gameObject.AddComponent<EventSystem>();
+            gameObject.AddComponent<StandaloneInputModule>();
+            gameObject.AddComponent<TouchInputModule>();
         }
 
-        public T CreateUI<T>(UILayer layer = UILayer.Middle, params object[] args) where T : UIBase
+        public T CreateUI<T>(UILayer layer = UILayer.LayerMid, params object[] args) where T : UIBase
         {
             Type type = typeof(T);
             UIBase ui;
 
             if (!createdUIs.TryGetValue(type, out ui))
             {
-                GameObject uiObject = loader.LoadPrefab("").Instantiate();
+                GameObject uiObject = loader.LoadPrefab("UI/" + type.Name).Instantiate();
                 ui = uiObject.GetComponent<T>();
                 createdUIs.Add(type, ui);
-                uiObject.transform.SetParent(layers[layer].gameObject.transform);
+                uiObject.transform.SetParent(layers[layer].gameObject.transform, false);
             }
 
             ui.MoveTop();
