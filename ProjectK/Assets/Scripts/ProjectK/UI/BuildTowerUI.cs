@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ProjectK
 {
-    public class BuildTowerUI : BuildTowerUIDetail
+    public class BuildTowerUI : UIBase
     {
     }
 }

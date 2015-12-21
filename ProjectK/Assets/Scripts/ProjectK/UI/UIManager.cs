@@ -22,9 +22,8 @@ namespace ProjectK
         private static UIManager instance;
         public static UIManager Instance { get { return instance; } }
 
-        private ResourceLoader loader;
         private Dictionary<Type, UIBase> createdUIs = new Dictionary<Type, UIBase>();
-        private Dictionary<UILayer, GameObject> layers = new Dictionary<UILayer, GameObject>();
+        private Dictionary<UILayer, RectTransform> layers = new Dictionary<UILayer, RectTransform>();
 
         public static void Init()
         {
@@ -40,7 +39,6 @@ namespace ProjectK
             gameObject.AddComponent<CanvasScaler>();
             gameObject.AddComponent<GraphicRaycaster>();
             instance = gameObject.AddComponent<UIManager>();
-            instance.loader = new ResourceLoader();
 
             // init layers
             for (int i = 0; i < (int)UILayer.Count; ++i)
@@ -52,8 +50,8 @@ namespace ProjectK
                 transform.anchorMax = new Vector2(1, 1);
                 transform.offsetMin = Vector2.zero;
                 transform.offsetMax = Vector2.zero;
-                layerObject.transform.SetParent(gameObject.transform, false);
-                instance.layers[layer] = layerObject;
+                transform.SetParent(gameObject.transform, false);
+                instance.layers[layer] = transform;
             }
 
             // init event system
@@ -64,21 +62,23 @@ namespace ProjectK
             gameObject.AddComponent<TouchInputModule>();
         }
 
-        public T CreateUI<T>(UILayer layer = UILayer.LayerMid, params object[] args) where T : UIBase
+        public T CreateUI<T>(UILayer layer = UILayer.LayerMid, bool showAfterCreate = true, params object[] args) where T : UIBase, new()
         {
             Type type = typeof(T);
             UIBase ui;
 
             if (!createdUIs.TryGetValue(type, out ui))
             {
-                GameObject uiObject = loader.LoadPrefab("UI/" + type.Name).Instantiate();
-                ui = uiObject.GetComponent<T>();
+                ui = new T();
                 createdUIs.Add(type, ui);
-                uiObject.transform.SetParent(layers[layer].gameObject.transform, false);
             }
 
-            ui.MoveTop();
-            ui.OnShow(args);
+            ui.SetUILayer(layer);
+            if (showAfterCreate)
+            {
+                ui.Show(args);
+                ui.MoveTop();
+            }
             return (T)ui;
         }
 
@@ -90,8 +90,7 @@ namespace ProjectK
                 return;
             createdUIs.Remove(type);
 
-            if (ui.gameObject.activeSelf)
-                ui.OnHide();
+            ui.Hide();
             ui.Dispose();
         }
 
@@ -101,9 +100,14 @@ namespace ProjectK
             if (createdUIs.ContainsKey(type))
                 createdUIs.Remove(type);
 
-            if (ui.gameObject.activeSelf)
-                ui.OnHide();
+            ui.Hide();
             ui.Dispose();
+        }
+
+        public void AddUIToLayer(UIBase ui, UILayer uiLayer)
+        {
+            RectTransform transform = layers[uiLayer];
+            ui.GameObject.transform.SetParent(transform, false);
         }
     }
 }

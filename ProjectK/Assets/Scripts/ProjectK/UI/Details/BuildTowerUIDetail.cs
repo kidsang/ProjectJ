@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace ProjectK
 {
-    public class BuildTowerUIDetail : UIBase
+    public class BuildTowerUIDetail : MonoBehaviour
     {
         public Button _Icon0;
         public Button _Icon1;

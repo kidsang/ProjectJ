@@ -103,7 +103,7 @@ namespace ProjectK.Editor
             codeBuilder.AppendLine();
             codeBuilder.AppendLine("namespace ProjectK");
             codeBuilder.AppendLine("{");
-            codeBuilder.AppendLine(String.Format("    public class {0} : UIBase", detailClassName));
+            codeBuilder.AppendLine(String.Format("    public class {0} : MonoBehaviour", detailClassName));
             codeBuilder.AppendLine("    {");
             foreach (UIObjectInfo info in uiObjectInfos)
             {
@@ -245,7 +245,7 @@ namespace ProjectK.Editor
 
             // 保存Prefab
             string prefabPath = GetUIPrefabName(gameObjectName);
-            GameObject prefab = PrefabUtility.CreatePrefab(prefabPath, gameObject);
+            PrefabUtility.CreatePrefab(prefabPath, gameObject);
             AssetDatabase.SaveAssets();
 
             GameObject.DestroyImmediate(gameObject);
