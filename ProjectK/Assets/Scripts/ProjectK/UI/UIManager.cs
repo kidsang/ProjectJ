@@ -62,7 +62,7 @@ namespace ProjectK
             gameObject.AddComponent<TouchInputModule>();
         }
 
-        public T CreateUI<T>(UILayer layer = UILayer.LayerMid, bool showAfterCreate = true, params object[] args) where T : UIBase, new()
+        public T CreateUI<T>(UILayer layer = UILayer.LayerMid, bool showAfterCreate = true) where T : UIBase, new()
         {
             Type type = typeof(T);
             UIBase ui;
@@ -76,8 +76,8 @@ namespace ProjectK
             ui.SetUILayer(layer);
             if (showAfterCreate)
             {
-                ui.Show(args);
                 ui.MoveTop();
+                ui.Show();
             }
             return (T)ui;
         }
@@ -108,6 +108,12 @@ namespace ProjectK
         {
             RectTransform transform = layers[uiLayer];
             ui.GameObject.transform.SetParent(transform, false);
+        }
+
+        public void AddUIToLayer(RectTransform uiTransform, UILayer uiLayer)
+        {
+            RectTransform transform = layers[uiLayer];
+            uiTransform.SetParent(transform, false);
         }
     }
 }

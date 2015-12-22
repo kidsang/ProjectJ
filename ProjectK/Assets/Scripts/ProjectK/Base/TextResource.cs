@@ -75,11 +75,17 @@ namespace ProjectK.Base
 
         public static string[] ParseStrArray(string data, char seperator = ';')
         {
+            if (data == null)
+                return new string[0];
+
             return data.Split(seperator);
         }
 
         public static int[] ParseIntArray(string data, char seperator = ';')
         {
+            if (data == null)
+                return new int[0];
+
             string[] strArr = data.Split(seperator);
             int length = strArr.Length;
 
@@ -92,6 +98,9 @@ namespace ProjectK.Base
 
         public static float[] ParseFloatArray(string data, char seperator = ';')
         {
+            if (data == null)
+                return new float[0];
+
             string[] strArr = data.Split(seperator);
             int length = strArr.Length;
 
@@ -104,6 +113,9 @@ namespace ProjectK.Base
 
         public static double[] ParseDoubleArray(string data, char seperator = ';')
         {
+            if (data == null)
+                return new double[0];
+
             string[] strArr = data.Split(seperator);
             int length = strArr.Length;
 
@@ -116,6 +128,9 @@ namespace ProjectK.Base
 
         public static bool[] ParseBoolArray(string data, char seperator = ';')
         {
+            if (data == null)
+                return new bool[0];
+
             string[] strArr = data.Split(seperator);
             int length = strArr.Length;
 
@@ -128,6 +143,9 @@ namespace ProjectK.Base
 
         public static T[] ParseEnumArray<T>(string data, char seperator = ';')
         {
+            if (data == null)
+                return new T[0];
+
             string[] strArr = data.Split(seperator);
             int length = strArr.Length;
 

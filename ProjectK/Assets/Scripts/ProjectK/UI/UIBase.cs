@@ -43,13 +43,19 @@ namespace ProjectK
             }
 
             GameObject = (res as PrefabResource).Instantiate();
+            GameObject.name = Name;
             Loaded = true;
 
             if (!Showing)
                 GameObject.SetActive(false);
 
-            onLoadCompleteCallbacks();
-            onLoadCompleteCallbacks = null;
+            Init();
+
+            if (onLoadCompleteCallbacks != null)
+            {
+                onLoadCompleteCallbacks();
+                onLoadCompleteCallbacks = null;
+            }
         }
 
         override protected void OnDispose()
@@ -74,6 +80,48 @@ namespace ProjectK
         }
 
         /// <summary>
+        /// 在窗口加载完成后被调用
+        /// </summary>
+        protected virtual void Init()
+        {
+
+        }
+
+        /// <summary>
+        /// 在窗口显示的时候被调用
+        /// </summary>
+        protected virtual void OnShow()
+        {
+
+        }
+
+        /// <summary>
+        /// 在窗口隐藏的时候被调用
+        /// </summary>
+        protected virtual void OnHide()
+        {
+
+        }
+
+        /// <summary>
+        /// 刷新窗口内容
+        /// </summary>
+        protected virtual void OnRefresh(params object[] args)
+        {
+
+        }
+
+        public void AddOnLoadCompleteCallback(OnLoadCompleteCallback callback)
+        {
+            if (!Loaded)
+                onLoadCompleteCallbacks += callback;
+            else
+                callback();
+        }
+
+        #region 各种异步接口
+
+        /// <summary>
         /// 设置UI的层级
         /// </summary>
         public void SetUILayer(UILayer uiLayer)
@@ -91,16 +139,19 @@ namespace ProjectK
         /// <summary>
         /// 显示窗口
         /// </summary>
-        public void Show(params object[] args)
+        public void Show()
         {
             if (Loaded)
             {
-                GameObject.SetActive(true);
-                OnShow(args);
+                if (!GameObject.activeSelf)
+                {
+                    GameObject.SetActive(true);
+                    OnShow();
+                }
             }
             else
             {
-                AddOnLoadCompleteCallback(() => Show(args));
+                AddOnLoadCompleteCallback(() => Show());
             }
         }
 
@@ -124,6 +175,21 @@ namespace ProjectK
         }
 
         /// <summary>
+        /// 刷新窗口内容
+        /// </summary>
+        public void Refresh(params object[] args)
+        {
+            if (Loaded)
+            {
+                OnRefresh(args);
+            }
+            else
+            {
+                AddOnLoadCompleteCallback(() => Refresh(args));
+            }
+        }
+
+        /// <summary>
         /// 将窗口移动到本层的最顶端
         /// </summary>
         public void MoveTop()
@@ -139,28 +205,39 @@ namespace ProjectK
         }
 
         /// <summary>
-        /// 在窗口显示的时候被调用
+        /// 将窗口移动到本层的最底端
         /// </summary>
-        public virtual void OnShow(object[] args)
+        public void MoveBottom()
         {
-
+            if (Loaded)
+            {
+                GameObject.transform.SetAsFirstSibling();
+            }
+            else
+            {
+                AddOnLoadCompleteCallback(() => MoveBottom());
+            }
         }
 
         /// <summary>
-        /// 在窗口隐藏的时候被调用
+        /// 设置窗口位置
         /// </summary>
-        public virtual void OnHide()
+        /// <param name="position"></param>
+        public void SetPosition(Vector2 position)
         {
-
-        }
-
-        public void AddOnLoadCompleteCallback(OnLoadCompleteCallback callback)
-        {
-            if (!Loaded)
-                onLoadCompleteCallbacks += callback;
+            if (Loaded)
+            {
+                GameObject.transform.position = position;
+            }
             else
-                callback();
+            {
+                AddOnLoadCompleteCallback(() => SetPosition(position));
+            }
         }
+
+        #endregion
+
+        #region 查找UI元件helpers
 
         /// <summary>
         /// 从自身开始查找是否存在指定名字的UI
@@ -251,5 +328,89 @@ namespace ProjectK
             }
             return null;
         }
+
+        #endregion
+
+        #region 添加鼠标事件监听helpers
+
+        public static void AddPointerClickHandler(UIBehaviour uiBehaviour, OnPointerEvent callback)
+        {
+
+            PointerHandler handler = GetPointerHandler(uiBehaviour);
+            handler.PointerClickEvent += callback;
+        }
+
+        public static void RemovePointerClickHandler(UIBehaviour uiBehaviour, OnPointerEvent callback)
+        {
+
+            PointerHandler handler = GetPointerHandler(uiBehaviour);
+            handler.PointerClickEvent -= callback;
+        }
+
+        public static void AddPointerDownHandler(UIBehaviour uiBehaviour, OnPointerEvent callback)
+        {
+
+            PointerHandler handler = GetPointerHandler(uiBehaviour);
+            handler.PointerDownEvent += callback;
+        }
+
+        public static void RemovePointerDownHandler(UIBehaviour uiBehaviour, OnPointerEvent callback)
+        {
+
+            PointerHandler handler = GetPointerHandler(uiBehaviour);
+            handler.PointerDownEvent -= callback;
+        }
+
+        public static void AddPointerUpHandler(UIBehaviour uiBehaviour, OnPointerEvent callback)
+        {
+
+            PointerHandler handler = GetPointerHandler(uiBehaviour);
+            handler.PointerUpEvent += callback;
+        }
+
+        public static void RemovePointerUpHandler(UIBehaviour uiBehaviour, OnPointerEvent callback)
+        {
+
+            PointerHandler handler = GetPointerHandler(uiBehaviour);
+            handler.PointerUpEvent -= callback;
+        }
+
+        private static PointerHandler GetPointerHandler(UIBehaviour uiBehaviour)
+        {
+            GameObject gameObject = uiBehaviour.gameObject;
+            PointerHandler handler = gameObject.GetComponent<PointerHandler>();
+            if (handler == null)
+                handler = gameObject.AddComponent<PointerHandler>();
+            return handler;
+        }
+
+        public delegate void OnPointerEvent(PointerEventData eventData);
+
+        public class PointerHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+        {
+            public event OnPointerEvent PointerClickEvent;
+            public event OnPointerEvent PointerDownEvent;
+            public event OnPointerEvent PointerUpEvent;
+
+            public void OnPointerClick(PointerEventData eventData)
+            {
+                if (PointerClickEvent != null)
+                    PointerClickEvent(eventData);
+            }
+
+            public void OnPointerDown(PointerEventData eventData)
+            {
+                if (PointerDownEvent != null)
+                    PointerDownEvent(eventData);
+            }
+
+            public void OnPointerUp(PointerEventData eventData)
+            {
+                if (PointerUpEvent != null)
+                    PointerUpEvent(eventData);
+            }
+        }
+
+        #endregion
     }
 }

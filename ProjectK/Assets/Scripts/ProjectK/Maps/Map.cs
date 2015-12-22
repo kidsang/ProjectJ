@@ -143,6 +143,12 @@ namespace ProjectK
             return GetCellByWorldXY(worldPoint.x, worldPoint.y);
         }
 
+        public MapCell GetCellByMousePosition()
+        {
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            return GetCellByWorldXY(worldPoint);
+        }
+
         public int GetDistance(int x1, int y1, int x2, int y2)
         {
             return MapUtils.Distance(x1, y1, x2, y2);

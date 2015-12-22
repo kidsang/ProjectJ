@@ -11,6 +11,7 @@ namespace ProjectK
         public double AtkSpeed;
         public float AtkRange;
         public string AtkTypes;
+        public string Icon;
 
         public DamageType[] AtkTypeArr;
 
