@@ -81,6 +81,16 @@ namespace ProjectK.Base
             return LoadAsync<MaterialResource>(url, onLoadComplete);
         }
 
+        public SpriteResource LoadSprite(string url)
+        {
+            return Load<SpriteResource>(url);
+        }
+
+        public SpriteResource LoadSpriteAsync(string url, ResourceLoadComplete onLoadComplete = null)
+        {
+            return LoadAsync<SpriteResource>(url, onLoadComplete);
+        }
+
         public T Load<T>(string url) where T: Resource, new()
         {
             Resource res;

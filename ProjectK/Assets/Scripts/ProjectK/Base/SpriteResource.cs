@@ -6,16 +6,17 @@ using UnityEngine;
 
 namespace ProjectK.Base
 {
-    public class MaterialResource : UnityResource<Material>
+    public class SpriteResource : UnityResource<Sprite>
     {
-        public Material Material
+        public Sprite Sprite
         {
             get 
             {
                 if (Data == null)
                     return null;
-                return Data as Material; 
+                return Data as Sprite; 
             }
         }
     }
 }
+

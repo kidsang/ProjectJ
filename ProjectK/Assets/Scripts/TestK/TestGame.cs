@@ -32,6 +32,9 @@ namespace TestK
             SceneManager.Init();
             SceneManager.Instance.SwitchTo(scene);
 
+            Player.Me.SelectedTowers.Add(0);
+            Player.Me.SelectedTowers.Add(1);
+
             UIManager.Instance.CreateUI<SceneEventUI>(UILayer.LayerLow);
         }
     }
