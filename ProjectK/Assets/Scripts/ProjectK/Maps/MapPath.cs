@@ -37,7 +37,7 @@ namespace ProjectK
         {
             List<Vector2> locations;
             int nextLocationIndex;
-            FindPathLocation(waypoints[0].Location, toWaypointIndex, out locations, out nextLocationIndex);
+            FindPathLocation(waypoints[toWaypointIndex - 1].Location, toWaypointIndex, out locations, out nextLocationIndex);
             return locations;
         }
 
@@ -45,7 +45,7 @@ namespace ProjectK
         {
             List<Vector3> positions;
             int nextPositionIndex;
-            FindPathPosition(waypoints[0].Location, toWaypointIndex, out positions, out nextPositionIndex);
+            FindPathPosition(waypoints[toWaypointIndex - 1].Location, toWaypointIndex, out positions, out nextPositionIndex);
             return positions;
         }
 

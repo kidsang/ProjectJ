@@ -306,13 +306,15 @@ namespace ProjectK
                 for (int i = 1; i < count; ++i)
                 {
                     List<Vector3> positions = path.FindPathPosition(i);
-                    VectorLine line = new VectorLine("PathLine", positions, null, 2, LineType.Continuous);
-                    line.color = color;
-
-                    obj = new GameObject("PathLine");
-                    obj.transform.SetParent(pathObjectRoot.transform, false);
-                    VectorManager.useDraw3D = true;
-                    VectorManager.ObjectSetup(obj, line, Visibility.Dynamic, Brightness.None);
+                    if (positions.Count >= 2)
+                    {
+                        VectorLine line = new VectorLine("PathLine", positions, null, 2, LineType.Continuous);
+                        line.color = color;
+                        obj = new GameObject("PathLine");
+                        obj.transform.SetParent(pathObjectRoot.transform, false);
+                        VectorManager.useDraw3D = true;
+                        VectorManager.ObjectSetup(obj, line, Visibility.Dynamic, Brightness.None);
+                    }
 
                     if (i < count - 1)
                     {

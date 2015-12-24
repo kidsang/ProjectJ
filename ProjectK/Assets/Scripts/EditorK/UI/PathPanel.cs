@@ -17,10 +17,6 @@ namespace EditorK.UI
 
         private bool initialized = false;
         private bool operating = false;
-        private int pathStartX;
-        private int pathStartY;
-        private int pathEndX;
-        private int pathEndY;
 
         void Start()
         {
@@ -31,7 +27,8 @@ namespace EditorK.UI
             if (!initialized)
             {
                 initialized = true;
-                OnUpdatePaths(null);
+                if (SceneDataProxy.Instance.Data != null)
+                    OnUpdatePaths(null);
             }
         }
 
@@ -52,7 +49,7 @@ namespace EditorK.UI
 
         public void OnAddPathButtonClick()
         {
-            OperateMapPathStart(null);
+            StartOperate();
         }
 
         private void OnSceneMouseClick(object[] args)
@@ -61,38 +58,22 @@ namespace EditorK.UI
                 return;
 
             EditorMouse mouse = EditorMouse.Instance;
-            switch (mouse.DataType)
-            {
-                case EditorMouseDataType.MapPathStart:
-                    pathStartX = mouse.SelectedLocationX;
-                    pathStartY = mouse.SelectedLocationY;
-                    if (mouse.Data == null)
-                    {
-                        OperateMapPathEnd(null);
-                    }
-                    else
-                    {
-                        int index = (int)mouse.Data;
-                        SceneDataProxy.Instance.SetPathStart(index, pathStartX, pathStartY);
-                        StopOperate();
-                    }
-                    return;
+            if (mouse.DataType != EditorMouseDataType.MapPath)
+                return;
 
-                case EditorMouseDataType.MapPathEnd:
-                    pathEndX = mouse.SelectedLocationX;
-                    pathEndY = mouse.SelectedLocationY;
-                    if (mouse.Data == null)
-                    {
-                        SceneDataProxy.Instance.AddPath(pathStartX, pathStartY, pathEndX, pathEndY);
-                    }
-                    else
-                    {
-                        int index = (int)mouse.Data;
-                        SceneDataProxy.Instance.SetPathEnd(index, pathEndX, pathEndY);
-                    }
-                    StopOperate();
-                    return;
-            }
+            InfoMap data = mouse.Data as InfoMap;
+            int? pathIndex = (int?)data["pathIndex"];
+            int? pointIndex = (int?)data["pointIndex"];
+
+            if (pathIndex == null)
+                pathIndex = SceneDataProxy.Instance.AddPath(mouse.SelectedLocationX, mouse.SelectedLocationY);
+            else
+                SceneDataProxy.Instance.SetPathPoint(pathIndex.Value, pointIndex, mouse.SelectedLocationX, mouse.SelectedLocationY);
+
+            if (pointIndex != null)
+                StopOperate();
+            else
+                OperateSetPoint(pathIndex.Value, null);
         }
 
         private void OnSceneMouseRightClick(object[] args)
@@ -101,28 +82,47 @@ namespace EditorK.UI
                 StopOperate();
         }
 
-        private void OperateMapPathStart(object data)
+        private void StartOperate()
         {
-            operating = true;
-            AddPathButton.color = EditorUtils.SelectedColor;
-            EditorMouse mouse = EditorMouse.Instance;
-            mouse.SetData(EditorMouseDataType.MapPathStart, data, "Map/StartMark");
-        }
+            if (operating)
+                return;
 
-        private void OperateMapPathEnd(object data)
-        {
             operating = true;
             AddPathButton.color = EditorUtils.SelectedColor;
             EditorMouse mouse = EditorMouse.Instance;
-            mouse.SetData(EditorMouseDataType.MapPathEnd, data, "Map/EndMark");
+
+            InfoMap data = new InfoMap();
+            data["pathIndex"] = null;
+            data["pointIndex"] = null;
+            mouse.SetData(EditorMouseDataType.MapPath, data, "Map/StartMark");
         }
 
         private void StopOperate()
         {
+            if (!operating)
+                return;
+
             operating = false;
             AddPathButton.color = Color.white;
             EditorMouse mouse = EditorMouse.Instance;
             mouse.Clear();
+        }
+
+        private void OperateSetPoint(int pathIndex, int? pointIndex)
+        {
+            operating = true;
+            AddPathButton.color = EditorUtils.SelectedColor;
+            EditorMouse mouse = EditorMouse.Instance;
+
+            InfoMap data = new InfoMap();
+            data["pathIndex"] = pathIndex;
+            data["pointIndex"] = pointIndex;
+            mouse.SetData(EditorMouseDataType.MapPath, data, pointIndex == 0 ? "Map/StartMark" : "Map/EndMark");
+        }
+
+        private void OperateRemovePoint(int pathIndex, int? pointIndex)
+        {
+            SceneDataProxy.Instance.RemovePathPoint(pathIndex, pointIndex.Value);
         }
 
         private void OnUpdatePaths(object[] args)
@@ -147,7 +147,7 @@ namespace EditorK.UI
 
                 PathEntry entry = entryObj.GetComponent<PathEntry>();
                 MapPathSetting pathData = data.Paths[i];
-                entry.Load(i, pathData, OperateMapPathStart, OperateMapPathEnd);
+                entry.Load(i, pathData, OperateSetPoint, OperateRemovePoint);
             }
 
             for (int i = numPathDatas; i < numEntryObjs; ++i)
@@ -164,7 +164,7 @@ namespace EditorK.UI
             MapSetting data = SceneDataProxy.Instance.MapData;
             GameObject entryObj = Content.GetChild(index).gameObject;
             PathEntry entry = entryObj.GetComponent<PathEntry>();
-            entry.Load(index, data.Paths[index], OperateMapPathStart, OperateMapPathEnd);
+            entry.Load(index, data.Paths[index], OperateSetPoint, OperateRemovePoint);
         }
     }
 }

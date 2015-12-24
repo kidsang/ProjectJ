@@ -12,50 +12,49 @@ namespace EditorK.UI
     public class PathEntry : MonoBehaviour
     {
         public Image ColorField;
-        public Text StartField;
-        public Text EndField;
+        public RectTransform WaypointGroup;
+        public GameObject WaypointEntryPrefab;
 
-        private int index;
+        private int pathIndex;
 
-        public delegate void Operate(object data);
-        private Operate operateStart;
-        private Operate operateEnd;
+        public delegate void Operate(int pathIndex, int? pointIndex);
+        private Operate operateSet;
+        private Operate operateRemove;
 
-        public void Load(int index, MapPathSetting data, Operate operateStart, Operate operateEnd)
+        public void Load(int pathIndex, MapPathSetting data, Operate operateSet, Operate operateRemove)
         {
-            this.index = index;
-            this.operateStart = operateStart;
-            this.operateEnd = operateEnd;
+            this.pathIndex = pathIndex;
+            this.operateSet = operateSet;
+            this.operateRemove = operateRemove;
 
-            // TODO:
-            //ColorField.color = new Color(data.ColorR, data.ColorG, data.ColorB);
-            //StartField.text = "起点：(" + data.StartX + ", " + data.StartY + ")";
-            //EndField.text = "终点：(" + data.EndX + ", " + data.EndY + ")";
+            ColorField.color = new Color(data.ColorR, data.ColorG, data.ColorB);
+
+            for (int i = WaypointGroup.transform.childCount - 1; i >= 0; --i)
+                GameObject.DestroyImmediate(WaypointGroup.transform.GetChild(i).gameObject);
+
+            int lineHeight = 24;
+            for (int i = 0; i < data.Waypoints.Length; ++i)
+            {
+                MapWaypointSetting waypointSetting = data.Waypoints[i];
+                GameObject WaypointEntry = GameObject.Instantiate(WaypointEntryPrefab);
+                WaypointEntry.transform.SetParent(WaypointGroup.transform, false);
+                WaypointEntry.transform.localPosition = new Vector3(0, -i * lineHeight);
+                UIBase.FindUIObject<Text>(WaypointEntry, "Text").text = string.Format("{0}：({1}, {2})", i, waypointSetting.X, waypointSetting.Y);
+                UIBase.FindUIObject<Button>(WaypointEntry, "ResetButton").onClick.AddListener(OnResetPoint(i));
+                UIBase.FindUIObject<Button>(WaypointEntry, "RemoveButton").onClick.AddListener(OnRemovePoint(i));
+            }
+            gameObject.GetComponent<LayoutElement>().minHeight = lineHeight * data.Waypoints.Length + 12;
         }
 
-        public void onChangeStart()
+        public UnityEngine.Events.UnityAction OnResetPoint(int pointIndex)
         {
-            operateStart(index);
+            return () => operateSet(pathIndex, pointIndex);
         }
 
-        public void OnChangeEnd()
+        public UnityEngine.Events.UnityAction OnRemovePoint(int pointIndex)
         {
-            operateEnd(index);
+            return () => operateRemove(pathIndex, pointIndex);
         }
 
-        private void OnMoveUp()
-        {
-
-        }
-
-        private void OnMoveDown()
-        {
-
-        }
-
-        private void OnRemove()
-        {
-
-        }
     }
 }

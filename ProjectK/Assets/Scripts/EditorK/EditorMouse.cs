@@ -12,11 +12,10 @@ namespace EditorK
     {
         None,
 
-        // int? index
-        MapPathStart,
-
-        // int? index
-        MapPathEnd,
+        // InfoMap
+        //   int pathIndex
+        //   int? pointIndex
+        MapPath,
 
         // InfoMap
         //   MapCellFlag flag

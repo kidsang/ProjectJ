@@ -46,22 +46,22 @@ namespace EditorK
             GameEditor.Instance.FileModified = true;
         }
 
-        public void AddPath(int startX, int startY, int endX, int endY)
+        public int AddPath(int locationX, int locationY)
         {
-            // TODO:
-            //List<MapPathSetting> paths = new List<MapPathSetting>(Data.Paths);
-            //MapPathSetting path = new MapPathSetting();
-            //path.StartX = startX;
-            //path.StartY = startY;
-            //path.EndX = endX;
-            //path.EndY = endY;
-            //path.ColorR = Random.value;
-            //path.ColorG = Random.value;
-            //path.ColorB = Random.value;
-            //paths.Add(path);
-            //Data.Paths = paths.ToArray();
+            List<MapPathSetting> paths = new List<MapPathSetting>(MapData.Paths);
+            MapPathSetting path = new MapPathSetting();
+            path.ColorR = Random.value;
+            path.ColorG = Random.value;
+            path.ColorB = Random.value;
+            MapWaypointSetting waypoint = new MapWaypointSetting();
+            waypoint.X = locationX;
+            waypoint.Y = locationY;
+            path.Waypoints = new MapWaypointSetting[] { waypoint };
+            paths.Add(path);
+            MapData.Paths = paths.ToArray();
 
-            //Modify(EditorEvent.MAP_UPDATE_PATHS, null);
+            Modify(EditorEvent.MAP_UPDATE_PATHS, null);
+            return paths.Count - 1;
         }
 
         public void RemovePath(int index)
@@ -84,28 +84,45 @@ namespace EditorK
             Modify(EditorEvent.MAP_UPDATE_PATHS, null);
         }
 
-        public void SetPathStart(int index, int startX, int startY)
+        public void SetPathPoint(int pathIndex, int? pointIndex, int locationX, int locationY)
         {
-            // TODO:
-            //MapPathSetting path = Data.Paths[index];
-            //path.StartX = startX;
-            //path.StartY = startY;
+            MapPathSetting path = MapData.Paths[pathIndex];
+            MapWaypointSetting waypoint = new MapWaypointSetting();
+            waypoint.X = locationX;
+            waypoint.Y = locationY;
 
-            //InfoMap infos = new InfoMap();
-            //infos["index"] = index;
-            //Modify(EditorEvent.MAP_UPDATE_PATH, infos);
+            if (pointIndex != null)
+            {
+                path.Waypoints[pointIndex.Value] = waypoint;
+            }
+            else
+            {
+                var waypoints = path.Waypoints.ToList<MapWaypointSetting>();
+                waypoints.Add(waypoint);
+                path.Waypoints = waypoints.ToArray();
+            }
+
+            InfoMap infos = new InfoMap();
+            infos["index"] = pathIndex;
+            Modify(EditorEvent.MAP_UPDATE_PATH, infos);
         }
 
-        public void SetPathEnd(int index, int endX, int endY)
+        public void RemovePathPoint(int pathIndex, int pointIndex)
         {
-            // TODO:
-            //MapPathSetting path = Data.Paths[index];
-            //path.EndX = endX;
-            //path.EndY = endY;
+            MapPathSetting path = MapData.Paths[pathIndex];
+            if (path.Waypoints.Length == 1)
+            {
+                RemovePath(pathIndex);
+                return;
+            }
 
-            //InfoMap infos = new InfoMap();
-            //infos["index"] = index;
-            //Modify(EditorEvent.MAP_UPDATE_PATH, infos);
+            var waypoints = path.Waypoints.ToList<MapWaypointSetting>();
+            waypoints.RemoveAt(pointIndex);
+            path.Waypoints = waypoints.ToArray();
+
+            InfoMap infos = new InfoMap();
+            infos["index"] = pathIndex;
+            Modify(EditorEvent.MAP_UPDATE_PATH, infos);
         }
 
         public void SetPathColor(int index, float colorR, float colorG, float colorB)
