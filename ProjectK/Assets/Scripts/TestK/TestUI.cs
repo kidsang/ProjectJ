@@ -16,7 +16,7 @@ namespace TestK
             ResourceManager.Init();
             UIManager.Init();
 
-            BuildTowerUI ui = UIManager.Instance.CreateUI<BuildTowerUI>();
+            UIManager.Instance.CreateUI<BuildTowerUI>();
         }
     }
 }

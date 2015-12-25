@@ -18,15 +18,12 @@ namespace EditorK.UI
 
         public float CameraZoom { get; set; }
 
-        private ResourceLoader loader;
         private int lastScreenWidth;
         private int lastScreenHeight;
         private bool resizing;
 
         void Start()
         {
-            loader = new ResourceLoader();
-
             EventManager.Instance.Register(this, EditorEvent.CAMERA_ZOOM_CHANGE, OnScreenResize);
             EventManager.Instance.Register(this, EditorEvent.MAP_LOAD, OnScreenResize);
         }

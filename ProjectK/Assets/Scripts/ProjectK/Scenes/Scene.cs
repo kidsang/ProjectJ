@@ -132,15 +132,13 @@ namespace ProjectK
 
         public void CreateMonster(int pathIndex, int templateID, int count)
         {
-            //MapPath path = Map.Paths[pathIndex];
-            //for (int i = 0; i < count; ++i)
-            //{
-            //    MonsterEntity monster = SceneEntityManager.Create<MonsterEntity>(loader, templateID);
-            //    monster.gameObject.transform.SetParent(sceneRoot.transform);
-            //    monster.gameObject.transform.position = path.StartPosition;
-            //    monster.SetPath(path);
-            //    monsters.Add(monster);
-            //}
+            MapPath path = Map.Paths[pathIndex];
+            for (int i = 0; i < count; ++i)
+            {
+                MonsterEntity monster = CreateMonsterEntity(templateID);
+                AddEntityToScene(monster, path.StartPosition);
+                monster.SetPath(path);
+            }
         }
 
         public MonsterEntity CreateMonsterEntity(int templateID)
@@ -164,10 +162,11 @@ namespace ProjectK
 
         public void AddEntityToScene(SceneEntity sceneEntity, Vector3? position = null)
         {
+            sceneEntity.gameObject.transform.SetParent(sceneRoot.transform, false);
+
             if (position != null)
                 sceneEntity.NaviComp.Position = position.Value;
 
-            sceneEntity.gameObject.transform.SetParent(sceneRoot.transform);
             Map.UpdateSceneEntityCell(sceneEntity);
             sceneEntity.Scene = this;
         }

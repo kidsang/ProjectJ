@@ -24,35 +24,55 @@ namespace ProjectK
 
         public void SetPath(MapPath path)
         {
-            //this.path = path;
+            this.path = path;
         }
 
         public override void Activate()
         {
-            //base.Activate(scene);
+            base.Activate();
 
-            //if (wayPositions == null)
-            //    path.FindPathPosition(Location, nextWaypointIndex, out wayPositions, out nextPositionIndex);
+            if (nextWaypointIndex < path.WaypointCount)
+            {
+                if (wayPositions == null)
+                    path.FindPathPosition(Location, nextWaypointIndex, out wayPositions, out nextPositionIndex);
 
-            //Vector3 position = gameObject.transform.position;
-            //if (nextPositionIndex < wayPositions.Count)
-            //{
-            //    Vector3 wayPosition = wayPositions[nextPositionIndex];
-            //    Vector3 direction = wayPosition - position;
-            //    float move = MoveSpeed * scene.DeltaTime;
-            //    if (direction.sqrMagnitude > move * move)
-            //    {
-            //        direction.Normalize();
-            //        position += direction * move;
-            //    }
-            //    else
-            //    {
-            //        position = wayPosition;
-            //        nextPositionIndex += 1;
-            //    }
+                Vector3 position = NaviComp.Position;
+                if (nextPositionIndex < wayPositions.Count)
+                {
+                    Vector3 wayPosition = wayPositions[nextPositionIndex];
+                    Vector3 direction = wayPosition - position;
+                    float move = AttrComp.MoveSpeed * Scene.DeltaTime;
+                    if (direction.sqrMagnitude > move * move)
+                    {
+                        direction.Normalize();
+                        position += direction * move;
+                    }
+                    else
+                    {
+                        position = wayPosition;
+                        nextPositionIndex += 1;
+                    }
 
-            //    gameObject.transform.position = position;
-            //}
+                    NaviComp.Position = position;
+                    float angle = MapUtils.Angle(direction);
+                    gameObject.transform.localRotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg - 90, MapUtils.Vector3Z);
+                }
+                else
+                {
+                    nextWaypointIndex += 1;
+                    wayPositions = null;
+                }
+            }
+            else
+            {
+                Die();
+            }
+        }
+
+        public void Die()
+        {
+            Scene scene = SceneManager.Instance.Scene;
+            scene.DestroyEntity(this);
         }
     }
 }

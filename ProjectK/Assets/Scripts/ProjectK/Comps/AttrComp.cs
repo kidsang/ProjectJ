@@ -292,15 +292,15 @@ namespace ProjectK
         # endregion
 
         # region 移动速度 moveSpeed moveSpeedBase moveSpeedAddRate
-        private double moveSpeed;
-        private double moveSpeedBase;
-        private double moveSpeedAddRate;
+        private float moveSpeed;
+        private float moveSpeedBase;
+        private float moveSpeedAddRate;
 
         /// <summary>
         /// 移动速度
         /// 移动速度最低为0
         /// </summary>
-        public double MoveSpeed
+        public float MoveSpeed
         {
             get { return moveSpeed; }
             private set
@@ -317,7 +317,7 @@ namespace ProjectK
         /// <summary>
         /// 移动速度基础值
         /// </summary>
-        public double MoveSpeedBase
+        public float MoveSpeedBase
         {
             get { return moveSpeedBase; }
             set
@@ -332,7 +332,7 @@ namespace ProjectK
         /// <summary>
         /// 移动速度百分比加成
         /// </summary>
-        public double MoveSpeedAddRate
+        public float MoveSpeedAddRate
         {
             get { return moveSpeedAddRate; }
             set

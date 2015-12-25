@@ -43,7 +43,6 @@ namespace ProjectK
         {
             ResetPoints();
             float startAngle = -rangeAngle / 2;
-            float endAngle = rangeAngle / 2;
             float deltaAngle = rangeAngle / (numPoints - 2);
             Vector3 point = new Vector3(radius, 0, 0);
             for (int i = 1; i < numPoints - 1; ++i)

@@ -26,11 +26,25 @@ namespace TestK
             GameObject sceneRoot = new GameObject("SceneRoot");
             scene = sceneRoot.AddComponent<Scene>();
             scene.Init();
-            scene.Load("Settings/test.map");
-            scene.StartScene();
+            scene.Load("Settings/test_game.map");
+
+            SpawnWaveSetting spawnWaveSetting = new SpawnWaveSetting();
+            spawnWaveSetting.WaveIndex = 0;
+            spawnWaveSetting.IntervalTime = 1;
+            spawnWaveSetting.SpawnTimes = int.MaxValue;
+            spawnWaveSetting.SpawnPerTime = 1;
+            spawnWaveSetting.TemplateID = 0;
+            SpawnLocationSetting spawnLocationSetting = new SpawnLocationSetting();
+            spawnLocationSetting.PathIndex = 0;
+            spawnLocationSetting.Waves = new SpawnWaveSetting[] { spawnWaveSetting };
+            SpawnSetting spawnSetting = new SpawnSetting();
+            spawnSetting.Locations = new SpawnLocationSetting[] { spawnLocationSetting };
+            scene.SpawnManager.Load(spawnSetting);
 
             SceneManager.Init();
             SceneManager.Instance.SwitchTo(scene);
+            scene.StartScene();
+            scene.SpawnManager.Start();
 
             Player.Me.SelectedTowers.Add(0);
             Player.Me.SelectedTowers.Add(1);
