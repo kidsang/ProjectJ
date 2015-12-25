@@ -30,6 +30,7 @@ namespace ProjectK
         public List<GameObject> PathObjectRoots { get; protected set; }
         public List<MapPath> Paths { get; protected set; }
         protected PriorityQueue<MapCell> frontier = new PriorityQueue<MapCell>(); // 用于寻路
+        protected HashSet<int> cantBlockCells = new HashSet<int>(); // 这些位置不能放置阻挡，否则就会把路堵死
 
         internal void Init(ResourceLoader loader)
         {
@@ -332,6 +333,77 @@ namespace ProjectK
         {
             for (int i = Paths.Count - 1; i >= 0; --i)
                 ToggleShowPath(i, show, update);
+        }
+
+        /// <summary>
+        /// 计算哪些位置会堵死迷宫
+        /// </summary>
+        public void CalculateCantBlockCells()
+        {
+            cantBlockCells.Clear();
+
+            int pathCount = Paths.Count;
+            for (int i = 0; i < pathCount; ++i)
+            {
+                MapPath path = Paths[i];
+                int waypointCount = path.WaypointCount;
+                for (int j = 1; j < waypointCount; ++j)
+                {
+                    MapCell start = GetCell(path.GetLocation(j - 1));
+                    MapCell end = GetCell(path.GetLocation(j));
+                    DoCalculateCantBlockCells(start, end, 0, new HashSet<int>(), new Dictionary<int, int>(), new Dictionary<int, int>(), new Dictionary<int, int>());
+                }
+            }
+        }
+
+        private bool DoCalculateCantBlockCells(MapCell start, MapCell end, int depth, HashSet<int> visited, Dictionary<int, int> depths, Dictionary<int, int> lows, Dictionary<int, int> parents)
+        {
+            int startKey = start.Key;
+            visited.Add(startKey);
+            depths[startKey] = depth;
+            lows[startKey] = depth;
+            int childCount = 0;
+            bool isCutPoint = false;
+            bool reachedEnd = false;
+            int parentKey;
+
+            foreach (MapCell neighbour in start.Neighbours)
+            {
+                if (neighbour == null || neighbour.IsObstacle)
+                    continue;
+
+                int neighbourKey = neighbour.Key;
+                if (!visited.Contains(neighbourKey))
+                {
+                    parents[neighbourKey] = startKey;
+                    reachedEnd = DoCalculateCantBlockCells(neighbour, end, depth + 1, visited, depths, lows, parents);
+                    childCount += 1;
+                    if (lows[neighbourKey] >= depths[startKey])
+                        isCutPoint = true;
+                    lows[startKey] = Mathf.Min(lows[startKey], lows[neighbourKey]);
+                }
+                else
+                {
+                    parentKey = -1;
+                    if (parents.ContainsKey(startKey))
+                        parentKey = parents[startKey];
+                    if (neighbourKey != parentKey)
+                        lows[startKey] = Mathf.Min(lows[startKey], depths[neighbourKey]);
+                }
+            }
+
+            reachedEnd = reachedEnd || (start == end);
+
+            parentKey = -1;
+            if (parents.ContainsKey(startKey))
+                parentKey = parents[startKey];
+            if (parentKey != -1 && isCutPoint || parentKey == -1 && childCount > 1)
+            {
+                if (reachedEnd)
+                    cantBlockCells.Add(startKey);
+            }
+
+            return reachedEnd;
         }
 
         /// <summary>
