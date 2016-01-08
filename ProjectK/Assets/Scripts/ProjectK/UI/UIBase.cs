@@ -17,6 +17,7 @@ namespace ProjectK
         public string Name { get; private set; }
         public bool Loaded { get; private set; }
         public bool Showing { get; private set; }
+        public bool UpdateEnabled { get; private set; }
 
         public delegate void OnLoadCompleteCallback();
         private event OnLoadCompleteCallback onLoadCompleteCallbacks;
@@ -26,6 +27,7 @@ namespace ProjectK
             Name = GetType().Name;
             Loaded = false;
             Showing = false;
+            UpdateEnabled = false;
 
             Loader = new ResourceLoader();
             Loader.LoadPrefabAsync("UI/" + Name, OnLoadComplete);
@@ -72,6 +74,12 @@ namespace ProjectK
                 GameObject = null;
             }
 
+            if (UpdateEnabled)
+            {
+                UIManager.Instance.RemoveUpdateUI(this);
+                UpdateEnabled = false;
+            }
+
             onLoadCompleteCallbacks = null;
             Loaded = false;
             Showing = false;
@@ -107,6 +115,14 @@ namespace ProjectK
         /// 刷新窗口内容
         /// </summary>
         protected virtual void OnRefresh(params object[] args)
+        {
+
+        }
+
+        /// <summary>
+        /// 每帧调用，设置EnableUpdate()启用
+        /// </summary>
+        public virtual void OnUpdate()
         {
 
         }
@@ -222,7 +238,6 @@ namespace ProjectK
         /// <summary>
         /// 设置窗口位置
         /// </summary>
-        /// <param name="position"></param>
         public void SetPosition(Vector2 position)
         {
             if (Loaded)
@@ -232,6 +247,31 @@ namespace ProjectK
             else
             {
                 AddOnLoadCompleteCallback(() => SetPosition(position));
+            }
+        }
+
+        /// <summary>
+        /// 启用OnUpdate
+        /// </summary>
+        public void EnableUpdate(bool enable)
+        {
+            if (UpdateEnabled == enable)
+                return;
+            UpdateEnabled = enable;
+
+            if (enable)
+            {
+                if (Loaded)
+                    UIManager.Instance.AddUpdateUI(this);
+                else
+                    AddOnLoadCompleteCallback(() => UIManager.Instance.AddUpdateUI(this));
+            }
+            else
+            {
+                if (Loaded)
+                    UIManager.Instance.RemoveUpdateUI(this);
+                else
+                    AddOnLoadCompleteCallback(() => UIManager.Instance.RemoveUpdateUI(this));
             }
         }
 

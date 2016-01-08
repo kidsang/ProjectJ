@@ -16,7 +16,6 @@ namespace ProjectK
 
             AtkComp = AddComp<AtkComp>();
 
-            // TODO: load attr
             TowerEntitySetting setting = (TowerEntitySetting)template;
             AttrComp.AtkBase = setting.Atk;
             AttrComp.AtkSpeedBase = setting.AtkSpeed;

@@ -24,6 +24,7 @@ namespace ProjectK
 
         private Dictionary<Type, UIBase> createdUIs = new Dictionary<Type, UIBase>();
         private Dictionary<UILayer, RectTransform> layers = new Dictionary<UILayer, RectTransform>();
+        private List<UIBase> updatingUIs = new List<UIBase>();
 
         public static void Init()
         {
@@ -114,6 +115,25 @@ namespace ProjectK
         {
             RectTransform transform = layers[uiLayer];
             uiTransform.SetParent(transform, false);
+        }
+
+        public void AddUpdateUI(UIBase ui)
+        {
+            if (!updatingUIs.Contains(ui))
+                updatingUIs.Add(ui);
+        }
+
+        public void RemoveUpdateUI(UIBase ui)
+        {
+            updatingUIs.Remove(ui);
+        }
+
+        private void Update()
+        {
+            foreach (UIBase ui in updatingUIs)
+            {
+                ui.OnUpdate();
+            }
         }
     }
 }

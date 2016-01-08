@@ -14,6 +14,8 @@ namespace ProjectK
 
         private static readonly int BoxWidth = 128;
 
+        private MapCell cell;
+
         protected override void Init()
         {
             detail = GameObject.GetComponent<BuildTowerUIDetail>();
@@ -49,6 +51,7 @@ namespace ProjectK
                 TowerEntitySetting towerSetting = SettingManager.Instance.TowerEntitySettings.GetValue(towerID);
                 Sprite sprite = Loader.LoadSprite(towerSetting.Icon).Sprite;
                 button.image.sprite = sprite;
+                button.onClick.AddListener(() => OnTowerButtonClick(i));
             }
 
             GameObject.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, BoxWidth * numTowers);
@@ -60,6 +63,23 @@ namespace ProjectK
 
         protected override void OnHide()
         {
+            cell = null;
+        }
+
+        protected override void OnRefresh(params object[] args)
+        {
+            cell = (MapCell)args[0];
+        }
+
+        private void OnTowerButtonClick(int index)
+        {
+            if (cell == null)
+                return;
+
+            Scene scene = SceneManager.Instance.Scene;
+            int towerID = Player.Me.SelectedTowers[index];
+            TowerEntity towerEntity = scene.CreateTowerEntity(towerID);
+            scene.AddEntityToScene(towerEntity, cell.Position);
         }
     }
 }

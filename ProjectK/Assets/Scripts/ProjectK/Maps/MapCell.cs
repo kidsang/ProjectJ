@@ -33,6 +33,11 @@ namespace ProjectK
         /// </summary>
         public List<SceneEntity> SceneEntities;
 
+        /// <summary>
+        /// 该格子上所有的TowerEntity
+        /// </summary>
+        public List<SceneEntity> TowerEntities;
+
         #region implements IPriorityQueueNode 
         public double Priority { get; set; }
         public long InsertionIndex { get; set; }
@@ -55,6 +60,7 @@ namespace ProjectK
 
             Neighbours = new MapCell[NumNeighbours];
             SceneEntities = new List<SceneEntity>();
+            TowerEntities = new List<SceneEntity>();
         }
 
         internal void Load(MapCellSetting setting)
@@ -71,6 +77,7 @@ namespace ProjectK
             Loader = null;
             Neighbours = null;
             SceneEntities = null;
+            TowerEntities = null;
 
             base.OnDispose();
         }
@@ -158,12 +165,19 @@ namespace ProjectK
         public void AddEntity(SceneEntity entity)
         {
             if (!SceneEntities.Contains(entity))
+            {
                 SceneEntities.Add(entity);
+
+                if (entity is TowerEntity)
+                    TowerEntities.Add(entity);
+            }
         }
 
         public void RemoveEntity(SceneEntity entity)
         {
             SceneEntities.Remove(entity);
+            if (entity is TowerEntity)
+                TowerEntities.Remove(entity);
         }
 
         public void ColorTransform(float r = 1, float g = 1, float b = 1, float a = 1)
