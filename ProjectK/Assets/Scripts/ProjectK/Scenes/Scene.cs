@@ -206,6 +206,14 @@ namespace ProjectK
         // TODO: test
         public Bullet FireBullet(uint fromEntityUID, uint targetEntityUID)
         {
+            SceneEntity fromEntity = GetEntity(fromEntityUID);
+            if (fromEntity == null)
+                Log.Error("FireBullet错误，找不到来源。fromEntityUID:", fromEntityUID);
+
+            SceneEntity targetEntity = GetEntity(targetEntityUID);
+            if (targetEntity == null)
+                Log.Error("FireBullet错误，找不到目标。targetEntityUID:", targetEntityUID);
+
             GameObject gameObject = loader.LoadPrefab("Bullet/Bullet").Instantiate();
             Bullet bullet = gameObject.AddComponent<Bullet>();
             bullet.UID = nextBulletUID++;
@@ -214,8 +222,7 @@ namespace ProjectK
             BulletDict[bullet.UID] = bullet;
             BulletList.Add(bullet);
 
-            SceneEntity sceneEntity = GetEntity(fromEntityUID);
-            gameObject.transform.position = sceneEntity.Position;
+            gameObject.transform.position = fromEntity.Position;
 
             return bullet;
         }

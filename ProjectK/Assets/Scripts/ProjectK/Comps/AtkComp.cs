@@ -13,7 +13,7 @@ namespace ProjectK
 
         private float lastAttackTime;
         public List<SceneEntity> TargetEntities { get; private set; }
-        public SceneEntity LockTarget { get; set; }
+        public SceneEntity AimTargetEntity { get; set; }
 
         private DebugDraw rangeDebugDraw;
 
@@ -40,28 +40,30 @@ namespace ProjectK
             base.Activate();
 
             if (InCD())
-                return;
-
-            if (LockTarget == null)
             {
-                if (!CollectTargets())
-                    return;
-                LockTarget = TargetEntities[0];
+                return;
+            }
+
+            if (!CollectTargets())
+            {
+                AimTargetEntity = null;
+                return;
+            }
+
+            if (AimTargetEntity == null || !TargetEntities.Contains(AimTargetEntity))
+            {
+                AimTargetEntity = TargetEntities[0];
             }
 
             lastAttackTime = Time.time;
-            Entity.Scene.FireBullet(Entity.UID, LockTarget.UID);
-        }
 
-        public bool Attack()
-        {
-            if (InCD())
-                return false;
+            List<Bullet> bullets = new List<Bullet> { Entity.Scene.FireBullet(Entity.UID, AimTargetEntity.UID) };
 
-            if (!CollectTargets())
-                return false;
+            if (OnBeforeFireBullet != null)
+                OnBeforeFireBullet(this, bullets);
 
-            return true;
+            if (OnAfterFireBullet != null)
+                OnAfterFireBullet(this, bullets);
         }
 
         public bool InCD()
@@ -93,6 +95,16 @@ namespace ProjectK
 
             rangeDebugDraw.DrawCircle(attrComp.AtkRange);
         }
+
+        #region 战斗计算相关回调
+
+        public delegate void BeforeFireBulletCallback(AtkComp atkComp, List<Bullet> bullets);
+        public event BeforeFireBulletCallback OnBeforeFireBullet;
+
+        public delegate void AfterFireBulletCallback(AtkComp atkComp, List<Bullet> bullets);
+        public event AfterFireBulletCallback OnAfterFireBullet;
+
+        #endregion
 
     }
 }
