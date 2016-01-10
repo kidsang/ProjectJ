@@ -12,8 +12,9 @@ namespace ProjectK
     {
         private SceneEventUIDetail detail;
         private bool downed = false;
-        private Vector3 downPosition;
-        private Vector3 lastMovePosition;
+        private Vector3 downMousePosition;
+        private Vector3 lastMousePosition;
+        private float clickMoveDelta = 10.0f;
 
         protected override void Init()
         {
@@ -26,6 +27,8 @@ namespace ProjectK
         override protected void OnDispose()
         {
             RemovePointerClickHandler(detail._Image, OnPointerClick);
+            RemovePointerDownHandler(detail._Image, OnPointerDown);
+            RemovePointerUpHandler(detail._Image, OnPointerUp);
         }
 
         protected override void OnShow()
@@ -45,17 +48,22 @@ namespace ProjectK
             if (!downed)
                 return;
 
+            Camera camera = Camera.main;
             Vector3 mousePosition = Input.mousePosition;
-            Vector3 deltaPosition = mousePosition - lastMovePosition;
-
-            Vector3 deltaWorldPosition = Camera.main.ScreenToWorldPoint(deltaPosition);
+            Vector3 deltaWorldPosition = camera.ScreenToWorldPoint(mousePosition) - camera.ScreenToWorldPoint(lastMousePosition);
+            deltaWorldPosition *= -1;
             SceneManager.Instance.Scene.Map.UpdateCameraPosition(deltaWorldPosition);
 
-            lastMovePosition = mousePosition;
+            lastMousePosition = mousePosition;
         }
 
         private void OnPointerClick(PointerEventData eventData)
         {
+            Vector3 mousePosition = Input.mousePosition;
+            Vector3 mouseDelta = mousePosition - downMousePosition;
+            if (Mathf.Abs(mouseDelta.x) > clickMoveDelta || Mathf.Abs(mouseDelta.y) > clickMoveDelta)
+                return;
+
             Map map = SceneManager.Instance.Scene.Map;
             MapCell cell = map.GetCellByMousePosition();
             if (cell == null)
@@ -76,7 +84,8 @@ namespace ProjectK
         private void OnPointerDown(PointerEventData eventData)
         {
             downed = true;
-            downPosition = lastMovePosition = Input.mousePosition;
+            downMousePosition = lastMousePosition = Input.mousePosition;
+            lastMousePosition = downMousePosition;
         }
 
         private void OnPointerUp(PointerEventData eventData)

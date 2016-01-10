@@ -451,10 +451,10 @@ namespace ProjectK
             camera.transform.position = cameraPosition;
         }
 
-        public void UpdateCameraPosition(Vector3 deltaPosition)
+        public void UpdateCameraPosition(Vector2 deltaPosition)
         {
             Camera camera = Camera.main;
-            camera.transform.position += deltaPosition;
+            camera.transform.position += new Vector3(deltaPosition.x, deltaPosition.y);
             UpdateCameraPosition();
         }
     }

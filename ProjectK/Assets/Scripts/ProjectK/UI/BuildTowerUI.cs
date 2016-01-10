@@ -51,7 +51,7 @@ namespace ProjectK
                 TowerEntitySetting towerSetting = SettingManager.Instance.TowerEntitySettings.GetValue(towerID);
                 Sprite sprite = Loader.LoadSprite(towerSetting.Icon).Sprite;
                 button.image.sprite = sprite;
-                button.onClick.AddListener(() => OnTowerButtonClick(i));
+                button.onClick.AddListener(OnTowerButtonClick(i));
             }
 
             GameObject.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, BoxWidth * numTowers);
@@ -71,15 +71,20 @@ namespace ProjectK
             cell = (MapCell)args[0];
         }
 
-        private void OnTowerButtonClick(int index)
+        private UnityEngine.Events.UnityAction OnTowerButtonClick(int index)
         {
-            if (cell == null)
-                return;
+            return () =>
+            {
+                if (cell == null)
+                    return;
 
-            Scene scene = SceneManager.Instance.Scene;
-            int towerID = Player.Me.SelectedTowers[index];
-            TowerEntity towerEntity = scene.CreateTowerEntity(towerID);
-            scene.AddEntityToScene(towerEntity, cell.Position);
+                Scene scene = SceneManager.Instance.Scene;
+                int towerID = Player.Me.SelectedTowers[index];
+                TowerEntity towerEntity = scene.CreateTowerEntity(towerID);
+                scene.AddTowerEntity(towerEntity, cell.Position);
+
+                Remove();
+            };
         }
     }
 }

@@ -27,6 +27,11 @@ namespace ProjectK
             this.path = path;
         }
 
+        public void InvalidWayPositions()
+        {
+            wayPositions = null;
+        }
+
         public override void Activate()
         {
             base.Activate();

@@ -138,6 +138,14 @@ namespace ProjectK
         #region 各种异步接口
 
         /// <summary>
+        /// 销毁窗口
+        /// </summary>
+        public void Remove()
+        {
+            UIManager.Instance.RemoveUI(this);
+        }
+
+        /// <summary>
         /// 设置UI的层级
         /// </summary>
         public void SetUILayer(UILayer uiLayer)
