@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace ProjectK
 {
@@ -11,14 +13,32 @@ namespace ProjectK
     /// </summary>
     public static class Helpers
     {
+        /// <summary>
+        /// 修改元件的颜色，目标GameObject必须绑定有SpriteRenderer组件
+        /// </summary>
         public static void ColorTransformSprite(GameObject go, float r = 1, float g = 1, float b = 1, float a = 1)
         {
             (go.GetComponent<Renderer>() as SpriteRenderer).color = new Color(r, g, b, a);
         }
 
+        /// <summary>
+        /// 修改元件的颜色，目标GameObject必须绑定有SpriteRenderer组件
+        /// </summary>
         public static void ColorTransformSprite(SceneEntity entity, float r = 1, float g = 1, float b = 1, float a = 1)
         {
             ColorTransformSprite(entity.gameObject, r, g, b, a);
+        }
+
+        public static void ShowHpBar(GameObject gameObject, float hpPercent)
+        {
+            HudManager hudManager = HudManager.GetHudManager(gameObject);
+            hudManager.ShowHpBar(hpPercent);
+        }
+
+        public static void HideHpBar(GameObject gameObject)
+        {
+            HudManager hudManager = HudManager.GetHudManager(gameObject);
+            hudManager.HideHpBar();
         }
     }
 }

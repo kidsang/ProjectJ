@@ -1,0 +1,14 @@
+{
+	"folders":
+	[
+		{
+			"path": "Assets\\Scripts",
+			"file_exclude_patterns": ["*.meta"]
+		}
+	],
+	"settings":
+    {
+        "tab_size": 4,
+        "translate_tabs_to_spaces": true
+    }
+}

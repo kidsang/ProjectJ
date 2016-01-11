@@ -11,7 +11,12 @@ namespace ProjectK
 {
     public enum UILayer
     {
-        LayerLow = 0,
+        /// <summary>
+        /// 怪物血条，数字等
+        /// </summary>
+        LayerHud = 0,
+
+        LayerLow,
         LayerMid,
         LayerTop,
         Count,
@@ -81,6 +86,17 @@ namespace ProjectK
                 ui.Show();
             }
             return (T)ui;
+        }
+
+        public T CreateHud<T>(bool showAfterCreate = true) where T : UIBase, new()
+        {
+            UIBase hud = new T();
+            hud.SetUILayer(UILayer.LayerHud);
+
+            if (showAfterCreate)
+                hud.Show();
+
+            return (T)hud;
         }
 
         public void RemoveUI<T>() where T : UIBase
