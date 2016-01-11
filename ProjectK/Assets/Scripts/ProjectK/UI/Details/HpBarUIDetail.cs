@@ -6,6 +6,7 @@ namespace ProjectK
 {
     public class HpBarUIDetail : MonoBehaviour
     {
+        public Image _Background;
         public Image _Hp;
     }
 }

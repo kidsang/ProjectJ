@@ -11,13 +11,7 @@ namespace ProjectK
 {
     public class HudManager : MonoBehaviour
     {
-        private ResourceLoader loader;
         private Dictionary<string, HudInfo> hudInfoDict = new Dictionary<string, HudInfo>();
-
-        private void Start()
-        {
-            loader = new ResourceLoader();
-        }
 
         private void Update()
         {
@@ -40,29 +34,28 @@ namespace ProjectK
                     hudInfo.Hud.Remove();
                 hudInfoDict = null;
             }
-
-            if (loader != null)
-            {
-                loader = new ResourceLoader();
-                loader = null;
-            }
         }
 
-        public HudInfo AddHud(string name, UIBase hud, Vector2 offset)
+        /// <summary>
+        /// 添加一个Hud
+        /// </summary>
+        public void AddHud(string name, UIBase hud, Vector2 offset)
         {
             if (hudInfoDict.ContainsKey(name))
             {
                 Log.Error("重复添加的Hud！ name:", name, "hud:", hud);
-                return null;
+                return;
             }
 
             HudInfo hudInfo = new HudInfo();
             hudInfo.Hud = hud;
             hudInfo.Offset = offset;
             hudInfoDict[name] = hudInfo;
-            return hudInfo;
         }
 
+        /// <summary>
+        /// 删除指定名称的Hud
+        /// </summary>
         public void RemoveHud(string name)
         {
             HudInfo hudInfo;
@@ -73,13 +66,21 @@ namespace ProjectK
             hudInfoDict.Remove(name);
         }
 
-        public HudInfo GetHud(string name)
+        /// <summary>
+        /// 获取指定名称的Hud
+        /// </summary>
+        public UIBase GetHud(string name)
         {
             HudInfo hudInfo;
             hudInfoDict.TryGetValue(name, out hudInfo);
-            return hudInfo;
+            if (hudInfo == null)
+                return null;
+            return hudInfo.Hud;
         }
 
+        /// <summary>
+        /// 显示指定名称的Hud
+        /// </summary>
         public void ShowHud(string name)
         {
             HudInfo hudInfo;
@@ -88,6 +89,9 @@ namespace ProjectK
             hudInfo.Hud.Show();
         }
 
+        /// <summary>
+        /// 隐藏名称的Hud
+        /// </summary>
         public void HideHud(string name)
         {
             HudInfo hudInfo;
@@ -96,23 +100,9 @@ namespace ProjectK
             hudInfo.Hud.Hide();
         }
 
-        public void ShowHpBar(float hpPercent)
-        {
-            HudInfo hudInfo = GetHud("hp_bar");
-            if (hudInfo == null)
-            {
-                UIBase hud = UIManager.Instance.CreateHud<HpBarUI>();
-                hudInfo = AddHud("hp_bar", hud, new Vector2());
-            }
-            hudInfo.Hud.Show();
-            hudInfo.Hud.Refresh(hpPercent);
-        }
-
-        public void HideHpBar()
-        {
-            HideHud("hp_bar");
-        }
-
+        /// <summary>
+        /// 获取GameObject上的HudManager，如果没有则创建
+        /// </summary>
         public static HudManager GetHudManager(GameObject gameObject)
         {
             HudManager hudManager = gameObject.GetComponent<HudManager>();
@@ -121,7 +111,7 @@ namespace ProjectK
             return hudManager;
         }
 
-        public class HudInfo
+        class HudInfo
         {
             public UIBase Hud;
             public Vector2 Offset;

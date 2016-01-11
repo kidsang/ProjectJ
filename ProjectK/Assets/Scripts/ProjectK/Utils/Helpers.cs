@@ -29,16 +29,29 @@ namespace ProjectK
             ColorTransformSprite(entity.gameObject, r, g, b, a);
         }
 
+        /// <summary>
+        /// 在目标头顶显示血条
+        /// </summary>
         public static void ShowHpBar(GameObject gameObject, float hpPercent)
         {
             HudManager hudManager = HudManager.GetHudManager(gameObject);
-            hudManager.ShowHpBar(hpPercent);
+            UIBase hud = hudManager.GetHud("hp_bar");
+            if (hud == null)
+            {
+                hud = UIManager.Instance.CreateHud<HpBarUI>();
+                hudManager.AddHud("hp_bar", hud, new Vector2());
+            }
+            hud.Show();
+            hud.Refresh(hpPercent);
         }
 
+        /// <summary>
+        /// 隐藏目标头顶血条
+        /// </summary>
         public static void HideHpBar(GameObject gameObject)
         {
             HudManager hudManager = HudManager.GetHudManager(gameObject);
-            hudManager.HideHpBar();
+            hudManager.HideHud("hp_bar");
         }
     }
 }

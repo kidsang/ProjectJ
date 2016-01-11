@@ -70,7 +70,7 @@ namespace ProjectK
         {
             double atkSpeed = attrComp.AtkSpeed;
             if (atkSpeed == 0)
-                return false;
+                return true;
 
             float atkInterval = (float)(1 / atkSpeed);
             return Time.time - lastAttackTime <= atkInterval;

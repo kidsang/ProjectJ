@@ -167,7 +167,7 @@ namespace ProjectK
         {
             if (Loaded)
             {
-                if (!GameObject.activeSelf)
+                if (GameObject && !GameObject.activeSelf)
                 {
                     GameObject.SetActive(true);
                     OnShow();
@@ -186,7 +186,7 @@ namespace ProjectK
         {
             if (Loaded)
             {
-                if (GameObject.activeSelf)
+                if (GameObject && GameObject.activeSelf)
                 {
                     GameObject.SetActive(false);
                     OnHide();
