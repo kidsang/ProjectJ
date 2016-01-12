@@ -160,12 +160,16 @@ namespace ProjectK
 
         public MonsterEntity CreateMonsterEntity(int templateID)
         {
-            return CreateSceneEntity<MonsterEntity>(templateID);
+            MonsterEntity monsterEntity = CreateSceneEntity<MonsterEntity>(templateID);
+            monsterEntity.Camp = CampType.Enemy;
+            return monsterEntity;
         }
 
         public TowerEntity CreateTowerEntity(int templateID)
         {
-            return CreateSceneEntity<TowerEntity>(templateID);
+            TowerEntity towerEntity = CreateSceneEntity<TowerEntity>(templateID);
+            towerEntity.Camp = CampType.Friend;
+            return towerEntity;
         }
 
         public T CreateSceneEntity<T>(int templateID) where T : SceneEntity
@@ -273,54 +277,63 @@ namespace ProjectK
         /// 收集圆形范围内的目标
         /// </summary>
         public List<SceneEntity> CollectEntitiesCircle(Vector2 origin, float radius,
-            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+            List<SceneEntity> resultEntities = null, CampType campType = CampType.All, bool sortByDistance = false)
         {
-            return CollectEntities(origin, radius, 0, 0, CollectEntityCircleFunc, resultEntities, sortByDistance);
+            return CollectEntities(origin, radius, 0, 0, CollectEntityCircleFunc, resultEntities, campType, sortByDistance);
         }
 
         /// <summary>
         /// 收集扇形范围内的目标
         /// </summary>
         public List<SceneEntity> CollectEntitiesFan(Vector2 origin, float radius, float rangeAngle, float rotateAngle,
-            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+            List<SceneEntity> resultEntities = null, CampType campType = CampType.All, bool sortByDistance = false)
         {
-            return CollectEntities(origin, radius, rangeAngle, rotateAngle, CollectEntityFanFunc, resultEntities, sortByDistance);
+            return CollectEntities(origin, radius, rangeAngle, rotateAngle, CollectEntityFanFunc, resultEntities, campType, sortByDistance);
         }
 
         /// <summary>
         /// 收集矩形范围内的目标
         /// </summary>
         public List<SceneEntity> CollectEntitiesRectangle(Vector2 origin, float width, float height, float rotateAngle,
-            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+            List<SceneEntity> resultEntities = null, CampType campType = CampType.All, bool sortByDistance = false)
         {
-            return CollectEntities(origin, width, height, rotateAngle, CollectEntityRectangleFunc, resultEntities, sortByDistance);
+            return CollectEntities(origin, width, height, rotateAngle, CollectEntityRectangleFunc, resultEntities, campType, sortByDistance);
         }
 
         /// <summary>
         /// 收集环形范围内的目标
         /// </summary>
         public List<SceneEntity> CollectEntitiesRing(Vector2 origin, float radius, float innerRadius,
-            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+            List<SceneEntity> resultEntities = null, CampType campType = CampType.All, bool sortByDistance = false)
         {
-            return CollectEntities(origin, radius, innerRadius, 0, CollectEntityRingFunc, resultEntities, sortByDistance);
+            return CollectEntities(origin, radius, innerRadius, 0, CollectEntityRingFunc, resultEntities, campType, sortByDistance);
         }
 
         /// <summary>
         /// 收集中心矩形范围内的目标
         /// </summary>
         public List<SceneEntity> CollectEntitiesCenterRect(Vector2 origin, float width, float height, float rotateAngle,
-            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+            List<SceneEntity> resultEntities = null, CampType campType = CampType.All, bool sortByDistance = false)
         {
-            return CollectEntities(origin, width, height, rotateAngle, CollectEntityCenterRectFunc, resultEntities, sortByDistance);
+            return CollectEntities(origin, width, height, rotateAngle, CollectEntityCenterRectFunc, resultEntities, campType, sortByDistance);
         }
 
         private List<SceneEntity> CollectEntities(Vector2 origin, float param1, float param2, float param3, CollectEntityFunc collectFunc,
-            List<SceneEntity> resultEntities = null, bool sortByDistance = false)
+            List<SceneEntity> resultEntities = null, CampType campType = CampType.All, bool sortByDistance = false)
         {
             if (resultEntities == null)
                 resultEntities = new List<SceneEntity>();
 
             collectFunc(origin, param1, param2, param3, resultEntities);
+
+            if (campType != CampType.All)
+            {
+                for (int i = resultEntities.Count - 1; i >= 0; --i)
+                {
+                    if (resultEntities[i].Camp != campType)
+                        resultEntities.RemoveAt(i);
+                }
+            }
 
             if (sortByDistance)
             {

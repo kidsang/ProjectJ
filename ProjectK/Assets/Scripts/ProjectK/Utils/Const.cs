@@ -86,4 +86,26 @@ namespace ProjectK
         /// </summary>
         CenterRect,
     }
+
+    /// <summary>
+    /// 阵营
+    /// </summary>
+    public enum CampType
+    {
+
+        /// <summary>
+        /// 友军
+        /// </summary>
+        Friend,
+
+        /// <summary>
+        /// 敌军
+        /// </summary>
+        Enemy,
+
+        /// <summary>
+        /// 全体
+        /// </summary>
+        All,
+    }
 }

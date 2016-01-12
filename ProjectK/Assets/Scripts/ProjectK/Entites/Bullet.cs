@@ -14,7 +14,7 @@ namespace ProjectK
         public uint TargetEntityUID;
 
         // TODO:
-        public float speed = 5;
+        public float speed = 8;
 
         public void Activate()
         {
@@ -41,9 +41,7 @@ namespace ProjectK
                 if (OnBeforeBulletHit != null)
                     OnBeforeBulletHit(this);
 
-                Formula.TestCalc(fromEntity, targetEntity);
-                // TODO:
-                Helpers.ShowHpBar(targetEntity.gameObject, 0.5f);
+                Formula.AttackCalc(fromEntity, targetEntity);
 
                 if (OnAfterBulletHit != null)
                     OnAfterBulletHit(this);

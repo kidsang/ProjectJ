@@ -8,16 +8,27 @@ namespace ProjectK
     /// <summary>
     /// 用以存放伤害计算结果
     /// </summary>
-    public struct SkillCalcResult
+    public struct AttackCalcResult
     {
+        /// <summary>
+        /// 按伤害类型分的伤害值
+        /// </summary>
         public double[] Damages;
+
+        /// <summary>
+        /// 伤害值总数
+        /// </summary>
+        public double TotalDamage
+        {
+            get { return Damages.Sum(); }
+        }
 
         /// <summary>
         /// 请使用这个函数创建SkillCalcResult，而不是new SkillCalcResult()
         /// </summary>
-        public static SkillCalcResult New()
+        public static AttackCalcResult New()
         {
-            SkillCalcResult result = new SkillCalcResult();
+            AttackCalcResult result = new AttackCalcResult();
             result.Damages = new double[(int)DamageType.Total];
             return result;
         }
@@ -35,9 +46,9 @@ namespace ProjectK
 
         //public static void skillCalc()
 
-        public static SkillCalcResult TestCalc(SceneEntity fromEntity, SceneEntity targetEntity)
+        public static AttackCalcResult AttackCalc(SceneEntity fromEntity, SceneEntity targetEntity)
         {
-            SkillCalcResult result = SkillCalcResult.New();
+            AttackCalcResult result = AttackCalcResult.New();
             AttrComp fromAttrComp = fromEntity.GetComp<AttrComp>();
             AttrComp targetAttrComp = targetEntity.GetComp<AttrComp>();
 
@@ -60,6 +71,13 @@ namespace ProjectK
                 damageRate = GetDamageRate(atkType, defType);
                 result.Damages[(int)atkType] = damage * damageRate;
             }
+
+            double totalDamage = result.TotalDamage;
+            // 应用伤害
+            targetEntity.AttrComp.Hp -= totalDamage;
+            // 伤害数字和血条
+            Helpers.ShowHpBar(targetEntity.gameObject, (float)targetEntity.AttrComp.HpPercent);
+            Helpers.ShowHpText(targetEntity.gameObject, (int)-totalDamage);
 
             return result;
         }

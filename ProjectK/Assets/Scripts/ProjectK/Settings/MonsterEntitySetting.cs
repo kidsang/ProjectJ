@@ -8,5 +8,6 @@ namespace ProjectK
     public class MonsterEntitySetting : EntitySetting
     {
         public float MoveSpeed;
+        public int MaxHp;
     }
 }

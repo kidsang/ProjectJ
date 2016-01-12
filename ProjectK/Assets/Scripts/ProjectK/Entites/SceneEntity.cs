@@ -7,21 +7,29 @@ using ProjectK.Base;
 
 namespace ProjectK
 {
-    public enum EntityType
-    {
-        Invalid = 0,
-        Monster,
-        Turret,
-        Bullet,
-    }
-
     public class SceneEntity : DisposableBehaviour
     {
         public ResourceLoader Loader { get; private set; }
+
+        /// <summary>
+        /// 对应的配置文件
+        /// </summary>
         public EntitySetting Template { get; private set; }
+
+        /// <summary>
+        /// 对应的模板ID
+        /// </summary>
         public int TemplateID { get; private set; }
+
+        /// <summary>
+        /// 场景中的唯一ID
+        /// </summary>
         public uint UID { get; set; }
-        public EntityType Type { get; protected set; }
+
+        /// <summary>
+        /// 所属阵营
+        /// </summary>
+        public CampType Camp { get; set; }
 
         /// <summary>
         /// 该Entity所在场景，由Scene.AddEntityToScene()设置

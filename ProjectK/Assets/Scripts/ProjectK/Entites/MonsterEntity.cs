@@ -20,6 +20,19 @@ namespace ProjectK
 
             MonsterEntitySetting setting = template as MonsterEntitySetting;
             AttrComp.MoveSpeedBase = setting.MoveSpeed;
+            AttrComp.MaxHpBase = setting.MaxHp;
+            AttrComp.Hp = AttrComp.MaxHp;
+            AttrComp.RegisterAttrChangeCallback(AttrName.Hp, OnHpChange);
+        }
+
+        override protected void OnDispose()
+        {
+            if (AttrComp != null)
+            {
+                AttrComp.UnrigisterAttrChangeCallback(AttrName.Hp, OnHpChange);
+            }
+
+            base.OnDispose();
         }
 
         public void SetPath(MapPath path)
@@ -78,6 +91,12 @@ namespace ProjectK
         {
             Scene scene = SceneManager.Instance.Scene;
             scene.DestroyEntity(this);
+        }
+
+        private void OnHpChange(double value)
+        {
+            if (value <= 0)
+                Die();
         }
     }
 }

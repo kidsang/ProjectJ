@@ -6,11 +6,25 @@ using System.Text;
 namespace ProjectK
 {
     /// <summary>
+    /// 用以注册属性变化回调函数
+    /// </summary>
+    public enum AttrName
+    {
+        Hp,
+        MaxHp,
+        Atk,
+        Def,
+        AtkSpeed,
+        AtkRange,
+        MoveSpeed,
+    }
+
+    /// <summary>
     /// 通用属性组件
     /// </summary>
     public class AttrComp : GameComp
     {
-        #region 生命值 hp maxHp maxHpBase maxHpAddRate
+        #region 生命值 hp maxHp maxHpBase maxHpAddRate hpPercent
         private double hp;
         private double maxHp;
         private double maxHpBase;
@@ -27,7 +41,7 @@ namespace ProjectK
                 if (value == hp)
                     return;
                 hp = value; 
-                OnPropChange("Hp", value);
+                OnAttrChange(AttrName.Hp, value);
             }
         }
 
@@ -47,7 +61,7 @@ namespace ProjectK
                 if (maxHp < hp)
                     Hp = maxHp;
 
-                OnPropChange("MaxHp", value);
+                OnAttrChange(AttrName.MaxHp, value);
             }
         }
 
@@ -80,6 +94,14 @@ namespace ProjectK
                 MaxHp = maxHpBase * (1 + maxHpAddRate);
             }
         }
+
+        /// <summary>
+        /// 当前血量百分比
+        /// </summary>
+        public double HpPercent
+        {
+            get { return Hp / MaxHp; }
+        }
         #endregion
 
         # region 攻击力 atk atkBase atkAddRate
@@ -98,7 +120,7 @@ namespace ProjectK
                 if (value == atk)
                     return;
                 atk = value;
-                OnPropChange("Atk", value);
+                OnAttrChange(AttrName.Atk, value);
             }
         }
 
@@ -149,7 +171,7 @@ namespace ProjectK
                 if (value == def)
                     return;
                 def = value;
-                OnPropChange("Def", value);
+                OnAttrChange(AttrName.Def, value);
             }
         }
 
@@ -203,7 +225,7 @@ namespace ProjectK
                 if (value == atkSpeed)
                     return;
                 atkSpeed = value;
-                OnPropChange("AtkSpeed", value);
+                OnAttrChange(AttrName.AtkSpeed, value);
             }
         }
 
@@ -256,7 +278,7 @@ namespace ProjectK
                 if (value == atkRange)
                     return;
                 atkRange = value;
-                OnPropChange("AtkRange", value);
+                OnAttrChange(AttrName.AtkRange, value);
             }
         }
 
@@ -310,7 +332,7 @@ namespace ProjectK
                 if (value == moveSpeed)
                     return;
                 moveSpeed = value;
-                OnPropChange("MoveSpeed", value);
+                OnAttrChange(AttrName.MoveSpeed, value);
             }
         }
 
@@ -369,24 +391,24 @@ namespace ProjectK
         }
         # endregion
 
-        public delegate void PropChangeCallback(double newValue);
-        private Dictionary<string, List<PropChangeCallback>> propChangeCallbackDict = new Dictionary<string, List<PropChangeCallback>>();
+        public delegate void AttrChangeCallback(double newValue);
+        private Dictionary<AttrName, List<AttrChangeCallback>> attrChangeCallbackDict = new Dictionary<AttrName, List<AttrChangeCallback>>();
 
         /// <summary>
         /// 注册属性变化时的回调函数
         /// </summary>
-        public void RegisterPropChangeCallback(string propName, PropChangeCallback callback)
+        public void RegisterAttrChangeCallback(AttrName attrName, AttrChangeCallback callback)
         {
-            List<PropChangeCallback> callbackList;
-            if (propChangeCallbackDict.TryGetValue(propName, out callbackList))
+            List<AttrChangeCallback> callbackList;
+            if (attrChangeCallbackDict.TryGetValue(attrName, out callbackList))
             {
                 if (callbackList.Contains(callback))
                     return;
             }
             else
             {
-                callbackList = new List<PropChangeCallback>();
-                propChangeCallbackDict[propName] = callbackList;
+                callbackList = new List<AttrChangeCallback>();
+                attrChangeCallbackDict[attrName] = callbackList;
             }
             callbackList.Add(callback);
         }
@@ -394,26 +416,26 @@ namespace ProjectK
         /// <summary>
         /// 反注册属性变化时的回调函数
         /// </summary>
-        public void UnrigisterPropChangeCallback(string propName, PropChangeCallback callback)
+        public void UnrigisterAttrChangeCallback(AttrName attrName, AttrChangeCallback callback)
         {
-            List<PropChangeCallback> callbackList;
-            if (propChangeCallbackDict.TryGetValue(propName, out callbackList))
+            List<AttrChangeCallback> callbackList;
+            if (attrChangeCallbackDict.TryGetValue(attrName, out callbackList))
                 callbackList.Remove(callback);
         }
 
         /// <summary>
         /// 通知属性变化
         /// </summary>
-        private void OnPropChange(string propName, double newValue)
+        private void OnAttrChange(AttrName attrName, double newValue)
         {
-            List<PropChangeCallback> callbackList;
-            if (propChangeCallbackDict.TryGetValue(propName, out callbackList))
+            List<AttrChangeCallback> callbackList;
+            if (attrChangeCallbackDict.TryGetValue(attrName, out callbackList))
             {
-                callbackList = new List<PropChangeCallback>(callbackList);
+                callbackList = new List<AttrChangeCallback>(callbackList);
                 int count = callbackList.Count;
                 for (int i = 0; i < count; ++i)
                 {
-                    PropChangeCallback callback = callbackList[i];
+                    AttrChangeCallback callback = callbackList[i];
                     callback(newValue);
                 }
             }

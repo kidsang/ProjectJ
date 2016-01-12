@@ -79,7 +79,7 @@ namespace ProjectK
         public bool CollectTargets()
         {
             TargetEntities.Clear();
-            SceneManager.Instance.Scene.CollectEntitiesCircle(naviComp.Position, attrComp.AtkRange, TargetEntities);
+            SceneManager.Instance.Scene.CollectEntitiesCircle(naviComp.Position, attrComp.AtkRange, TargetEntities, CampType.Enemy);
             return TargetEntities.Count > 0;
         }
 

@@ -53,5 +53,21 @@ namespace ProjectK
             HudManager hudManager = HudManager.GetHudManager(gameObject);
             hudManager.HideHud("hp_bar");
         }
+
+        /// <summary>
+        /// 显示冒血数字
+        /// </summary>
+        public static void ShowHpText(GameObject gameObject, int hpChange)
+        {
+            HudManager hudManager = HudManager.GetHudManager(gameObject);
+            UIBase hud = hudManager.GetHud("hp_text");
+            if (hud == null)
+            {
+                hud = UIManager.Instance.CreateHud<HpTextUI>();
+                hudManager.AddHud("hp_text", hud, new Vector2());
+            }
+            hud.Show();
+            hud.Refresh(hpChange.ToString());
+        }
     }
 }
