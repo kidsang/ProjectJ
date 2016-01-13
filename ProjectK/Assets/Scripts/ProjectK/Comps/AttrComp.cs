@@ -391,6 +391,61 @@ namespace ProjectK
         }
         # endregion
 
+        #region 属性附加伤害 damageAdds damageAddRates
+
+        private double[] damageAdds = new double[(int)DamageType.Total];
+        private double[] damageAddRates = new double[(int)DamageType.Total];
+
+        /// <summary>
+        /// 属性附加伤害
+        /// </summary>
+        public double GetDamageAdd(DamageType type)
+        {
+            return damageAdds[(int)type];
+        }
+
+        /// <summary>
+        /// 属性附加伤害
+        /// </summary>
+        public void SetDamageAdd(DamageType type, double value)
+        {
+            damageAdds[(int)type] = value;
+        }
+
+        /// <summary>
+        /// 属性附加伤害
+        /// </summary>
+        public void AddDamageAdd(DamageType type, double value)
+        {
+            SetDamageAdd(type, GetDamageAdd(type) + value);
+        }
+
+        /// <summary>
+        /// 属性附加伤害
+        /// </summary>
+        public double GetDamageAddRate(DamageType type)
+        {
+            return damageAddRates[(int)type];
+        }
+
+        /// <summary>
+        /// 属性附加伤害
+        /// </summary>
+        public void SetDamageAddRate(DamageType type, double value)
+        {
+            damageAddRates[(int)type] = value;
+        }
+
+        /// <summary>
+        /// 属性附加伤害
+        /// </summary>
+        public void AddDamageAddRate(DamageType type, double value)
+        {
+            SetDamageAddRate(type, GetDamageAddRate(type) + value);
+        }
+
+        #endregion
+
         public delegate void AttrChangeCallback(double newValue);
         private Dictionary<AttrName, List<AttrChangeCallback>> attrChangeCallbackDict = new Dictionary<AttrName, List<AttrChangeCallback>>();
 

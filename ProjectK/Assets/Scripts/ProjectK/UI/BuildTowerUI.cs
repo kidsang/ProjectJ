@@ -81,6 +81,10 @@ namespace ProjectK
                 Scene scene = SceneManager.Instance.Scene;
                 int towerID = Player.Me.SelectedTowers[index];
                 TowerEntity towerEntity = scene.CreateTowerEntity(towerID);
+
+                // TODO:
+                towerEntity.AddComp<SkillComp1001>();
+
                 scene.AddTowerEntity(towerEntity, cell.Position);
 
                 Remove();

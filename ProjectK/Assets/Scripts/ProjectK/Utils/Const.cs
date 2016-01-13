@@ -11,11 +11,6 @@ namespace ProjectK
     public enum DamageType
     {
         /// <summary>
-        /// 神圣伤害/神圣护甲
-        /// </summary>
-        Holy,
-
-        /// <summary>
         /// 光明伤害/光明护甲
         /// </summary>
         Light,
@@ -49,6 +44,11 @@ namespace ProjectK
         /// 大地伤害/大地护甲
         /// </summary>
         Earth,
+
+        /// <summary>
+        /// 神圣伤害/神圣护甲
+        /// </summary>
+        Holy,
 
         /// <summary>
         /// 伤害/护甲类型总计

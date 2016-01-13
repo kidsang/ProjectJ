@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
 
 namespace ProjectK.Base
@@ -72,6 +73,8 @@ namespace ProjectK.Base
 
             return keyBuilder.ToString();
         }
+
+        #region 从字符串中解析出数组
 
         public static string[] ParseStrArray(string data, char seperator = ';')
         {
@@ -157,5 +160,24 @@ namespace ProjectK.Base
             return valArr;
         }
 
+        #endregion
+
+        #region 把具有连续Key的字段变成数组
+
+        public T[] FieldsToArray<T>(string baseKey, int startIndex, int endIndex)
+        {
+            Type type = GetType();
+            T[] retArr = new T[endIndex - startIndex + 1];
+
+            for (int i = startIndex; i <= endIndex; ++i)
+            {
+                FieldInfo fieldInfo = type.GetField(baseKey + i);
+                retArr[i] = (T)fieldInfo.GetValue(this);
+            }
+
+            return retArr;
+        }
+
+        #endregion
     }
 }

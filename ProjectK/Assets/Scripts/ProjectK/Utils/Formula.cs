@@ -44,8 +44,6 @@ namespace ProjectK
         /// </summary>
         public static readonly double DEF_COEF = 0.01;
 
-        //public static void skillCalc()
-
         public static AttackCalcResult AttackCalc(SceneEntity fromEntity, SceneEntity targetEntity)
         {
             AttackCalcResult result = AttackCalcResult.New();
@@ -69,15 +67,16 @@ namespace ProjectK
             {
                 DamageType atkType = atkTypes[i];
                 damageRate = GetDamageRate(atkType, defType);
-                result.Damages[(int)atkType] = damage * damageRate;
+                double singleDamage = damage * (1 + fromAttrComp.GetDamageAddRate(atkType)) + fromAttrComp.GetDamageAdd(atkType);
+                result.Damages[(int)atkType] = singleDamage * damageRate;
             }
 
-            double totalDamage = result.TotalDamage;
+            damage = result.TotalDamage;
             // 应用伤害
-            targetEntity.AttrComp.Hp -= totalDamage;
+            targetEntity.AttrComp.Hp -= damage;
             // 伤害数字和血条
             Helpers.ShowHpBar(targetEntity.gameObject, (float)targetEntity.AttrComp.HpPercent);
-            Helpers.ShowHpText(targetEntity.gameObject, (int)-totalDamage);
+            Helpers.ShowHpText(targetEntity.gameObject, (int)-damage);
 
             return result;
         }
@@ -87,8 +86,8 @@ namespace ProjectK
         /// </summary>
         public static double GetDamageRate(DamageType atkType, DamageType defType)
         {
-            // TODO:
-            return 1;
+            double factor = SettingManager.Instance.DamageTypeSettings.GetValue(defType).GetDamageFactor(atkType);
+            return factor;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace ProjectK
         public delegate void AllCompleteCallback();
         private AllCompleteCallback allComplete;
 
+        public CsvFile<DamageTypeSetting> DamageTypeSettings;
         public CsvFile<MonsterEntitySetting> MonsterEntitySettings;
         public CsvFile<TowerEntitySetting> TowerEntitySettings;
 
@@ -33,6 +34,7 @@ namespace ProjectK
 
         private void LoadAll()
         {
+            DamageTypeSettings = LoadCsvFile<DamageTypeSetting>("Settings/DamageTypes.csv");
             MonsterEntitySettings = LoadCsvFile<MonsterEntitySetting>("Settings/MonsterEntities.csv");
             TowerEntitySettings = LoadCsvFile<TowerEntitySetting>("Settings/TowerEntities.csv");
         }
