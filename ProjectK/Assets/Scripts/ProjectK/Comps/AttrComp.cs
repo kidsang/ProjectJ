@@ -392,7 +392,6 @@ namespace ProjectK
         # endregion
 
         #region 属性附加伤害 damageAdds damageAddRates
-
         private double[] damageAdds = new double[(int)DamageType.Total];
         private double[] damageAddRates = new double[(int)DamageType.Total];
 
@@ -443,8 +442,20 @@ namespace ProjectK
         {
             SetDamageAddRate(type, GetDamageAddRate(type) + value);
         }
-
         #endregion
+
+        #region 总伤害增加/减免 damageAddRate beDamageAddRate
+        /// <summary>
+        /// 造成伤害加成百分比
+        /// </summary>
+        public double DamageAddRate { get; set; }
+
+        /// <summary>
+        /// 受到伤害加成百分比
+        /// </summary>
+        public double BeDamageAddRate { get; set; }
+        #endregion
+
 
         public delegate void AttrChangeCallback(double newValue);
         private Dictionary<AttrName, List<AttrChangeCallback>> attrChangeCallbackDict = new Dictionary<AttrName, List<AttrChangeCallback>>();
