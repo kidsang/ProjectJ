@@ -11,9 +11,9 @@ namespace ProjectK
     /// </summary>
     public class SkillComp1001 : SkillComp
     {
-        private readonly DamageType addDamageType = DamageType.Light;
-        private readonly double addDamage = 10;
-        private readonly int buffID = 0;
+        private const DamageType addDamageType = DamageType.Light;
+        private const double addDamage = 10;
+        private const int buffID = 0;
 
         public override bool Start()
         {

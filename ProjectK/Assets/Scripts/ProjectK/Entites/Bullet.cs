@@ -13,8 +13,17 @@ namespace ProjectK
         public uint FromEntityUID;
         public uint TargetEntityUID;
 
+        // 自定义数据
+        private Dictionary<string, object> userData;
+
         // TODO:
         public float speed = 8;
+
+        override protected void OnDispose()
+        {
+            userData = null;
+            base.OnDispose();
+        }
 
         public void Activate()
         {
@@ -60,6 +69,21 @@ namespace ProjectK
         {
             Scene scene = SceneManager.Instance.Scene;
             scene.DestroyBullet(this);
+        }
+
+        public void SetUserData(string name, object value)
+        {
+            if (userData == null)
+                userData = new Dictionary<string, object>();
+            userData[name] = value;
+        }
+
+        public object GetUserData(string name, object defaultValue = null)
+        {
+            object value;
+            if (userData != null && userData.TryGetValue(name, out value))
+                return value;
+            return defaultValue;
         }
 
         #region 战斗计算相关回调
