@@ -72,7 +72,7 @@ namespace ProjectK
                 // 伤害附加
                 singleDamage += fromAttrComp.GetDamageAdd(atkType);
                 // 属性相克伤害加成
-                singleDamage *= GetDamageRate(atkType, defType);
+                singleDamage *= DamageTypeSetting.GetDamageFactor(atkType, defType);
 
                 result.Damages[i] = singleDamage;
             }
@@ -91,15 +91,6 @@ namespace ProjectK
             // 伤害数字和血条
             Helpers.ShowHpBar(targetEntity.gameObject, (float)targetEntity.AttrComp.HpPercent);
             Helpers.ShowHpText(targetEntity.gameObject, (int)-damage);
-        }
-
-        /// <summary>
-        /// 根据伤害类型和护甲类型返回伤害系数
-        /// </summary>
-        public static double GetDamageRate(DamageType atkType, DamageType defType)
-        {
-            double factor = SettingManager.Instance.DamageTypeSettings.GetValue(defType).GetDamageFactor(atkType);
-            return factor;
         }
     }
 }

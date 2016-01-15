@@ -9,7 +9,7 @@ namespace ProjectK.Base
     public abstract class CsvFileObject : TextResourceUtils
     {
 
-        public abstract string GetKey();
+        public abstract object GetKey();
 
         public virtual void OnComplete()
         {
@@ -24,7 +24,7 @@ namespace ProjectK.Base
 
         private bool parsed = false;
         private string rawData;
-        private Dictionary<string, T> datas = new Dictionary<string, T>();
+        private Dictionary<object, T> datas = new Dictionary<object, T>();
 
         internal override void Load()
         {
@@ -40,7 +40,7 @@ namespace ProjectK.Base
                 Parse();
         }
 
-        public T GetValue(string key)
+        public T GetValue(object key)
         {
             if (!parsed)
                 Parse();
@@ -48,11 +48,6 @@ namespace ProjectK.Base
             T data;
             datas.TryGetValue(key, out data);
             return data;
-        }
-
-        public T GetValue(object key)
-        {
-            return GetValue(key.ToString());
         }
 
         public T GetValue(params object[] keys)
@@ -126,7 +121,7 @@ namespace ProjectK.Base
                     }
                 }
 
-                string key = obj.GetKey();
+                object key = obj.GetKey();
                 if (datas.ContainsKey(key))
                 {
                     Log.Error("tab表键值重复！ url:", Url, "key:", key);

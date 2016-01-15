@@ -19,9 +19,9 @@ namespace ProjectK
         public double DamageFactor7;
         public double[] DamageFactors;
 
-        public override string GetKey()
+        public override object GetKey()
         {
-            return DefType.ToString();
+            return (int)DefType;
         }
 
         public override void OnComplete()
@@ -29,9 +29,10 @@ namespace ProjectK
             DamageFactors = FieldsToArray<double>("DamageFactor", 0, 7);
         }
 
-        public double GetDamageFactor(DamageType atkType)
+        public static double GetDamageFactor(DamageType atkType, DamageType defType)
         {
-            return DamageFactors[(int)atkType];
+            DamageTypeSetting setting = SettingManager.Instance.DamageTypeSettings.GetValue((int)defType);
+            return setting.DamageFactors[(int)atkType];
         }
     }
 }
