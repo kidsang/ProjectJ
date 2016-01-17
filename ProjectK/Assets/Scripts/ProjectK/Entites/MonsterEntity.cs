@@ -9,6 +9,8 @@ namespace ProjectK
 {
     public class MonsterEntity : SceneEntity
     {
+        public BuffMgrComp BuffMgrComp { get; private set; }
+
         private MapPath path;
         private int nextWaypointIndex = 1;
         private int nextPositionIndex;
@@ -23,6 +25,8 @@ namespace ProjectK
             AttrComp.MaxHpBase = setting.MaxHp;
             AttrComp.Hp = AttrComp.MaxHp;
             AttrComp.RegisterAttrChangeCallback(AttrName.Hp, OnHpChange);
+
+            BuffMgrComp = AddComp<BuffMgrComp>();
         }
 
         override protected void OnDispose()

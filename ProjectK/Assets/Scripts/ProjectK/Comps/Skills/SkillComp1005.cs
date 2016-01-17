@@ -7,11 +7,11 @@ using UnityEngine;
 namespace ProjectK
 {
     /// <summary>
-    /// 净化 附加n点光系伤害，使目标受到伤害增加x%，持续y秒
+    /// 减速 附加n点冰霜伤害，使目标减速x%，持续y秒
     /// </summary>
-    public class SkillComp1001 : SkillComp
+    public class SkillComp1005 : SkillComp
     {
-        private const DamageType addDamageType = DamageType.Light;
+        private const DamageType addDamageType = DamageType.Ice;
         private const double addDamage = 10;
 
         public override bool Start()
@@ -40,7 +40,7 @@ namespace ProjectK
             if (buffMgrComp == null)
                 return;
 
-            buffMgrComp.AddBuff(fromEntity.UID, 1, 10);
+            buffMgrComp.AddBuff(fromEntity.UID, 5, 2);
         }
     }
 }

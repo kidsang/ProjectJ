@@ -1,4 +1,7 @@
-﻿using System;
+﻿// 是否开启CSV检查
+#define CHECK_CSV
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +18,18 @@ namespace ProjectK.Base
         {
         }
 
+        /// <summary>
+        /// 仅当 #define CHECK_CSV 时调用
+        /// </summary>
+        public virtual void OnCheck()
+        {
+        }
+
+        public void Check(bool condition)
+        {
+            if (!condition)
+                Log.Error("Csv check failed! File:", this, "Key:", GetKey());
+        }
     }
 
     public class CsvFile<T> : TextResource where T : CsvFileObject, new()
@@ -130,6 +145,9 @@ namespace ProjectK.Base
                 {
                     datas[key] = obj;
                     obj.OnComplete();
+#if CHECK_CSV
+                    obj.OnCheck();
+#endif
                 }
             }
 

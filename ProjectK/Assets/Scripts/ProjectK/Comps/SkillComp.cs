@@ -135,5 +135,44 @@ namespace ProjectK
             }
         }
 
+        public void RegisterOnBeforeAttackCalc(SceneEntity.BeforeAttackCalcCallback callback)
+        {
+            Entity.OnBeforeAttackCalc += callback;
+        }
+
+        public void UnregisterOnBeforeAttackCalc(SceneEntity.BeforeAttackCalcCallback callback)
+        {
+            Entity.OnBeforeAttackCalc -= callback;
+        }
+
+        public void RegisterOnAfterAttackCalc(SceneEntity.AfterAttackCalcCallback callback)
+        {
+            Entity.OnAfterAttackCalc += callback;
+        }
+
+        public void UnregisterOnAfterAttackCalc(SceneEntity.AfterAttackCalcCallback callback)
+        {
+            Entity.OnAfterAttackCalc -= callback;
+        }
+
+        public void RegisterOnAttack(SceneEntity.AttackCallback callback)
+        {
+            Entity.OnAttack += callback;
+        }
+
+        public void UnregisterOnAttack(SceneEntity.AttackCallback callback)
+        {
+            Entity.OnAttack -= callback;
+        }
+
+        public void RegisterOnAttacked(SceneEntity.AttackedCallback callback)
+        {
+            Entity.OnAttacked += callback;
+        }
+
+        public void UnregisterOnAttacked(SceneEntity.AttackedCallback callback)
+        {
+            Entity.OnAttacked -= callback;
+        }
     }
 }

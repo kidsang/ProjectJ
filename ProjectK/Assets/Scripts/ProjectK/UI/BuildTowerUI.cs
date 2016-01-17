@@ -84,6 +84,7 @@ namespace ProjectK
 
                 // TODO:
                 towerEntity.AddComp<SkillComp1001>();
+                towerEntity.AddComp<SkillComp1005>();
                 towerEntity.AddComp<SkillComp2012>();
                 towerEntity.AddComp<SkillComp2013>();
                 towerEntity.AttrComp.AtkRangeBase = 4;

@@ -1,0 +1,9 @@
+ID,Desc,Special,AttrNames,AttrValues,UpdateInterval,UpdateAttrNames,UpdateAttrValues
+#,说明,是否特殊实现,Buff开始时应用一次的属性,,Buff更新间隔,每隔一段时间应用一次的属性,
+1,净化,,BeDamageAddRate,0.05,,,
+2,腐蚀,,DefBase,-5,,,
+3,暴击,,,,,,
+4,中毒,,,,,,
+5,减速,,MoveSpeedAddRate,-0.5,,,
+6,灼热,,,,,,
+7,重击,,,,,,

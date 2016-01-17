@@ -30,6 +30,8 @@ namespace ProjectK
         MoveSpeed,
         MoveSpeedBase,
         MoveSpeedAddRate,
+        DamageAddRate,
+        BeDamageAddRate
     }
 
     /// <summary>
@@ -566,6 +568,10 @@ namespace ProjectK
                     return MoveSpeedBase;
                 case AttrName.MoveSpeedAddRate:
                     return MoveSpeedAddRate;
+                case AttrName.DamageAddRate:
+                    return DamageAddRate;
+                case AttrName.BeDamageAddRate:
+                    return BeDamageAddRate;
                 default:
                     Log.Error("非法的AttrName！", attrName);
                     return 0.0;
@@ -575,61 +581,59 @@ namespace ProjectK
         /// <summary>
         /// 根据AttrName设置属性值
         /// </summary>
-        public void SetValue(AttrName attrName, double value)
+        public void AddValue(AttrName attrName, double value)
         {
             switch (attrName)
             {
                 case AttrName.Hp:
-                    Hp = value;
+                    Hp += value;
                     break;
                 case AttrName.MaxHpBase:
-                    MaxHpBase = value;
+                    MaxHpBase += value;
                     break;
                 case AttrName.MaxHpAddRate:
-                    MaxHpAddRate = value;
+                    MaxHpAddRate += value;
                     break;
                 case AttrName.AtkBase:
-                    AtkBase = value;
+                    AtkBase += value;
                     break;
                 case AttrName.AtkAddRate:
-                    AtkAddRate = value;
+                    AtkAddRate += value;
                     break;
                 case AttrName.DefBase:
-                    DefBase = value;
+                    DefBase += value;
                     break;
                 case AttrName.DefAddRate:
-                    DefAddRate = value;
+                    DefAddRate += value;
                     break;
                 case AttrName.AtkSpeedBase:
-                    AtkSpeedBase = value;
+                    AtkSpeedBase += value;
                     break;
                 case AttrName.AtkSpeedAddRate:
-                    AtkSpeedAddRate = value;
+                    AtkSpeedAddRate += value;
                     break;
                 case AttrName.AtkRangeBase:
-                    AtkRangeBase = (float)value;
+                    AtkRangeBase += (float)value;
                     break;
                 case AttrName.AtkRangeAddRate:
-                    AtkRangeAddRate = (float)value;
+                    AtkRangeAddRate += (float)value;
                     break;
                 case AttrName.MoveSpeedBase:
-                    MoveSpeedBase = (float)value;
+                    MoveSpeedBase += (float)value;
                     break;
                 case AttrName.MoveSpeedAddRate:
-                    MoveSpeedAddRate = (float)value;
+                    MoveSpeedAddRate += (float)value;
+                    break;
+                case AttrName.DamageAddRate:
+                    DamageAddRate += (float)value;
+                    break;
+                case AttrName.BeDamageAddRate:
+                    BeDamageAddRate += (float)value;
                     break;
                 default:
                     Log.Error("非法的AttrName！", attrName);
                     break;
             }
-        }
-
-        /// <summary>
-        /// 根据AttrName设置属性值
-        /// </summary>
-        public void AddValue(AttrName attrName, double value)
-        {
-            SetValue(attrName, GetValue(attrName) + value);
         }
     }
 }
