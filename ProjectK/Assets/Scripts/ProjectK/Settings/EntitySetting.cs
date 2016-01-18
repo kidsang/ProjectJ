@@ -14,9 +14,9 @@ namespace ProjectK
         public float Height;
         public string Prefab;
 
-        public override string GetKey()
+        public override object GetKey()
         {
-            return ID.ToString();
+            return ID;
         }
     }
 }

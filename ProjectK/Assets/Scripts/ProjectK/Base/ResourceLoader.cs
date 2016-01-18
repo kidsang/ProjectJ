@@ -21,16 +21,6 @@ namespace ProjectK.Base
             return LoadAsync<IniFile>(url, onLoadComplete);
         }
 
-        public TabFile<T> LoadTabFile<T>(string url) where T : TabFileObject, new()
-        {
-             return Load<TabFile<T>>(url);
-        }
-
-        public TabFile<T> LoadTabFileAsync<T>(string url, ResourceLoadComplete onLoadComplete) where T : TabFileObject, new()
-        {
-            return LoadAsync<TabFile<T>>(url, onLoadComplete);
-        }
-
         public CsvFile<T> LoadCsvFile<T>(string url) where T : CsvFileObject, new()
         {
              return Load<CsvFile<T>>(url);

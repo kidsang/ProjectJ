@@ -36,6 +36,13 @@ namespace ProjectK
 
         public static AttackCalcResult AttackCalc(SceneEntity fromEntity, SceneEntity targetEntity, bool doAttack = true)
         {
+            if (doAttack)
+            {
+                fromEntity.TryFireOnBeforeAttackCalcEvent(fromEntity, targetEntity);
+                if (fromEntity != targetEntity)
+                    targetEntity.TryFireOnBeforeAttackCalcEvent(fromEntity, targetEntity);
+            }
+
             AttackCalcResult result = new AttackCalcResult();
             AttrComp fromAttrComp = fromEntity.GetComp<AttrComp>();
             AttrComp targetAttrComp = targetEntity.GetComp<AttrComp>();
@@ -72,13 +79,18 @@ namespace ProjectK
                 // 伤害附加
                 singleDamage += fromAttrComp.GetDamageAdd(atkType);
                 // 属性相克伤害加成
-                singleDamage *= GetDamageRate(atkType, defType);
+                singleDamage *= DamageTypeSetting.GetDamageFactor(atkType, defType);
 
                 result.Damages[i] = singleDamage;
             }
 
             if (doAttack)
+            {
+                fromEntity.TryFireOnAfterAttackCalcEvent(fromEntity, targetEntity, result);
+                if (fromEntity != targetEntity)
+                    targetEntity.TryFireOnAfterAttackCalcEvent(fromEntity, targetEntity, result);
                 DoAttack(fromEntity, targetEntity, result);
+            }
 
             return result;
         }
@@ -91,15 +103,9 @@ namespace ProjectK
             // 伤害数字和血条
             Helpers.ShowHpBar(targetEntity.gameObject, (float)targetEntity.AttrComp.HpPercent);
             Helpers.ShowHpText(targetEntity.gameObject, (int)-damage);
-        }
 
-        /// <summary>
-        /// 根据伤害类型和护甲类型返回伤害系数
-        /// </summary>
-        public static double GetDamageRate(DamageType atkType, DamageType defType)
-        {
-            double factor = SettingManager.Instance.DamageTypeSettings.GetValue(defType).GetDamageFactor(atkType);
-            return factor;
+            fromEntity.TryFireOnAttackEvent(targetEntity, result);
+            targetEntity.TryFireOnAttackedEvent(fromEntity, result);
         }
     }
 }

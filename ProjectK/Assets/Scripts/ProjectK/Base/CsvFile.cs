@@ -1,4 +1,7 @@
-﻿using System;
+﻿// 是否开启CSV检查
+#define CHECK_CSV
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,12 +12,24 @@ namespace ProjectK.Base
     public abstract class CsvFileObject : TextResourceUtils
     {
 
-        public abstract string GetKey();
+        public abstract object GetKey();
 
         public virtual void OnComplete()
         {
         }
 
+        /// <summary>
+        /// 仅当 #define CHECK_CSV 时调用
+        /// </summary>
+        public virtual void OnCheck()
+        {
+        }
+
+        public void Check(bool condition)
+        {
+            if (!condition)
+                Log.Error("Csv check failed! File:", this, "Key:", GetKey());
+        }
     }
 
     public class CsvFile<T> : TextResource where T : CsvFileObject, new()
@@ -24,7 +39,7 @@ namespace ProjectK.Base
 
         private bool parsed = false;
         private string rawData;
-        private Dictionary<string, T> datas = new Dictionary<string, T>();
+        private Dictionary<object, T> datas = new Dictionary<object, T>();
 
         internal override void Load()
         {
@@ -40,7 +55,7 @@ namespace ProjectK.Base
                 Parse();
         }
 
-        public T GetValue(string key)
+        public T GetValue(object key)
         {
             if (!parsed)
                 Parse();
@@ -48,11 +63,6 @@ namespace ProjectK.Base
             T data;
             datas.TryGetValue(key, out data);
             return data;
-        }
-
-        public T GetValue(object key)
-        {
-            return GetValue(key.ToString());
         }
 
         public T GetValue(params object[] keys)
@@ -126,7 +136,7 @@ namespace ProjectK.Base
                     }
                 }
 
-                string key = obj.GetKey();
+                object key = obj.GetKey();
                 if (datas.ContainsKey(key))
                 {
                     Log.Error("tab表键值重复！ url:", Url, "key:", key);
@@ -135,6 +145,9 @@ namespace ProjectK.Base
                 {
                     datas[key] = obj;
                     obj.OnComplete();
+#if CHECK_CSV
+                    obj.OnCheck();
+#endif
                 }
             }
 

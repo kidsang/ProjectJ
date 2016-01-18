@@ -20,6 +20,7 @@ namespace ProjectK
         public CsvFile<DamageTypeSetting> DamageTypeSettings;
         public CsvFile<MonsterEntitySetting> MonsterEntitySettings;
         public CsvFile<TowerEntitySetting> TowerEntitySettings;
+        public CsvFile<BuffSetting> BuffSettings;
 
         public static void Init(AllCompleteCallback allComplete)
         {
@@ -37,6 +38,7 @@ namespace ProjectK
             DamageTypeSettings = LoadCsvFile<DamageTypeSetting>("Settings/DamageTypes.csv");
             MonsterEntitySettings = LoadCsvFile<MonsterEntitySetting>("Settings/MonsterEntities.csv");
             TowerEntitySettings = LoadCsvFile<TowerEntitySetting>("Settings/TowerEntities.csv");
+            BuffSettings = LoadCsvFile<BuffSetting>("Settings/Buffs.csv");
         }
 
         public void ReloadAll(AllCompleteCallback allComplete = null)

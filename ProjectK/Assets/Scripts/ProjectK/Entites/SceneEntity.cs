@@ -130,14 +130,43 @@ namespace ProjectK
         }
 
         /// <summary>
+        /// 添加一个组件
+        /// </summary>
+        public GameComp AddComp(Type type, bool start = false)
+        {
+            if (CompDict.ContainsKey(type))
+            {
+                Log.Error("重复添加组件！ Entity:", this, "CompType:", type);
+                return null;
+            }
+
+            GameComp comp = Activator.CreateInstance(type) as GameComp;
+            CompDict[type] = comp;
+            CompList.Add(comp);
+            comp.Entity = this;
+
+            if (start)
+                comp.Start();
+            return comp;
+        }
+
+        /// <summary>
         /// 获取一个组件
         /// </summary>
         public T GetComp<T>() where T: GameComp
         {
             Type type = typeof(T);
+            return (T)GetComp(type);
+        }
+
+        /// <summary>
+        /// 获取一个组件
+        /// </summary>
+        public GameComp GetComp(Type type)
+        {
             GameComp comp;
             CompDict.TryGetValue(type, out comp);
-            return (T)comp;
+            return comp;
         }
 
         /// <summary>
@@ -146,6 +175,14 @@ namespace ProjectK
         public void DelComp<T>() where T : GameComp
         {
             Type type = typeof(T);
+            DelComp(type);
+        }
+
+        /// <summary>
+        /// 删除一个组件，并自动调用comp.destroy()
+        /// </summary>
+        public void DelComp(Type type)
+        {
             GameComp comp;
             if (!CompDict.TryGetValue(type, out comp))
                 return;
@@ -166,5 +203,55 @@ namespace ProjectK
             get { return NaviComp.Location; }
             set { NaviComp.Location = value; }
         }
+
+        #region 战斗计算相关回调
+        /// <summary>
+        /// 在Fromula.AttackCalc前调用
+        /// </summary>
+        public delegate void BeforeAttackCalcCallback(SceneEntity fromEntity, SceneEntity targetEntity);
+        public event BeforeAttackCalcCallback OnBeforeAttackCalc;
+
+        /// <summary>
+        /// 在Fromula.AttackCalc后调用
+        /// </summary>
+        public delegate void AfterAttackCalcCallback(SceneEntity fromEntity, SceneEntity targetEntity, AttackCalcResult result);
+        public event AfterAttackCalcCallback OnAfterAttackCalc;
+
+        /// <summary>
+        /// 仅攻击者在Formula.DoAttack后调用
+        /// </summary>
+        public delegate void AttackCallback(SceneEntity targetEntity, AttackCalcResult result);
+        public event AttackCallback OnAttack;
+
+        /// <summary>
+        /// 仅被击者在Formula.DoAttack后调用
+        /// </summary>
+        public delegate void AttackedCallback(SceneEntity fromEntity, AttackCalcResult result);
+        public event AttackedCallback OnAttacked;
+
+        public void TryFireOnBeforeAttackCalcEvent(SceneEntity fromEntity, SceneEntity targetEntity)
+        {
+            if (OnBeforeAttackCalc != null)
+                OnBeforeAttackCalc(fromEntity, targetEntity);
+        }
+
+        public void TryFireOnAfterAttackCalcEvent(SceneEntity fromEntity, SceneEntity targetEntity, AttackCalcResult result)
+        {
+            if (OnAfterAttackCalc != null)
+                OnAfterAttackCalc(fromEntity, targetEntity, result);
+        }
+
+        public void TryFireOnAttackEvent(SceneEntity targetEntity, AttackCalcResult result)
+        {
+            if (OnAttack != null)
+                OnAttack(targetEntity, result);
+        }
+
+        public void TryFireOnAttackedEvent(SceneEntity fromEntity, AttackCalcResult result)
+        {
+            if (OnAttacked != null)
+                OnAttacked(fromEntity, result);
+        }
+        #endregion
     }
 }

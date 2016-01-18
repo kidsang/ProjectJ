@@ -16,6 +16,7 @@ namespace ProjectK
         {
             detail = GameObject.GetComponent<HpBarUIDetail>();
             size = detail._Background.rectTransform.sizeDelta;
+            GameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
         protected override void OnRefresh(params object[] args)

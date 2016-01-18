@@ -103,6 +103,8 @@ namespace ProjectK
 
         public delegate void AfterFireBulletCallback(AtkComp atkComp, List<Bullet> bullets);
         public event AfterFireBulletCallback OnAfterFireBullet;
+        public bool HasOnAfterFireBulletEvent { get { return OnAfterFireBullet != null; } }
+        public void CallOnAfterFireBulletEvent(List<Bullet> bullets) { OnAfterFireBullet(this, bullets); }
 
         #endregion
 
