@@ -219,6 +219,28 @@ namespace ProjectK
             }
         }
 
+        public void ShowDebugDraw(bool show)
+        {
+            HudManager hudManager = HudManager.GetHudManager(gameObject);
+            if (show)
+            {
+                UIBase hud = hudManager.GetHud("loc");
+                if (hud == null)
+                {
+                    hud = UIManager.Instance.CreateHud<TextUI>();
+                    hudManager.AddHud("loc", hud, new Vector2());
+                }
+                hud.Show();
+                hud.Refresh(X + "," + Y);
+            }
+            else
+            {
+                UIBase hud = hudManager.GetHud("loc");
+                if (hud != null)
+                    hud.Hide();
+            }
+        }
+
         public override string ToString()
         {
             return "MapCell(" + X + "," + Y + ")";

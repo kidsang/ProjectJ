@@ -82,7 +82,7 @@ namespace ProjectK
             Cells = new Dictionary<int, MapCell>();
             foreach (MapCellSetting cellSetting in setting.Cells)
             {
-                GameObject cellObject = Loader.LoadPrefab("Map/MapCell").Instantiate();
+                GameObject cellObject = Loader.LoadPrefab("Map/GrassLow").Instantiate();
                 cellObject.transform.SetParent(CellRoot, false);
                 MapCell cell = cellObject.AddComponent<MapCell>();
                 cell.Init(this, (short)cellSetting.X, (short)cellSetting.Y);
@@ -456,6 +456,14 @@ namespace ProjectK
             Camera camera = Camera.main;
             camera.transform.position += new Vector3(deltaPosition.x, deltaPosition.y);
             UpdateCameraPosition();
+        }
+
+        public void ShowDebugDraw(bool show)
+        {
+            foreach (MapCell cell in Cells.Values)
+            {
+                cell.ShowDebugDraw(show);
+            }
         }
     }
 }

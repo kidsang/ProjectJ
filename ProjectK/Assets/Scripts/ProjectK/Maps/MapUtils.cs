@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -249,6 +248,28 @@ namespace ProjectK
             while (diff <= -Mathf.PI) diff += PI2;
             while (diff > Mathf.PI) diff -= PI2;
             return Mathf.Abs(diff);
+        }
+
+        /// <summary>
+        /// 在一个大小为cellCountX,cellCountY的地图中随机一个位置
+        /// </summary>
+        public static Vector2 RandomInMap(int cellCountX, int cellCountY)
+        {
+            int x = Random.Range(0, cellCountX);
+            int minY = -x / 2;
+            int maxY = cellCountY + minY - 1;
+            int y = Random.Range(minY, maxY);
+            return new Vector2(x, y);
+        }
+
+        /// <summary>
+        /// 返回地图的中心点
+        /// </summary>
+        public static Vector2 CenterOfMap(int cellCountX, int cellCountY)
+        {
+            int x = cellCountX / 2;
+            int y = -x / 2 + cellCountY / 2;
+            return new Vector2(x, y);
         }
 
         public static Dictionary<int, MapCellSetting> ArrayToDict(MapCellSetting[] cellSettings)

@@ -27,6 +27,7 @@ namespace TestK
             scene = sceneRoot.AddComponent<Scene>();
             scene.Init();
             scene.Load("Settings/test_game_s.map");
+			scene.Map.ShowDebugDraw(true);
 
             SpawnWaveSetting spawnWaveSetting = new SpawnWaveSetting();
             spawnWaveSetting.WaveIndex = 0;

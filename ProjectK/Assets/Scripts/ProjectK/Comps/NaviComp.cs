@@ -49,7 +49,7 @@ namespace ProjectK
 
         private void UpateEntityPosition()
         {
-            Entity.transform.position = position;
+            Entity.transform.localPosition = position;
             if (Entity.Scene != null)
                 Entity.Scene.Map.UpdateSceneEntityCell(Entity);
         }
