@@ -34,7 +34,7 @@ namespace TestK
             spawnWaveSetting.IntervalTime = 1;
             spawnWaveSetting.SpawnTimes = int.MaxValue;
             spawnWaveSetting.SpawnPerTime = 1;
-            spawnWaveSetting.TemplateID = 0;
+            spawnWaveSetting.TemplateID = 1;
             SpawnLocationSetting spawnLocationSetting = new SpawnLocationSetting();
             spawnLocationSetting.PathIndex = 0;
             spawnLocationSetting.Waves = new SpawnWaveSetting[] { spawnWaveSetting };

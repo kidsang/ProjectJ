@@ -1,3 +1,4 @@
 ID,Name,Width,Height,Prefab,MoveSpeed,MaxHp
 #,,碰撞体x轴长,碰撞体y轴高,Prefab路径,移动速度，米每秒,生命值
 0,测试用怪物,2,2,Monster/Test,2,1000
+1,蜘蛛,,,Monster/Spider/Spider,2,1000

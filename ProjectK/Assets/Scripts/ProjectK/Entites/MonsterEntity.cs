@@ -76,8 +76,10 @@ namespace ProjectK
                     }
 
                     NaviComp.Position = position;
-                    float angle = MapUtils.Angle(direction);
-                    gameObject.transform.localRotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg - 90, MapUtils.Vector3Z);
+                    if (direction.x > 0 && gameObject.transform.localScale.x < 0)
+                        gameObject.transform.localScale *= -1;
+                    else if (direction.x < 0 && gameObject.transform.localScale.x > 0)
+                        gameObject.transform.localScale *= -1;
                 }
                 else
                 {
