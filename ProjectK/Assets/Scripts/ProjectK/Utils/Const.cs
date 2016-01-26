@@ -6,6 +6,33 @@ using System.Text;
 namespace ProjectK
 {
     /// <summary>
+    /// 地图格子类型
+    /// </summary>
+    public enum MapCellFlag
+    {
+        /// <summary>
+        /// 无
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// 可通过
+        /// </summary>
+        CanWalk = 1,
+
+        /// <summary>
+        /// 可建造
+        /// </summary>
+        CanBuild = 2,
+
+        /// <summary>
+        /// 高地
+        /// </summary>
+        Highland = 4,
+    }
+
+
+    /// <summary>
     /// 伤害和护甲类型
     /// </summary>
     public enum DamageType

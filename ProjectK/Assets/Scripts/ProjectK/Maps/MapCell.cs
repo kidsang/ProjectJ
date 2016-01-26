@@ -56,7 +56,7 @@ namespace ProjectK
             this.Z = (short)(-x - y);
             this.Key = MapUtils.MakeKey(x, y);
 
-            CellObject.transform.localPosition = new Vector3(CenterX, CenterY);
+            CellObject.transform.localPosition = new Vector3(CenterX, CenterY, X / 2.0f + Y);
 
             Neighbours = new MapCell[NumNeighbours];
             SceneEntities = new List<SceneEntity>();

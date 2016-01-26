@@ -82,7 +82,11 @@ namespace ProjectK
             Cells = new Dictionary<int, MapCell>();
             foreach (MapCellSetting cellSetting in setting.Cells)
             {
-                GameObject cellObject = Loader.LoadPrefab("Map/GrassLow").Instantiate();
+                GameObject cellObject;
+                if ((cellSetting.Flags & (int)MapCellFlag.Highland) != 0)
+                    cellObject = Loader.LoadPrefab("Map/GrassHigh").Instantiate();
+                else
+                    cellObject = Loader.LoadPrefab("Map/GrassLow").Instantiate();
                 cellObject.transform.SetParent(CellRoot, false);
                 MapCell cell = cellObject.AddComponent<MapCell>();
                 cell.Init(this, (short)cellSetting.X, (short)cellSetting.Y);

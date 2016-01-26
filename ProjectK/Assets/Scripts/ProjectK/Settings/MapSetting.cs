@@ -5,13 +5,6 @@ using System.Text;
 
 namespace ProjectK
 {
-    public enum MapCellFlag
-    {
-        None = 0,
-        CanWalk = 1,
-        CanBuild = 2,
-    }
-
     public class MapSetting
     {
         public string Name;

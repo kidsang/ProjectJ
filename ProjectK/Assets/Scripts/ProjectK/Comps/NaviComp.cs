@@ -42,7 +42,7 @@ namespace ProjectK
                 if (value == position)
                     return;
                 position = value;
-                location = MapUtils.PositionToLocation(position);
+                location = MapUtils.PositionToLocation(value);
                 UpateEntityPosition();
             }
         }
