@@ -8,50 +8,16 @@ using UnityEngine;
 
 namespace ProjectK.Base
 {
-    public class TextResource : Resource
+    public class TextResource : UnityResource<TextAsset>
     {
-        private string text;
-
-        internal override void Load()
-        {
-            try
-            {
-                string fullUrl = Application.dataPath + "/" + Url;
-                using (FileStream stream = new FileStream(fullUrl, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        text = reader.ReadToEnd();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                loadFailed = true;
-                Log.Error("资源加载错误! Url:", Url, "\nType:", GetType(), "\nError:", e.Message);
-            }
-
-            state = ResourceState.Complete;
-        }
-
-        internal override void LoadAsync()
-        {
-            Load();
-        }
-
-        internal override void OnLoadAsync()
-        {
-        }
-
-        protected override void OnDispose()
-        {
-            text = null;
-            base.OnDispose();
-        }
-
         public string Text
         {
-            get { return text; }
+            get 
+            {
+                if (_Data == null)
+                    return null;
+                return _Data.text;
+            }
         }
     }
 

@@ -12,9 +12,9 @@ namespace ProjectK.Base
         {
             get 
             {
-                if (Data == null)
+                if (_Data == null)
                     return null;
-                return Data as Material; 
+                return _Data as Material; 
             }
         }
     }

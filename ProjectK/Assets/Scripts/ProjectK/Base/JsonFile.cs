@@ -16,6 +16,13 @@ namespace ProjectK.Base
                 data = SimpleJson.DeserializeObject<T>(Text);
         }
 
+        internal override void OnLoadAsync()
+        {
+            base.OnLoadAsync();
+            if (data == null && Text != null)
+                data = SimpleJson.DeserializeObject<T>(Text);
+        }
+
         public void LoadFromData(string rawData)
         {
             data = SimpleJson.DeserializeObject<T>(rawData);
@@ -35,6 +42,13 @@ namespace ProjectK.Base
         {
             base.Load();
             if (Text != null)
+                data = SimpleJson.DeserializeObject(Text) as JsonObject;
+        }
+
+        internal override void OnLoadAsync()
+        {
+            base.OnLoadAsync();
+            if (data == null && Text != null)
                 data = SimpleJson.DeserializeObject(Text) as JsonObject;
         }
 

@@ -21,6 +21,13 @@ namespace ProjectK.Base
                 LoadFromData(Text);
         }
 
+        internal override void OnLoadAsync()
+        {
+            base.OnLoadAsync();
+            if (Text != null)
+                LoadFromData(Text);
+        }
+
         public void LoadFromData(string rawData, bool parseImmediately = true)
         {
             this.rawData = rawData;

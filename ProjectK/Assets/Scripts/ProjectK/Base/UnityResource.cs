@@ -8,13 +8,13 @@ namespace ProjectK.Base
 {
     public class UnityResource<T> : Resource where T : UnityEngine.Object
     {
-        private T data;
+        private T _data;
         private ResourceRequest request;
 
         internal override void Load()
         {
-            data = Resources.Load<T>(Url);
-            if (data == null)
+            _data = Resources.Load<T>(Url);
+            if (_data == null)
             {
                 loadFailed = true;
                 Log.Error("资源加载错误! Url:", Url, "\nType:", GetType());
@@ -25,7 +25,7 @@ namespace ProjectK.Base
 
         internal override void LoadAsync()
         {
-            request = Resources.LoadAsync<GameObject>(Url);
+            request = Resources.LoadAsync<T>(Url);
             state = ResourceState.Loading;
         }
 
@@ -33,8 +33,8 @@ namespace ProjectK.Base
         {
             if (request.isDone)
             {
-                data = request.asset as T;
-                if (data == null)
+                _data = request.asset as T;
+                if (_data == null)
                 {
                     loadFailed = true;
                     Log.Error("资源加载错误! Url:", Url, "\nType:", GetType());
@@ -52,21 +52,21 @@ namespace ProjectK.Base
                 request = null;
             }
 
-            if (data != null)
+            if (_data != null)
             {
                 // 没办法直接Unload一个GameObject，也许只能调用Resources.UnloadUnusedAssets()
                 //Resources.UnloadAsset(gameObject);
-                data = null;
+                _data = null;
             }
 
             base.OnDispose();
         }
 
-        public T Data
+        public T _Data
         {
             get
             {
-                return data;
+                return _data;
             }
         }
     }

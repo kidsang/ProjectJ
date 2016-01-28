@@ -10,9 +10,9 @@ namespace ProjectK.Base
     {
         public GameObject Instantiate()
         {
-            if (Data == null)
+            if (_Data == null)
                 return null;
-            return GameObject.Instantiate((GameObject)Data);
+            return GameObject.Instantiate((GameObject)_Data);
         }
     }
 }
