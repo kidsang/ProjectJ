@@ -11,6 +11,10 @@ namespace ProjectK.Base
         private Dictionary<string, Resource> resources = new Dictionary<string, Resource>();
         private ResourceManager manager = ResourceManager.Instance;
 
+        private bool batching = false;
+        private int batchTotalCount = 0;
+        private int batchCompleteCount = 0;
+
         public IniFile LoadIniFile(string url)
         {
             return Load<IniFile>(url);
@@ -109,9 +113,52 @@ namespace ProjectK.Base
 
             if (onLoadComplete != null)
                 res.OnLoadComplete += onLoadComplete;
-            manager.AppendResource(res);
 
+            if (batching)
+            {
+                batchTotalCount += 1;
+                res.OnLoadComplete += OnBatchResourceComplete;
+            }
+
+            manager.AppendResource(res);
             return (T)res;
+        }
+
+        private void OnBatchResourceComplete(Resource res)
+        {
+            batchCompleteCount += 1;
+        }
+
+        /// <summary>
+        /// 开始统计接下来的所有LoadAsync操作
+        /// 随后可以通过BatchProgress查询总进度
+        /// </summary>
+        public void BeginBatch()
+        {
+            if (!batching)
+            {
+                batching = true;
+                batchTotalCount = 0;
+                batchCompleteCount = 0;
+            }
+        }
+
+        /// <summary>
+        /// 结束统计LoadAsync操作
+        /// </summary>
+        public void EndBatch()
+        {
+            batching = false;
+        }
+
+        public float BatchProgress
+        {
+            get 
+            {
+                if (batchTotalCount == 0)
+                    return 1;
+                return batchCompleteCount / (float)batchTotalCount;
+            }
         }
 
         protected override void OnDispose()
