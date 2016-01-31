@@ -76,10 +76,13 @@ namespace ProjectK
                     }
 
                     NaviComp.Position = position;
-                    if (direction.x > 0 && gameObject.transform.localScale.x < 0)
-                        gameObject.transform.localScale *= -1;
-                    else if (direction.x < 0 && gameObject.transform.localScale.x > 0)
-                        gameObject.transform.localScale *= -1;
+                    if (direction.x > 0 && gameObject.transform.localScale.x < 0
+                        || direction.x < 0 && gameObject.transform.localScale.x > 0)
+                    {
+                        Vector3 scale = gameObject.transform.localScale;
+                        scale.x *= -1;
+                        gameObject.transform.localScale = scale;
+                    }
                 }
                 else
                 {

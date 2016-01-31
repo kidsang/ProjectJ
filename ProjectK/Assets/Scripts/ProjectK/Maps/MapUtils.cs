@@ -1,15 +1,30 @@
-﻿using System.Collections.Generic;
+﻿// 六边形格子尖头向上
+#define POINTY_TOPPED
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+
 
 namespace ProjectK
 {
     public static class MapUtils
     {
-        public static readonly float Radius = 1.0f;
         public static readonly float PI2 = Mathf.PI * 2;
         public static readonly float Sqrt3 = Mathf.Sqrt(3.0f);
+
+#if POINTY_TOPPED
+        public static readonly float Radius = 1.0f;
+        public static readonly float HalfWidth = Radius * Sqrt3 / 2.0f;
+        public static readonly float HalfHeight = Radius;
+#else
+        public static readonly float Radius = 1.0f;
+        public static readonly float HalfWidth = Radius;
+        public static readonly float HalfHeight = Radius * Sqrt3 / 2.0f;
+#endif
+        public static readonly float Width = HalfWidth * 2;
+        public static readonly float Height = HalfHeight * 2;
 
         public static readonly Vector2 Vector2X = new Vector2(1, 0);
         public static readonly Vector2 Vector2Y = new Vector2(0, 1);
@@ -27,14 +42,37 @@ namespace ProjectK
             return (y << 16) | (ushort)x;
         }
 
+#if POINTY_TOPPED
+        public static Vector3 LocationToPosition(int x, int y)
+        {
+            return new Vector3(Radius * Sqrt3 * (x + 0.5f * y), Radius * 1.5f * y);
+        }
+
+        public static Vector2 PositionToLocation(float x, float y)
+        {
+            float fx = (Sqrt3 * x - y) / 3.0f / Radius;
+            float fy = y * 2 / 3.0f / Radius;
+            float fz = -fx - fy;
+
+            float rx = Mathf.Round(fx);
+            float ry = Mathf.Round(fy);
+            float rz = Mathf.Round(fz);
+
+            float dx = Mathf.Abs(rx - fx);
+            float dy = Mathf.Abs(ry - fy);
+            float dz = Mathf.Abs(rz - fz);
+
+            if (dx > dy && dx > dz)
+                rx = -ry - rz;
+            else if (dy > dz)
+                ry = -rx - rz;
+
+            return new Vector2((int)rx, (int)ry);
+        }
+#else
         public static Vector3 LocationToPosition(int x, int y)
         {
             return new Vector3(Radius * 1.5f * x, Radius * Sqrt3 * (y + 0.5f * x));
-        }
-
-        public static Vector3 LocationToPosition(Vector2 location)
-        {
-            return LocationToPosition((int)location.x, (int)location.y);
         }
 
         public static Vector2 PositionToLocation(float x, float y)
@@ -58,17 +96,29 @@ namespace ProjectK
 
             return new Vector2((int)rx, (int)ry);
         }
+#endif
+
+        public static Vector3 LocationToPosition(Vector2 location)
+        {
+            return LocationToPosition((int)location.x, (int)location.y);
+        }
 
         public static Vector2 PositionToLocation(Vector3 position)
         {
             return PositionToLocation(position.x, position.y);
         }
 
+        /// <summary>
+        /// 判断点p是否在直线p1p2上
+        /// </summary>
         public static bool InLine(Vector2 p, Vector2 p1, Vector2 p2)
         {
             return (p2.x - p1.x) * (p.y - p1.y) == (p2.y - p1.y) * (p.x - p1.x);
         }
 
+        /// <summary>
+        /// 判断点p是否在线段p1p2上
+        /// </summary>
         public static bool InSegment(Vector2 p, Vector2 p1, Vector2 p2)
         {
             if (!InLine(p, p1, p2))
@@ -99,6 +149,9 @@ namespace ProjectK
             return true;
         }
 
+        /// <summary>
+        /// 两个六边形格子之间的距离
+        /// </summary>
         public static int Distance(int x1, int y1, int x2, int y2)
         {
             int z1 = -x1 - y1;
@@ -106,11 +159,17 @@ namespace ProjectK
             return (Mathf.Abs(x1 - x2) + Mathf.Abs(y1 - y2) + Mathf.Abs(z1 - z2)) / 2;
         }
 
+        /// <summary>
+        /// 两个六边形格子之间的距离
+        /// </summary>
         public static int Distance(Vector2 location1, Vector2 location2)
         {
             return Distance((int)location1.x, (int)location1.y, (int)location2.x, (int)location2.y);
         }
 
+        /// <summary>
+        /// 六边形格子在某个方向上的邻居位置
+        /// </summary>
         public static Vector2 Neighbour(int x, int y, int direction)
         {
             direction %= Directions.Length;
@@ -118,11 +177,17 @@ namespace ProjectK
             return new Vector2(dir.x + x, dir.y + y);
         }
 
+        /// <summary>
+        /// 六边形格子在某个方向上的邻居位置
+        /// </summary>
         public static Vector2 Neighbour(Vector2 location, int direction)
         {
             return Neighbour((int)location.x, (int)location.y, direction);
         }
 
+        /// <summary>
+        /// 六边形格子在某个方向上的邻居位置
+        /// </summary>
         public static Vector2 Neighbour(int x, int y, int direction, int distance)
         {
             direction %= Directions.Length;
@@ -130,11 +195,17 @@ namespace ProjectK
             return new Vector2(dir.x * distance + x, dir.y * distance + y);
         }
 
+        /// <summary>
+        /// 六边形格子在某个方向上的邻居位置
+        /// </summary>
         public static Vector2 Neighbour(Vector2 location, int direction, int distance)
         {
             return Neighbour((int)location.x, (int)location.y, direction, distance);
         }
 
+        /// <summary>
+        /// 某个位置六边形格子的所有邻居
+        /// </summary>
         public static Vector2[] Neighbours(int x, int y)
         {
             int count = Directions.Length;
@@ -148,6 +219,9 @@ namespace ProjectK
             return ret;
         }
 
+        /// <summary>
+        /// 返回以某个位置为中心的一环六边形格子
+        /// </summary>
         private static void Ring(int x, int y, int radius, Vector2[] ret, ref int index)
         {
             if (radius > 0)
@@ -168,6 +242,9 @@ namespace ProjectK
             }
         }
 
+        /// <summary>
+        /// 返回以某个位置为中心的一环六边形格子
+        /// </summary>
         public static Vector2[] Ring(int x, int y, int radius)
         {
             int count = radius <= 0 ? 1 : radius * 6;
@@ -179,6 +256,9 @@ namespace ProjectK
             return ret;
         }
 
+        /// <summary>
+        /// 返回以某个位置为中心，范围内所有六边形格子
+        /// </summary>
         public static Vector2[] Circle(int x, int y, int radius)
         {
             int count = 1;

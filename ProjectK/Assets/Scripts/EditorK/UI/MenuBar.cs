@@ -187,14 +187,14 @@ namespace EditorK.UI
             {
                 structSize = Marshal.SizeOf(this);
                 dlgOwner = GameEditor.Instance.GetWindowPtr();
-                filter = "*.map\0*.map\0";
+                filter = "*.json\0*.json\0";
                 file = new string(new char[256]);
                 maxFile = file.Length;
                 fileTitle = new string(new char[64]);
                 maxFileTitle = fileTitle.Length;
                 initialDir = Path.GetFullPath(initPath);
                 title = titleText;
-                defExt = "map";
+                defExt = "json";
                 flags = OFN_NOCHANGEDIR | OFN_FILEMUSTEXIST;
             }
         }

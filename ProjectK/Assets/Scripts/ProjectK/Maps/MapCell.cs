@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// 六边形格子尖头向上
+#define POINTY_TOPPED
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -13,7 +16,10 @@ namespace ProjectK
     public class MapCell : DisposableBehaviour, IPriorityQueueNode
     {
         public static readonly float Radius = MapUtils.Radius;
-        public static readonly float Sqrt3 = Mathf.Sqrt(3.0f);
+        public static readonly float HalfWidth = MapUtils.HalfWidth;
+        public static readonly float HalfHeight = MapUtils.HalfHeight;
+        public static readonly float Width = MapUtils.Width;
+        public static readonly float Height = MapUtils.Height;
 
         protected GameObject CellObject { get; private set; }
         public Map Map { get; private set; }
@@ -97,26 +103,17 @@ namespace ProjectK
             get { return new Vector2(X, Y); }
         }
 
-        public static float HalfWidth
+#if POINTY_TOPPED
+        public float CenterX
         {
-            get { return Radius; }
+            get { return Width * (X + 0.5f * Y); }
         }
 
-        public static float HalfHeight
+        public float CenterY
         {
-            get { return Radius * Sqrt3 * 0.5f;}
+            get { return Radius * 1.5f * Y; }
         }
-
-        public static float Width
-        {
-            get { return Radius * 2; }
-        }
-
-        public static float Height
-        {
-            get { return Radius * Sqrt3; }
-        }
-
+#else
         public float CenterX
         {
             get { return Radius * 1.5f * X; }
@@ -124,8 +121,9 @@ namespace ProjectK
 
         public float CenterY
         {
-            get { return Radius * Sqrt3 * (Y + 0.5f * X); }
+            get { return Height * (Y + 0.5f * X); }
         }
+#endif
 
         public Vector3 Position
         {

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// 六边形格子尖头向上
+#define POINTY_TOPPED
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -84,9 +87,9 @@ namespace ProjectK
             {
                 GameObject cellObject;
                 if ((cellSetting.Flags & (int)MapCellFlag.Highland) != 0)
-                    cellObject = Loader.LoadPrefab("Map/GrassHigh").Instantiate();
+                    cellObject = Loader.LoadPrefab("Map/GrassHigh2").Instantiate();
                 else
-                    cellObject = Loader.LoadPrefab("Map/GrassLow").Instantiate();
+                    cellObject = Loader.LoadPrefab("Map/GrassLow2").Instantiate();
                 cellObject.transform.SetParent(CellRoot, false);
                 MapCell cell = cellObject.AddComponent<MapCell>();
                 cell.Init(this, (short)cellSetting.X, (short)cellSetting.Y);
@@ -109,8 +112,13 @@ namespace ProjectK
 
         protected void UpdateMapSize()
         {
+#if POINTY_TOPPED
+            Width = Mathf.Max(0, CellCountX - 1) * MapCell.Width;
+            Height = Mathf.Max(0, CellCountY - 1) * MapCell.HalfHeight * 1.5f;
+#else
             Width = Mathf.Max(0, CellCountX - 1) * MapCell.HalfWidth * 1.5f;
             Height = Mathf.Max(0, CellCountY - 1) * MapCell.Height;
+#endif
         }
 
         protected void BuildNeighbours()

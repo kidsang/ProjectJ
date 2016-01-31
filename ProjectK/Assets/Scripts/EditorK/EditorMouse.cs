@@ -68,7 +68,7 @@ namespace EditorK
         void Start()
         {
             loader = new ResourceLoader();
-            selectObject = loader.LoadPrefab("Map/MapCellSelect").Instantiate();
+            selectObject = loader.LoadPrefab("Map/MapCellSelect2").Instantiate();
             selectObject.SetActive(false);
         }
 

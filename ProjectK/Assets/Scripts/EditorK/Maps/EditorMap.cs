@@ -1,4 +1,7 @@
-﻿using System;
+﻿// 六边形格子尖头向上
+#define POINTY_TOPPED
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,8 +53,13 @@ namespace EditorK
             {
                 for (short i = 0; i < countX; ++i)
                 {
+#if POINTY_TOPPED
+                    short y = j;
+                    short x = (short)(i - j / 2);
+#else
                     short x = i;
                     short y = (short)(j - i / 2);
+#endif
 
                     int key = MapUtils.MakeKey(x, y);
                     if (oldCells.ContainsKey(key))
@@ -62,7 +70,7 @@ namespace EditorK
                     }
                     else
                     {
-                        GameObject cellObject = Loader.LoadPrefab("Map/MapCell").Instantiate();
+                        GameObject cellObject = Loader.LoadPrefab("Map/MapCell2").Instantiate();
                         cellObject.transform.SetParent(CellRoot, false);
                         MapCell cell = cellObject.AddComponent<MapCell>();
                         cell.Init(this, x, y);
@@ -177,7 +185,7 @@ namespace EditorK
                     Transform terrainMark;
                     if (i >= childCount)
                     {
-                        GameObject terrainMarkObj = Loader.LoadPrefab("Map/TerrainMark").Instantiate();
+                        GameObject terrainMarkObj = Loader.LoadPrefab("Map/TerrainMark2").Instantiate();
                         terrainMarkObj.GetComponent<SpriteRenderer>().color = color;
                         terrainMark = terrainMarkObj.transform;
                         terrainMark.SetParent(root, false);
@@ -214,23 +222,13 @@ namespace EditorK
         {
             MapSetting setting = SceneDataProxy.Instance.MapData;
             Dictionary<int, MapCellSetting> cellSettings = MapUtils.ArrayToDict(setting.Cells);
-            for (short j = 0; j < CellCountY; ++j)
+            foreach (MapCell cell in Cells.Values)
             {
-                for (short i = 0; i < CellCountX; ++i)
-                {
-                    short x = i;
-                    short y = (short)(j - i / 2);
-                    int key = MapUtils.MakeKey(x, y);
-
-                    MapCell cell = GetCell(x, y);
+                MapCellSetting cellSetting;
+                if (cellSettings.TryGetValue(cell.Key, out cellSetting))
+                    cell.Flags = cellSetting.Flags;
+                else
                     cell.Flags = 0;
-
-                    MapCellSetting cellSetting;
-                    if (cellSettings.TryGetValue(key, out cellSetting))
-                    {
-                        cell.Flags = cellSetting.Flags;
-                    }
-                }
             }
 
             if (showTerrain)
