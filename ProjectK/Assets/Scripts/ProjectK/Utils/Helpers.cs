@@ -39,7 +39,7 @@ namespace ProjectK
             if (hud == null)
             {
                 hud = UIManager.Instance.CreateHud<HpBarUI>();
-                hudManager.AddHud("hp_bar", hud, new Vector2());
+                hudManager.AddHud("hp_bar", hud, Vector2.zero);
             }
             hud.Show();
             hud.Refresh(hpPercent);

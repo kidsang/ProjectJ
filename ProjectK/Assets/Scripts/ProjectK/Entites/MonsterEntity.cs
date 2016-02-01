@@ -9,6 +9,7 @@ namespace ProjectK
 {
     public class MonsterEntity : SceneEntity
     {
+        public AnimComp AnimComp { get; private set; }
         public BuffMgrComp BuffMgrComp { get; private set; }
 
         private MapPath path;
@@ -26,6 +27,7 @@ namespace ProjectK
             AttrComp.Hp = AttrComp.MaxHp;
             AttrComp.RegisterAttrChangeCallback(AttrName.Hp, OnHpChange);
 
+            AnimComp = AddComp<AnimComp>();
             BuffMgrComp = AddComp<BuffMgrComp>();
         }
 

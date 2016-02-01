@@ -12,12 +12,25 @@ namespace ProjectK
     public class HudManager : MonoBehaviour
     {
         private Dictionary<string, HudInfo> hudInfoDict = new Dictionary<string, HudInfo>();
+        private Transform hudTransform;
+
+        private void Start()
+        {
+            hudTransform = gameObject.transform;
+            int childCount = hudTransform.childCount;
+            for (int i = 0; i < childCount; ++i)
+            {
+                if (hudTransform.GetChild(i).gameObject.name == "Hud")
+                {
+                    hudTransform = hudTransform.GetChild(i);
+                    break;
+                }
+            }
+        }
 
         private void Update()
         {
-            Vector3 position = gameObject.transform.position;
-            position = Camera.main.WorldToScreenPoint(position);
-
+            Vector3 position = Camera.main.WorldToScreenPoint(hudTransform.position);
             foreach (HudInfo hudInfo in hudInfoDict.Values)
             {
                 UIBase hud = hudInfo.Hud;
