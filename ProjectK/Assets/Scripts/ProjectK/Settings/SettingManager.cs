@@ -22,6 +22,10 @@ namespace ProjectK
         public CsvFile<TowerEntitySetting> TowerEntitySettings;
         public CsvFile<BuffSetting> BuffSettings;
 
+        public CsvFile<ItemTypeSetting> ItemTypeSettings;
+        public Dictionary<int, ItemSetting> ItemSettings = new Dictionary<int, ItemSetting>();
+        public Dictionary<int, Resource> ItemSettingsByType = new Dictionary<int, Resource>();
+
         public static void Init(AllCompleteCallback allComplete)
         {
             if (instance != null)
@@ -39,6 +43,9 @@ namespace ProjectK
             MonsterEntitySettings = LoadCsvFile<MonsterEntitySetting>("Settings/MonsterEntities");
             TowerEntitySettings = LoadCsvFile<TowerEntitySetting>("Settings/TowerEntities");
             BuffSettings = LoadCsvFile<BuffSetting>("Settings/Buffs");
+
+            ItemTypeSettings = LoadCsvFile<ItemTypeSetting>("Settings/Items/ItemTypes");
+            ItemSettingsByType[(int)ItemType.Material] = LoadCsvFile<ItemMaterialSetting>("Settings/Items/Materials");
         }
 
         public void ReloadAll(AllCompleteCallback allComplete = null)
@@ -56,16 +63,22 @@ namespace ProjectK
             LoadAll();
         }
 
-        private IniFile LoadIniFile(string url)
+        private IniFile LoadIniFile(string url, ResourceLoadComplete callback = null)
         {
             ++loadingCount;
-            return loader.LoadIniFileAsync(url, OnLoadComplete);
+            if (callback != null)
+                return loader.LoadIniFileAsync(url, callback);
+            else
+                return loader.LoadIniFileAsync(url, OnLoadComplete);
         }
 
-        private CsvFile<T> LoadCsvFile<T>(string url) where T: CsvFileObject, new()
+        private CsvFile<T> LoadCsvFile<T>(string url, ResourceLoadComplete callback = null) where T: CsvFileObject, new()
         {
             ++loadingCount;
-            return loader.LoadCsvFileAsync<T>(url, OnLoadComplete);
+            if (callback != null)
+                return loader.LoadCsvFileAsync<T>(url, OnLoadComplete);
+            else
+                return loader.LoadCsvFileAsync<T>(url, OnLoadComplete);
         }
 
         private void OnLoadComplete(Resource res)

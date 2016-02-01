@@ -8,6 +8,7 @@ namespace ProjectK
     /// <summary>
     /// 地图格子类型
     /// </summary>
+    [Flags]
     public enum MapCellFlag
     {
         /// <summary>
@@ -30,7 +31,6 @@ namespace ProjectK
         /// </summary>
         Highland = 4,
     }
-
 
     /// <summary>
     /// 伤害和护甲类型
@@ -134,5 +134,26 @@ namespace ProjectK
         /// 全体
         /// </summary>
         All,
+    }
+
+    /// <summary>
+    /// 物品类型
+    /// </summary>
+    public enum ItemType
+    {
+        /// <summary>
+        /// 货币
+        /// </summary>
+        Currency = 1,
+
+        /// <summary>
+        /// 材料
+        /// </summary>
+        Material = 2,
+
+        /// <summary>
+        /// 技能（壳）
+        /// </summary>
+        Skill = 3,
     }
 }

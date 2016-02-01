@@ -1,0 +1,5 @@
+ID,Name,StartItemID,EndItemID
+#物品类型,类型名,起始物品ID,结束物品ID
+Currency,货币,1,1000
+Material,材料,1001,19999
+Skill,技能,20000,20000

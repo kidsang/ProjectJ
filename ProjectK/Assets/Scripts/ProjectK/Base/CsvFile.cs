@@ -39,7 +39,7 @@ namespace ProjectK.Base
 
         private bool parsed = false;
         private string rawData;
-        private Dictionary<object, T> datas = new Dictionary<object, T>();
+        public Dictionary<object, T> Datas { get; private set; }
 
         internal override void Load()
         {
@@ -68,7 +68,7 @@ namespace ProjectK.Base
                 Parse();
 
             T data;
-            datas.TryGetValue(key, out data);
+            Datas.TryGetValue(key, out data);
             return data;
         }
 
@@ -82,6 +82,8 @@ namespace ProjectK.Base
         {
             if (rawData == null)
                 return;
+
+            Datas = new Dictionary<object, T>();
 
             string[] lines = rawData.Split(LINE_SEPERATOR, StringSplitOptions.RemoveEmptyEntries);
             int numLines = lines.Length;
@@ -144,13 +146,13 @@ namespace ProjectK.Base
                 }
 
                 object key = obj.GetKey();
-                if (datas.ContainsKey(key))
+                if (Datas.ContainsKey(key))
                 {
                     Log.Error("tab表键值重复！ url:", Url, "key:", key);
                 }
                 else
                 {
-                    datas[key] = obj;
+                    Datas[key] = obj;
                     obj.OnComplete();
 #if CHECK_CSV
                     obj.OnCheck();
