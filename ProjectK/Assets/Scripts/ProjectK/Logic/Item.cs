@@ -17,6 +17,7 @@ namespace ProjectK
         {
             ID = itemID;
             Count = itemCount;
+            Setting = SettingManager.Instance.GetItemSetting(itemID);
         }
     }
 }

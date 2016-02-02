@@ -69,5 +69,39 @@ namespace ProjectK
             hud.Show();
             hud.Refresh(hpChange.ToString());
         }
+
+        /// <summary>
+        /// 根据权重随机取值
+        /// </summary>
+        public static int RandomWeights(double[] weights)
+        {
+            double totalWeight = weights.Sum();
+            double randomValue = UnityEngine.Random.Range(0, (float)totalWeight);
+            for (int i = 0; i < weights.Length; ++i)
+            {
+                double weight = weights[i];
+                if (randomValue < weight)
+                    return i;
+                randomValue -= weight;
+            }
+            return weights.Length - 1;
+        }
+
+        /// <summary>
+        /// 根据权重随机取值
+        /// </summary>
+        public static int RandomWeights(int[] weights)
+        {
+            int totalWeight = weights.Sum();
+            int randomValue = UnityEngine.Random.Range(0, totalWeight);
+            for (int i = 0; i < weights.Length; ++i)
+            {
+                int weight = weights[i];
+                if (randomValue < weight)
+                    return i;
+                randomValue -= weight;
+            }
+            return weights.Length - 1;
+        }
     }
 }

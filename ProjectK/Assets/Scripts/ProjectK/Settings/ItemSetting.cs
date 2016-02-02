@@ -10,6 +10,7 @@ namespace ProjectK
     {
         public int ID;
         public string Name;
+        public string Icon;
 
         public override object GetKey()
         {

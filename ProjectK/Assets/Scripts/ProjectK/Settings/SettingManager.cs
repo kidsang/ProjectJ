@@ -21,6 +21,7 @@ namespace ProjectK
         public CsvFile<MonsterEntitySetting> MonsterEntitySettings;
         public CsvFile<TowerEntitySetting> TowerEntitySettings;
         public CsvFile<BuffSetting> BuffSettings;
+        public CsvFile<SkillCompositeSetting> SkillCompositeSettings;
 
         public CsvFile<ItemTypeSetting> ItemTypeSettings;
         public Dictionary<int, ItemSetting> ItemSettings = new Dictionary<int, ItemSetting>();
@@ -43,6 +44,7 @@ namespace ProjectK
             MonsterEntitySettings = LoadCsvFile<MonsterEntitySetting>("Settings/MonsterEntities");
             TowerEntitySettings = LoadCsvFile<TowerEntitySetting>("Settings/TowerEntities");
             BuffSettings = LoadCsvFile<BuffSetting>("Settings/Buffs");
+            SkillCompositeSettings = LoadCsvFile<SkillCompositeSetting>("Settings/SkillComposites");
 
             ItemTypeSettings = LoadCsvFile<ItemTypeSetting>("Settings/Items/ItemTypes");
             ItemSettingsByType[(int)ItemType.Material] = LoadCsvFile<ItemMaterialSetting>("Settings/Items/Materials");
@@ -61,6 +63,15 @@ namespace ProjectK
             loader = new ResourceLoader();
             this.allComplete = allComplete;
             LoadAll();
+        }
+
+        public ItemSetting GetItemSetting(int itemID, bool throwError = true)
+        {
+            ItemSetting setting;
+            ItemSettings.TryGetValue(itemID, out setting);
+            if (throwError && setting == null)
+                Log.Assert(false, "找不到物品配置表！itemID：", itemID);
+            return setting;
         }
 
         private IniFile LoadIniFile(string url, ResourceLoadComplete callback = null)
