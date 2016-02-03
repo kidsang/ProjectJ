@@ -21,6 +21,7 @@ namespace ProjectK
         public CsvFile<MonsterEntitySetting> MonsterEntitySettings;
         public CsvFile<TowerEntitySetting> TowerEntitySettings;
         public CsvFile<BuffSetting> BuffSettings;
+        public CsvFile<SkillSetting> SkillSettings;
         public CsvFile<SkillCompositeSetting> SkillCompositeSettings;
 
         public CsvFile<ItemTypeSetting> ItemTypeSettings;
@@ -44,6 +45,7 @@ namespace ProjectK
             MonsterEntitySettings = LoadCsvFile<MonsterEntitySetting>("Settings/MonsterEntities");
             TowerEntitySettings = LoadCsvFile<TowerEntitySetting>("Settings/TowerEntities");
             BuffSettings = LoadCsvFile<BuffSetting>("Settings/Buffs");
+            SkillSettings = LoadCsvFile<SkillSetting>("Settings/Skills");
             SkillCompositeSettings = LoadCsvFile<SkillCompositeSetting>("Settings/SkillComposites");
 
             ItemTypeSettings = LoadCsvFile<ItemTypeSetting>("Settings/Items/ItemTypes");
@@ -65,12 +67,28 @@ namespace ProjectK
             LoadAll();
         }
 
-        public ItemSetting GetItemSetting(int itemID, bool throwError = true)
+        public ItemSetting GetItemSetting(int itemID, bool throwError = false)
         {
             ItemSetting setting;
             ItemSettings.TryGetValue(itemID, out setting);
             if (throwError && setting == null)
                 Log.Assert(false, "找不到物品配置表！itemID：", itemID);
+            return setting;
+        }
+
+        public SkillSetting GetSkillSetting(int skillID, bool throwError = false)
+        {
+            SkillSetting setting = SkillSettings.GetValue(skillID);
+            if (throwError && setting == null)
+                Log.Assert(false, "找不到技能配置表！skillID：", skillID);
+            return setting;
+        }
+
+        public SkillCompositeSetting GetSkillCompositeSetting(int element1, int element2, int element3, int energyLevel, bool throwError = false)
+        {
+            SkillCompositeSetting setting = SkillCompositeSettings.GetValue(element1, element2, element3, energyLevel);
+            if (throwError && setting == null)
+                Log.Assert(false, "找不到技能合成配置表！", (DamageType)element1, (DamageType)element2, (DamageType)element3, energyLevel);
             return setting;
         }
 

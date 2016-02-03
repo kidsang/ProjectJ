@@ -27,7 +27,7 @@ namespace ProjectK
         /// <summary>
         /// 使用原材料合成技能
         /// </summary>
-        public void ComposeSkill(List<ItemMaterial> materials)
+        public ItemSkill ComposeSkill(List<ItemMaterial> materials)
         {
             // 统计所有原料的能量值和元素占比权重
             int totalEnergy = 0;
@@ -53,10 +53,15 @@ namespace ProjectK
             int energyLevel = 1;
 
             // 查询技能合成表并合成技能
-            SkillCompositeSetting skillCompositeSetting = SettingManager.Instance.SkillCompositeSettings.GetValue(elements[0], elements[1], elements[2], energyLevel);
+            SkillCompositeSetting skillCompositeSetting = SettingManager.Instance.GetSkillCompositeSetting(elements[0], elements[1], elements[2], energyLevel, true);
             int skillIndex = Helpers.RandomWeights(skillCompositeSetting.SkillWeightArr);
             int skillID = skillCompositeSetting.SkillIDArr[skillIndex];
+            SkillSetting skillSetting = SettingManager.Instance.GetSkillSetting(skillID, true);
 
+            ItemSkill itemSkill = new ItemSkill();
+            itemSkill.SkillSetting = skillSetting;
+            itemSkill.Energy = totalEnergy;
+            return itemSkill;
         }
     }
 }
