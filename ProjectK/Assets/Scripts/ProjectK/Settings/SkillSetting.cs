@@ -11,6 +11,10 @@ namespace ProjectK
         public int ID;
         public string Name;
 
+        public SkillSetting()
+        {
+        }
+
         public override object GetKey()
         {
             return ID;
