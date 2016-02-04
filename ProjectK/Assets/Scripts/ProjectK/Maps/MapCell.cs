@@ -42,7 +42,12 @@ namespace ProjectK
         /// <summary>
         /// 该格子上所有的TowerEntity
         /// </summary>
-        public List<SceneEntity> TowerEntities;
+        public List<MonsterEntity> MonsterEntities;
+
+        /// <summary>
+        /// 该格子上所有的TowerEntity
+        /// </summary>
+        public List<TowerEntity> TowerEntities;
 
         internal void Init(Map map, short x, short y)
         {
@@ -59,7 +64,8 @@ namespace ProjectK
 
             Neighbours = new MapCell[NumNeighbours];
             SceneEntities = new List<SceneEntity>();
-            TowerEntities = new List<SceneEntity>();
+            MonsterEntities = new List<MonsterEntity>();
+            TowerEntities = new List<TowerEntity>();
         }
 
         internal void Load(MapCellSetting setting)
@@ -76,6 +82,7 @@ namespace ProjectK
             Loader = null;
             Neighbours = null;
             SceneEntities = null;
+            MonsterEntities = null;
             TowerEntities = null;
 
             base.OnDispose();
@@ -159,16 +166,20 @@ namespace ProjectK
             {
                 SceneEntities.Add(entity);
 
-                if (entity is TowerEntity)
-                    TowerEntities.Add(entity);
+                if (entity is MonsterEntity)
+                    MonsterEntities.Add(entity as MonsterEntity);
+                else if (entity is TowerEntity)
+                    TowerEntities.Add(entity as TowerEntity);
             }
         }
 
         public void RemoveEntity(SceneEntity entity)
         {
             SceneEntities.Remove(entity);
-            if (entity is TowerEntity)
-                TowerEntities.Remove(entity);
+            if (entity is MonsterEntity)
+                MonsterEntities.Remove(entity as MonsterEntity);
+            else if (entity is TowerEntity)
+                TowerEntities.Remove(entity as TowerEntity);
         }
 
         public void ColorTransform(float r = 1, float g = 1, float b = 1, float a = 1)

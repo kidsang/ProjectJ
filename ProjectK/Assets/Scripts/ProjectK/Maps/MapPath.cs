@@ -33,10 +33,57 @@ namespace ProjectK
             waypoints.Clear();
         }
 
+        /// <summary>
+        /// 计算寻路信息
+        /// </summary>
         public void CalculatePathMaps()
         {
             for (int i = 1; i < waypoints.Count; ++i)
                 CalculatePathMap(i);
+        }
+
+        /// <summary>
+        /// 是否可以在当前格子放置障碍
+        /// </summary>
+        public bool CanBlockLocation(Vector2 location)
+        {
+            MapCell blockCell = map.GetCell(location);
+            if (blockCell == null)
+                return false;
+
+            if (blockCell.IsObstacle)
+                return true;
+
+            for (int i = 1; i < waypoints.Count; ++i)
+            {
+                if (!CanBlockCell(blockCell, i))
+                    return false;
+            }
+            return true;
+        }
+
+        private bool CanBlockCell(MapCell blockCell, int toWaypointIndex)
+        {
+            MapWaypoint toWaypoint = waypoints[toWaypointIndex];
+            Vector2 toLocation = toWaypoint.Location;
+            if (blockCell.Location == toLocation)
+                return false;
+
+            Dictionary<MapCell, MapCell> tempPathMap = toWaypoint.TempPathMap;
+            DoCalculatePathMap(toLocation, tempPathMap, blockCell);
+
+            MapWaypoint fromWaypoint = waypoints[toWaypointIndex - 1];
+            MapCell fromCell = map.GetCell(fromWaypoint.Location);
+            if (!tempPathMap.ContainsKey(fromCell))
+                return false;
+
+            foreach (MapCell cell in map.Cells.Values)
+            {
+                if (cell.MonsterEntities.Count > 0 && !tempPathMap.ContainsKey(cell))
+                    return false;
+            }
+
+            return true;
         }
 
         private void CalculatePathMap(int toWaypointIndex)
@@ -47,7 +94,7 @@ namespace ProjectK
             DoCalculatePathMap(toLocation, pathMap);
         }
 
-        private void DoCalculatePathMap(Vector2 toLocation, Dictionary<MapCell, MapCell> pathMap)
+        private void DoCalculatePathMap(Vector2 toLocation, Dictionary<MapCell, MapCell> pathMap, MapCell blockCell = null)
         {
             pathMap.Clear();
             MapCell toCell = map.GetCell(toLocation);
@@ -64,6 +111,9 @@ namespace ProjectK
                 foreach (MapCell neighbour in current.Neighbours)
                 {
                     if (neighbour == null || neighbour.IsObstacle)
+                        continue;
+
+                    if (neighbour == blockCell)
                         continue;
 
                     if (pathMap.ContainsKey(neighbour))
@@ -204,7 +254,15 @@ namespace ProjectK
             public Vector2 Location;
             public Vector3 Position;
 
+            /// <summary>
+            /// 存放寻路信息
+            /// </summary>
             public Dictionary<MapCell, MapCell> PathMap = new Dictionary<MapCell, MapCell>();
+
+            /// <summary>
+            /// 用于检测是否能阻挡某个格子
+            /// </summary>
+            public Dictionary<MapCell, MapCell> TempPathMap = new Dictionary<MapCell, MapCell>();
         }
     }
 }

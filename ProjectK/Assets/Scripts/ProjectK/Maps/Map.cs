@@ -220,6 +220,16 @@ namespace ProjectK
                 CalculatePath(i);
         }
 
+        public bool CanBlockLocation(Vector2 location)
+        {
+            for (int i = Paths.Count - 1; i >= 0; --i)
+            {
+                if (!Paths[i].CanBlockLocation(location))
+                    return false;
+            }
+            return true;
+        }
+
         public void ToggleShowPath(int index, bool show, bool update = true)
         {
             GameObject pathObjectRoot = PathObjectRoots[index];
@@ -357,13 +367,15 @@ namespace ProjectK
         /// </summary>
         public void UpdateSceneEntityCell(SceneEntity sceneEntity)
         {
-            if (sceneEntity.Cell != null)
-                sceneEntity.Cell.RemoveEntity(sceneEntity);
-
             MapCell cell = GetCell(sceneEntity.Location);
-            if (cell != null)
-                cell.AddEntity(sceneEntity);
-            sceneEntity.Cell = cell;
+            if (sceneEntity.Cell != cell)
+            {
+                if (sceneEntity.Cell != null)
+                    sceneEntity.Cell.RemoveEntity(sceneEntity);
+                if (cell != null)
+                    cell.AddEntity(sceneEntity);
+                sceneEntity.Cell = cell;
+            }
         }
 
         public void Update()

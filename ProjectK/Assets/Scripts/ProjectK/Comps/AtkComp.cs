@@ -90,6 +90,12 @@ namespace ProjectK
 
         override public void UpdateDebugDraw()
         {
+            if (attrComp == null)
+                return;
+
+            if (attrComp.AtkRange == 0 || attrComp.AtkSpeed == 0)
+                return;
+
             if (rangeDebugDraw == null)
                 rangeDebugDraw = DebugDraw.Create("AtkRangeDebug", Entity.gameObject, Color.yellow);
 
