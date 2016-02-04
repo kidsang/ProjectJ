@@ -11,11 +11,7 @@ namespace ProjectK
     {
         public AnimComp AnimComp { get; private set; }
         public BuffMgrComp BuffMgrComp { get; private set; }
-
-        private MapPath path;
-        private int nextWaypointIndex = 1;
-        private int nextPositionIndex;
-        private List<Vector3> wayPositions;
+        public MazeMoveComp MazeMoveComp { get; private set; }
 
         public override void Init(ResourceLoader loader, EntitySetting template)
         {
@@ -29,6 +25,8 @@ namespace ProjectK
 
             AnimComp = AddComp<AnimComp>();
             BuffMgrComp = AddComp<BuffMgrComp>();
+            MazeMoveComp = AddComp<MazeMoveComp>();
+            MazeMoveComp.OnReachEnd += OnReachEnd;
         }
 
         override protected void OnDispose()
@@ -43,59 +41,7 @@ namespace ProjectK
 
         public void SetPath(MapPath path)
         {
-            this.path = path;
-        }
-
-        public void InvalidWayPositions()
-        {
-            wayPositions = null;
-        }
-
-        public override void Activate()
-        {
-            base.Activate();
-
-            if (nextWaypointIndex < path.WaypointCount)
-            {
-                if (wayPositions == null)
-                    path.FindPathPosition(Location, nextWaypointIndex, out wayPositions, out nextPositionIndex);
-
-                Vector3 position = NaviComp.Position;
-                if (nextPositionIndex < wayPositions.Count)
-                {
-                    Vector3 wayPosition = wayPositions[nextPositionIndex];
-                    Vector3 direction = wayPosition - position;
-                    float move = AttrComp.MoveSpeed * Scene.DeltaTime;
-                    if (direction.sqrMagnitude > move * move)
-                    {
-                        direction.Normalize();
-                        position += direction * move;
-                    }
-                    else
-                    {
-                        position = wayPosition;
-                        nextPositionIndex += 1;
-                    }
-
-                    NaviComp.Position = position;
-                    if (direction.x > 0 && gameObject.transform.localScale.x < 0
-                        || direction.x < 0 && gameObject.transform.localScale.x > 0)
-                    {
-                        Vector3 scale = gameObject.transform.localScale;
-                        scale.x *= -1;
-                        gameObject.transform.localScale = scale;
-                    }
-                }
-                else
-                {
-                    nextWaypointIndex += 1;
-                    wayPositions = null;
-                }
-            }
-            else
-            {
-                Die();
-            }
+            MazeMoveComp.SetPath(path);
         }
 
         public void Die()
@@ -108,6 +54,11 @@ namespace ProjectK
         {
             if (value <= 0)
                 Die();
+        }
+
+        private void OnReachEnd()
+        {
+            Die();
         }
     }
 }

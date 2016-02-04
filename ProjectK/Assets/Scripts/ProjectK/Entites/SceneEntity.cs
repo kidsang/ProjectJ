@@ -100,10 +100,12 @@ namespace ProjectK
             for (int i = 0; i < numComps; ++i)
             {
                 GameComp comp = CompList[i];
-                comp.Activate();
-
-                if (ShowDebugDraw)
-                    comp.UpdateDebugDraw();
+                if (comp.Started)
+                {
+                    comp.Activate();
+                    if (ShowDebugDraw)
+                        comp.UpdateDebugDraw();
+                }
             }
         }
 

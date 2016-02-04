@@ -149,13 +149,6 @@ namespace ProjectK
             cell.SetFlag(MapCellFlag.CanWalk, false);
             Map.CalculatePaths();
             Map.ToggleShowPaths(true);
-
-            for (int i = EntityList.Count - 1; i >= 0; --i)
-            {
-                SceneEntity entity = EntityList[i];
-                if (entity is MonsterEntity)
-                    (entity as MonsterEntity).InvalidWayPositions();
-            }
         }
 
         public MonsterEntity CreateMonsterEntity(int templateID)

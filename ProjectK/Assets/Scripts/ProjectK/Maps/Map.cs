@@ -32,7 +32,6 @@ namespace ProjectK
         public List<Color> PathColors { get; protected set; }
         public List<GameObject> PathObjectRoots { get; protected set; }
         public List<MapPath> Paths { get; protected set; }
-        protected PriorityQueue<MapCell> frontier = new PriorityQueue<MapCell>(); // 用于寻路
         protected HashSet<int> cantBlockCells = new HashSet<int>(); // 这些位置不能放置阻挡，否则就会把路堵死
 
         internal void Init(ResourceLoader loader)
@@ -209,75 +208,10 @@ namespace ProjectK
             PathObjectRoots[index] = null;
         }
 
-        public bool CalculatePath(Vector2 startLocation, Vector2 endLocation, List<Vector2> path)
-        {
-            Dictionary<MapCell, MapCell> cameFrom = new Dictionary<MapCell, MapCell>();
-            Dictionary<MapCell, int> cost = new Dictionary<MapCell, int>();
-            path.Clear();
-            frontier.Clear();
-
-            MapCell start = GetCell(startLocation);
-            MapCell end = GetCell(endLocation);
-            MapCell current = null;
-            if (start == null || start.IsObstacle || end == null || end.IsObstacle || start == end)
-                return false;
-
-            frontier.Enqueue(start, 0);
-            cameFrom[start] = start;
-            cost[start] = 0;
-
-            while (frontier.Count > 0)
-            {
-                current = frontier.Dequeue();
-                if (current == end)
-                    break;
-
-                foreach (MapCell neighbour in current.Neighbours)
-                {
-                    if (neighbour == null || neighbour.IsObstacle)
-                        continue;
-
-                    int newCost = cost[current] + 1;
-                    int oldCost;
-                    if (!cost.TryGetValue(neighbour, out oldCost) || newCost < oldCost)
-                    {
-                        cost[neighbour] = newCost;
-                        int priority = newCost + GetDistance(neighbour, end);
-                        if (frontier.Contains(neighbour))
-                            frontier.UpdatePriority(neighbour, priority);
-                        else
-                            frontier.Enqueue(neighbour, priority);
-                        cameFrom[neighbour] = current;
-                    }
-                }
-            }
-
-            // build path
-            while (current != start)
-            {
-                path.Add(current.Location);
-                cameFrom.TryGetValue(current, out current);
-            }
-            path.Add(start.Location);
-            path.Reverse();
-
-            // merge path
-            for (int i = path.Count - 2; i >= 1; --i)
-            {
-                Vector2 p1 = path[i + 1];
-                Vector2 p2 = path[i];
-                Vector2 p3 = path[i - 1];
-                if (MapUtils.InLine(p2, p1, p3))
-                    path.RemoveAt(i);
-            }
-
-            return true;
-        }
-
         public void CalculatePath(int index)
         {
             MapPath path = Paths[index];
-            path.RecalculatePaths();
+            path.CalculatePathMaps();
         }
 
         public void CalculatePaths()

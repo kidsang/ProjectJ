@@ -33,98 +33,133 @@ namespace ProjectK
             waypoints.Clear();
         }
 
+        public void CalculatePathMaps()
+        {
+            for (int i = 1; i < waypoints.Count; ++i)
+                CalculatePathMap(i);
+        }
+
+        private void CalculatePathMap(int toWaypointIndex)
+        {
+            MapWaypoint toWaypoint = waypoints[toWaypointIndex];
+            Vector2 toLocation = toWaypoint.Location;
+            Dictionary<MapCell, MapCell> pathMap = toWaypoint.PathMap;
+            DoCalculatePathMap(toLocation, pathMap);
+        }
+
+        private void DoCalculatePathMap(Vector2 toLocation, Dictionary<MapCell, MapCell> pathMap)
+        {
+            pathMap.Clear();
+            MapCell toCell = map.GetCell(toLocation);
+            if (toCell == null)
+                return;
+
+            Queue<MapCell> frontier = new Queue<MapCell>();
+            frontier.Enqueue(toCell);
+            pathMap[toCell] = toCell;
+
+            while (frontier.Count > 0)
+            {
+                MapCell current = frontier.Dequeue();
+                foreach (MapCell neighbour in current.Neighbours)
+                {
+                    if (neighbour == null || neighbour.IsObstacle)
+                        continue;
+
+                    if (pathMap.ContainsKey(neighbour))
+                        continue;
+
+                    frontier.Enqueue(neighbour);
+                    pathMap[neighbour] = current;
+                }
+            }
+
+            pathMap.Remove(toCell);
+        }
+
+        public bool GetNextLocation(Vector2 fromLocation, int toWaypointIndex, out Vector2 nextLocation)
+        {
+            if (toWaypointIndex >= waypoints.Count)
+            {
+                nextLocation = Vector2.zero;
+                return false;
+            }
+
+            MapCell fromCell = map.GetCell(fromLocation);
+            if (fromCell == null)
+            {
+                nextLocation = Vector2.zero;
+                return false;
+            }
+
+            MapWaypoint waypoint = waypoints[toWaypointIndex];
+            MapCell nextCell;
+            if (!waypoint.PathMap.TryGetValue(fromCell, out nextCell))
+            {
+                nextLocation = Vector2.zero;
+                return false;
+            }
+
+            nextLocation = nextCell.Location;
+            return true;
+        }
+
         public List<Vector2> FindPathLocation(int toWaypointIndex)
         {
-            List<Vector2> locations;
-            int nextLocationIndex;
-            FindPathLocation(waypoints[toWaypointIndex - 1].Location, toWaypointIndex, out locations, out nextLocationIndex);
+            List<Vector2> locations = new List<Vector2>();
+            FindPathLocation(waypoints[toWaypointIndex - 1].Location, toWaypointIndex, locations);
             return locations;
         }
 
         public List<Vector3> FindPathPosition(int toWaypointIndex)
         {
-            List<Vector3> positions;
-            int nextPositionIndex;
-            FindPathPosition(waypoints[toWaypointIndex - 1].Location, toWaypointIndex, out positions, out nextPositionIndex);
+            List<Vector3> positions = new List<Vector3>();
+            FindPathPosition(waypoints[toWaypointIndex - 1].Location, toWaypointIndex, positions);
             return positions;
         }
 
-        public void FindPathLocation(Vector2 fromLocation, int toWaypointIndex, out List<Vector2> locations, out int nextLocationIndex)
+        public void FindPathLocation(Vector2 fromLocation, int toWaypointIndex, List<Vector2> locations)
         {
-            int pathIndex = FindPathIndex(fromLocation, toWaypointIndex, out nextLocationIndex);
-            MapWaypoint waypoint = waypoints[toWaypointIndex];
-            locations = waypoint.LocationPaths[pathIndex];
-        }
-
-        public void FindPathPosition(Vector2 fromLocation, int toWaypointIndex, out List<Vector3> positions, out int nextPositionIndex)
-        {
-            int pathIndex = FindPathIndex(fromLocation, toWaypointIndex, out nextPositionIndex);
-            MapWaypoint waypoint = waypoints[toWaypointIndex];
-            positions = waypoint.PositionPaths[pathIndex];
-        }
-
-        private int FindPathIndex(Vector2 fromLocation, int toWaypointIndex, out int nextLocationIndex)
-        {
-            Log.Assert(toWaypointIndex >= 0 || toWaypointIndex < waypoints.Count, "寻路路点输入错误！ toWaypointIndex:", toWaypointIndex, "waypoints.Count:", waypoints.Count);
+            locations.Clear();
+            MapCell fromCell = map.GetCell(fromLocation);
+            if (fromCell == null)
+                return;
 
             MapWaypoint waypoint = waypoints[toWaypointIndex];
-            int pathsCount = waypoint.LocationPaths.Count;
-            for (int i = 0; i < pathsCount; i++)
+            MapCell toCell = map.GetCell(waypoint.Location);
+            if (toCell == null)
+                return;
+
+             // build path
+            Dictionary<MapCell, MapCell> PathMap = waypoint.PathMap;
+            while (fromCell != toCell)
             {
-                List<Vector2> path = waypoint.LocationPaths[i];
-                int pathCount = path.Count;
-                for (int j = 1; j < pathCount; j++)
-                {
-                    Vector2 p0 = path[j - 1];
-                    Vector2 p1 = path[j];
-                    if (MapUtils.InSegment(fromLocation, p0, p1))
-                    {
-                        nextLocationIndex = j;
-                        return i;
-                    }
-                }
+                locations.Add(fromCell.Location);
+                if (!PathMap.TryGetValue(fromCell, out fromCell))
+                    break;
             }
+            if (fromCell == toCell)
+                locations.Add(toCell.Location);
 
-            List<Vector2> locationPath = new List<Vector2>();
-            map.CalculatePath(fromLocation, waypoint.Location, locationPath);
-            waypoint.LocationPaths.Add(locationPath);
-
-            int count = locationPath.Count;
-            List<Vector3> positionPath = new List<Vector3>(count);
-            for (int i = 0; i < count; i++)
-                positionPath.Add(MapUtils.LocationToPosition(locationPath[i]));
-            waypoint.PositionPaths.Add(positionPath);
-
-            nextLocationIndex = 1;
-            return waypoint.LocationPaths.Count - 1;
+            // merge path
+            for (int i = locations.Count - 2; i >= 1; --i)
+            {
+                Vector2 p1 = locations[i + 1];
+                Vector2 p2 = locations[i];
+                Vector2 p3 = locations[i - 1];
+                if (MapUtils.InLine(p2, p1, p3))
+                    locations.RemoveAt(i);
+            }
         }
 
-        public void ClearPath(int toWaypointIndex)
+        public void FindPathPosition(Vector2 fromLocation, int toWaypointIndex, List<Vector3> positions)
         {
-            MapWaypoint waypoint = waypoints[toWaypointIndex];
-            waypoint.LocationPaths.Clear();
-            waypoint.PositionPaths.Clear();
-        }
+            List<Vector2> locations = new List<Vector2>();
+            FindPathLocation(fromLocation, toWaypointIndex, locations);
 
-        public void ClearAllPaths()
-        {
-            for (int i = 1; i < waypoints.Count; i++)
-                ClearPath(i);
-        }
-
-        public void RecalculatePath(int toWaypointIndex)
-        {
-            MapWaypoint waypoint = waypoints[toWaypointIndex];
-            waypoint.LocationPaths.Clear();
-            waypoint.PositionPaths.Clear();
-            int nextLocaitonIndex;
-            FindPathIndex(waypoints[toWaypointIndex - 1].Location, toWaypointIndex, out nextLocaitonIndex);
-        }
-
-        public void RecalculatePaths()
-        {
-            for (int i = 1; i < waypoints.Count; ++i)
-                RecalculatePath(i);
+            positions.Clear();
+            for (int i = 0; i < locations.Count; ++i)
+                positions.Add(MapUtils.LocationToPosition(locations[i]));
         }
 
         public int WaypointCount
@@ -132,15 +167,15 @@ namespace ProjectK
             get { return waypoints.Count; }
         }
 
-        public Vector2 GetLocation(int index)
+        public Vector2 GetLocation(int waypointIndex)
         {
-            MapWaypoint waypoint = waypoints[index];
+            MapWaypoint waypoint = waypoints[waypointIndex];
             return waypoint.Location;
         }
 
-        public Vector2 GetPosition(int index)
+        public Vector2 GetPosition(int waypointIndex)
         {
-            MapWaypoint waypoint = waypoints[index];
+            MapWaypoint waypoint = waypoints[waypointIndex];
             return waypoint.Position;
         }
 
@@ -169,8 +204,7 @@ namespace ProjectK
             public Vector2 Location;
             public Vector3 Position;
 
-            public List<List<Vector2>> LocationPaths = new List<List<Vector2>>();
-            public List<List<Vector3>> PositionPaths = new List<List<Vector3>>();
+            public Dictionary<MapCell, MapCell> PathMap = new Dictionary<MapCell, MapCell>();
         }
     }
 }
