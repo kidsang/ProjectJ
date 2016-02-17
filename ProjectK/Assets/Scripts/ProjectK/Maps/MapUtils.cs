@@ -15,8 +15,8 @@ namespace ProjectK
         public static readonly float Sqrt3 = Mathf.Sqrt(3.0f);
 
 #if POINTY_TOPPED
-        public static readonly float Radius = 1.0f;
-        public static readonly float HalfWidth = Radius * Sqrt3 / 2.0f;
+        public static readonly float Radius = 2.0f / Sqrt3;
+        public static readonly float HalfWidth = 1;
         public static readonly float HalfHeight = Radius;
 #else
         public static readonly float Radius = 1.0f;

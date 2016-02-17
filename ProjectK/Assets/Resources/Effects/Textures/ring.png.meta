@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 98518759a85cb674aa3d73dd89e3bb5e
-timeCreated: 1454168176
+guid: 242cd881af935624bac042d778ebbfca
+timeCreated: 1455715118
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -30,7 +30,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: 16
+    aniso: -1
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -43,13 +43,13 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 55.4256287
+  spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
     sprites: []
-  spritePackingTag: TerrainGrass
+  spritePackingTag: 
   userData: 
   assetBundleName: 
   assetBundleVariant: 
